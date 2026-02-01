@@ -25,9 +25,9 @@ description: '通过 9 个实战案例，学习如何用 PocketFlow 构建聊天
   </el-tab-pane>
   <el-tab-pane label="想做 Agent">
 
-**推荐顺序**：搜索 Agent → 多 Agent 协作 → MCP 工具集成
+**推荐顺序**：搜索 Agent → 多 Agent 协作 → MCP 工具集成 → 智能体编程
 
-Agent 的核心是"自主决策循环"。这三个案例从简单的工具调用，到多 Agent 协作，再到标准化工具集成，循序渐进。
+Agent 的核心是"自主决策循环"。这四个案例从简单的工具调用，到多 Agent 协作，再到标准化工具集成，最后学习系统化构建 Agent 的工程方法论。
 
   </el-tab-pane>
   <el-tab-pane label="关注性能">
