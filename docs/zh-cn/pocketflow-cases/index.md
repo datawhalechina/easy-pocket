@@ -520,6 +520,332 @@ reflect - "done" >> output        # 任务完成
 
 ---
 
+## 10. 智能体编程 (Agentic Coding)
+
+::: info 难度：进阶 | 模式：人类设计 + 代理实现 | 关键词：系统设计、数据契约、可靠性
+:::
+
+智能体编程是一种高效协作范式：**人类负责系统设计，AI 负责实现**。PocketFlow 的核心抽象（Node / Flow / Shared Store）让这种协作更自然。
+
+::: warning 重要提醒
+如果你正在用 AI 构建 LLM 系统，请务必牢记三件事：
+1) 从**小而简单**的方案开始；2) **先写高层设计文档**（例如 `docs/design.md`）再写代码；3) 频繁向人类确认与复盘。
+:::
+
+> **官方指南**：[Agentic Coding: Humans Design, Agents Code](https://the-pocket.github.io/PocketFlow/guide.html#agentic-coding-humans-design-agents-code)
+
+### 10.1 分工原则（谁负责什么）
+
+| 步骤 | 人类参与度 | AI 参与度 | 关键目标 |
+| --- | --- | --- | --- |
+| 1. 需求澄清 | 高 | 低 | 明确用户问题与价值边界 |
+| 2. Flow 设计 | 中 | 中 | 用节点描述高层流程 |
+| 3. Utilities | 中 | 中 | 列出外部能力/接口 |
+| 4. Data 设计 | 低 | 高 | 设计 shared 数据契约 |
+| 5. Node 设计 | 低 | 高 | 明确每个节点读写 |
+| 6. 实现 | 低 | 高 | 让 Agent 写代码 |
+| 7. 优化 | 中 | 中 | 调整拆分与提示词 |
+| 8. 可靠性 | 低 | 高 | 补测试、补校验 |
+
+### 10.2 8 步流程（写在设计文档里）
+
+1. **Requirements**：明确需求，判断是否适合用 AI 解决
+   - **适合**：重复性、规则清晰的任务（填表、邮件回复）
+   - **适合**：输入明确的创作任务（生成文案、写 SQL）
+   - **不适合**：高度模糊且需复杂决策的问题（商业战略、公司治理）
+   - **以用户为中心**：先写“用户问题”，再写“功能清单”
+   - **复杂度与价值平衡**：优先交付高价值、低复杂度能力
+
+2. **Flow**：用节点描述系统如何协作
+   - 识别设计模式：
+     - [Map Reduce](https://the-pocket.github.io/PocketFlow/design_pattern/mapreduce.html)
+     - [Agent](https://the-pocket.github.io/PocketFlow/design_pattern/agent.html)
+     - [RAG](https://the-pocket.github.io/PocketFlow/design_pattern/rag.html)
+   - 每个节点写一句话职责
+   - 如果是 Map-Reduce：说明“拆分”和“聚合”
+   - 如果是 Agent：说明“上下文”和“行动空间”
+   - 如果是 RAG：说明“离线索引”和“在线检索”
+   - 画流程图（示例）：
+
+   ```mermaid
+   flowchart LR
+       start[Start] --> batch[Batch]
+       batch --> check[Check]
+       check -->|OK| process
+       check -->|Error| fix[Fix]
+       fix --> check
+
+       subgraph process[Process]
+         step1[Step 1] --> step2[Step 2]
+       end
+
+       process --> endNode[End]
+   ```
+
+   ::: tip
+   如果人类无法画出 Flow，AI 就无法自动化。建议先手动解几条样例，建立直觉。
+   :::
+
+3. **Utilities**：识别并实现外部工具（系统的“身体”）
+   - 读取输入：拉取消息、读文件、查数据库
+   - 写入输出：发送通知、生成报告
+   - 调用外部工具：搜索、API、数据库、LLM
+   - **注意**：LLM 内部任务（总结、分析）不是 Utility
+
+   <div align="center"><img src="https://github.com/the-pocket/.github/raw/main/assets/utility.png?raw=true" width="420"/></div>
+
+   - 为每个 Utility 写一个小测试并记录输入输出
+   - 示例记录：
+     - `name`: `get_embedding` (`utils/get_embedding.py`)
+     - `input`: `str`
+     - `output`: 3072 维向量
+     - `necessity`: 第二个节点需要 embedding
+
+4. **Data**：设计 shared 数据契约
+   - 小系统用内存字典；大系统可接数据库
+   - **避免重复**：引用或外键优先
+
+   ```python
+   shared = {
+       "user": {
+           "id": "user123",
+           "context": {
+               "weather": {"temp": 72, "condition": "sunny"},
+               "location": "San Francisco"
+           }
+       },
+       "results": {}
+   }
+   ```
+
+5. **Node**：写清每个节点读写与工具依赖
+   - `type`：Regular / Batch / Async
+   - `prep`：读 shared 的什么字段
+   - `exec`：调用哪个 Utility（不写异常处理）
+   - `post`：写回 shared 的什么字段
+
+6. **Implementation**：开始让 Agent 写代码
+   - **Keep it simple**：不要一上来就追求复杂特性
+   - **Fail fast**：用 Node 的重试/回退机制快速暴露薄弱环节
+   - 添加足够日志，方便调试
+
+7. **Optimization**：再迭代
+   - 先用直觉做快评估
+   - 回到步骤 3–6 重新拆分与优化
+   - 提示词更清晰、加入示例减少歧义
+
+8. **Reliability**：补齐稳定性
+   - `exec` 内增加结果校验
+   - 适当提升 `max_retries` 和 `wait`
+   - 加入“自评估节点”对结果做二次检查
+
+   <div align="center"><img src="https://github.com/the-pocket/.github/raw/main/assets/success.png?raw=true" width="420"/></div>
+
+### 10.3 最小设计文档模板（节选）
+
+~~~markdown
+# Design Doc: 项目名
+
+## Requirements
+- 用户要解决的具体问题：
+- 成功标准：
+
+## Flow Design
+- 节点列表与一句话说明
+
+```mermaid
+flowchart TD
+  A[Node A] --> B[Node B]
+  B --> C[Node C]
+```
+
+## Utilities
+- call_llm(prompt: str) -> str
+- search_web(query: str) -> list
+
+## Data (shared)
+shared = {
+  "input": ...,  # 原始输入
+  "context": ...,
+  "answer": ...
+}
+
+## Node Design
+- Node A: prep 读 input，exec 调用工具，post 写 context
+- Node B: ...
+~~~
+
+### 10.4 示例工程结构
+
+```
+my_project/
+├── main.py
+├── nodes.py
+├── flow.py
+├── utils/
+│   ├── __init__.py
+│   ├── call_llm.py
+│   └── search_web.py
+├── requirements.txt
+└── docs/
+     └── design.md
+```
+
+### 10.5 Utilities 实战代码（可直接运行）
+
+```python
+# utils/call_llm.py
+import os
+from openai import OpenAI
+
+def call_llm(prompt: str) -> str:
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
+    r = client.chat.completions.create(
+        model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return r.choices[0].message.content
+
+if __name__ == "__main__":
+    print(call_llm("用一句话解释 PocketFlow"))
+```
+
+```python
+# utils/search_web.py
+import requests
+
+def search_web(query: str) -> list[str]:
+    # 伪实现：请替换为你的搜索 API
+    url = "https://api.example.com/search"
+    r = requests.get(url, params={"q": query}, timeout=10)
+    r.raise_for_status()
+    data = r.json()
+    return [item["snippet"] for item in data.get("items", [])]
+
+if __name__ == "__main__":
+    print(search_web("PocketFlow agentic coding"))
+```
+
+### 10.6 Node/Flow/Main 实战代码
+
+```python
+# nodes.py
+from pocketflow import Node
+from utils.call_llm import call_llm
+from utils.search_web import search_web
+
+class DecideAction(Node):
+    def prep(self, shared):
+        return shared["question"], shared.get("context", [])
+
+    def exec(self, data):
+        question, context = data
+        prompt = f"""问题：{question}
+已有信息：{context}
+请决定下一步：SEARCH 或 ANSWER。"""
+        return call_llm(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        if "SEARCH" in exec_res:
+            return "search"
+        return "answer"
+
+class Search(Node):
+    def prep(self, shared):
+        return shared["question"]
+
+    def exec(self, question):
+        return search_web(question)
+
+    def post(self, shared, prep_res, exec_res):
+        shared.setdefault("context", []).extend(exec_res)
+
+class Answer(Node):
+    def prep(self, shared):
+        return shared["question"], shared.get("context", [])
+
+    def exec(self, data):
+        question, context = data
+        prompt = f"""请基于以下信息回答问题：
+{context}
+
+问题：{question}"""
+        return call_llm(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        shared["answer"] = exec_res
+```
+
+```python
+# flow.py
+from pocketflow import Flow
+from nodes import DecideAction, Search, Answer
+
+def create_agent_flow():
+    decide = DecideAction()
+    search = Search()
+    answer = Answer()
+
+    decide - "search" >> search
+    decide - "answer" >> answer
+    search >> decide  # 搜索后回到判断
+
+    return Flow(start=decide)
+```
+
+```python
+# main.py
+from flow import create_agent_flow
+
+def main():
+    shared = {"question": "PocketFlow 有哪些设计模式？"}
+    flow = create_agent_flow()
+    flow.run(shared)
+    print("Answer:", shared.get("answer"))
+
+if __name__ == "__main__":
+    main()
+```
+
+### 10.7 可靠性增强（重试 + 回退）
+
+```python
+from pocketflow import Node
+from utils.call_llm import call_llm
+
+class SafeAnswer(Node):
+    def exec(self, question):
+        if not question:
+            raise ValueError("empty question")
+        return call_llm(question)
+
+    def exec_fallback(self, prep_res, exc):
+        return "抱歉，当前无法生成答案，请稍后再试。"
+
+safe_answer = SafeAnswer(max_retries=3, wait=2)
+```
+
+### 10.8 最小可运行测试
+
+```python
+# tests/test_nodes.py
+from nodes import DecideAction
+
+def test_decide_action_returns_string():
+    node = DecideAction()
+    shared = {"question": "What is PocketFlow?"}
+    action = node.run(shared)
+    assert action in ["search", "answer", "default"]
+```
+
+::: tip 学习要点
+- 智能体编程的核心不是“让 AI 写代码”，而是**让 AI 严格按设计实现**
+- 设计文档越清晰，Flow 的可维护性与稳定性越高
+- 可靠性靠“检查 + 重试 + 评估节点”来补齐
+:::
+
+---
+
 ## 总结
 
 <el-card shadow="hover" style="border-radius: 16px; border: 2px dashed var(--vp-c-brand); margin: 20px 0;">
