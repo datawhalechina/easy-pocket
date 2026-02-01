@@ -1,3 +1,6 @@
-node_modules/
+.claude
+.vscode
+node_modules
 docs/.vitepress/dist
 docs/.vitepress/cache
+example

@@ -1,0 +1,37 @@
+/* Easy-Pocket Custom Styles */
+
+:root {
+  --ev-doc-font-size: 14px;
+  --ev-doc-line-height: 1.65;
+}
+
+.vp-doc {
+  font-size: var(--ev-doc-font-size);
+  line-height: var(--ev-doc-line-height);
+}
+
+/* Image optimization */
+.vp-doc img.img-limit-width {
+  max-width: 100%;
+  max-height: 450px;
+}
+
+.vp-doc img.img-tall {
+  max-height: 380px;
+  width: auto;
+}
+
+.vp-doc img.img-very-tall {
+  max-height: 280px;
+  width: auto;
+}
+
+.vp-doc img.img-ultra-tall {
+  max-height: 200px;
+  width: auto;
+}
+
+/* Viewer.js transition - only when ready */
+body.viewer-ready .viewer-canvas img {
+  transition: transform 0.3s ease;
+}

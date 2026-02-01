@@ -1,0 +1,159 @@
+---
+layout: home
+hero:
+  name: 'Easy-Pocket'
+  text: '从零掌握 PocketFlow'
+  tagline: '100 行代码的极简 LLM 框架 —— 零依赖，零门槛'
+  actions:
+    - theme: brand
+      text: 开始学习
+      link: /zh-cn/pocketflow-intro/
+    - theme: alt
+      text: GitHub
+      link: https://github.com/The-Pocket/PocketFlow
+features:
+  - title: 极简核心
+    details: 仅 100 行 Python 代码，零依赖。Node + Flow 两个抽象，覆盖 LLM 应用开发的所有主流模式。
+  - title: 交互式教学
+    details: 每个核心概念都配有交互式可视化演示，动手实验中就能理解 Node 生命周期和 Flow 图执行。
+  - title: 案例驱动
+    details: 9 个实战案例，从聊天机器人到多 Agent 协作，从 RAG 到并行批处理，覆盖入门到进阶。
+  - title: Agentic Coding
+    details: 人类设计架构，AI 写实现代码。PocketFlow 的极简设计让 AI 也能顺畅地理解和生成代码。
+---
+
+<div align="center" style="margin-top: 40px; margin-bottom: 40px;">
+  <h2 style="border: none; font-size: 2rem; font-weight: 700; margin-bottom: 20px;">什么是 PocketFlow？</h2>
+  <p style="font-size: 1.2rem; color: var(--vp-c-text-2); max-width: 800px; margin: 0 auto; line-height: 1.6;">
+    PocketFlow 是一个仅 100 行代码的 LLM 应用框架。<br>
+    它用 <strong>Node</strong>（节点）和 <strong>Flow</strong>（流程）两个极简抽象，<br>
+    让你可以构建聊天机器人、RAG、Agent、工作流等所有主流 LLM 应用。<br>
+    零依赖、零供应商锁定、零学习门槛。
+  </p>
+</div>
+
+<div class="stage-container">
+  <a href="./pocketflow-intro/" class="stage-card">
+    <div class="stage-icon">原理</div>
+    <h3>原理篇</h3>
+    <p>深入理解 PocketFlow 的核心设计：Node 三阶段模型、Flow 图执行、Batch 批处理与 Async 异步并发。</p>
+    <span>开始学习 →</span>
+  </a>
+  <a href="./pocketflow-cases/" class="stage-card">
+    <div class="stage-icon">案例</div>
+    <h3>案例篇</h3>
+    <p>9 个实战案例：聊天机器人、RAG、写作工作流、搜索 Agent、多 Agent 协作、批处理、并行执行等。</p>
+    <span>查看案例 →</span>
+  </a>
+</div>
+
+<style>
+.stage-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.stage-card:nth-child(1) { --card-color: #3b82f6; }
+.stage-card:nth-child(2) { --card-color: #8b5cf6; }
+
+.stage-card {
+  background-color: var(--vp-c-bg-soft);
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  border: 1px solid var(--vp-c-bg-soft);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.stage-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--card-color);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.stage-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: var(--card-color);
+}
+
+.stage-card:hover::before {
+  opacity: 1;
+}
+
+.stage-icon {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--card-color);
+  opacity: 0.8;
+}
+
+.stage-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--vp-c-text-1);
+  transition: color 0.2s;
+}
+
+.stage-card:hover h3 {
+  color: var(--card-color);
+}
+
+.stage-card p {
+  font-size: 0.9rem;
+  color: var(--vp-c-text-2);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+</style>
+
+<div class="footer-cta">
+  <h3 class="support-title">100 行代码，构建你需要的 LLM 应用</h3>
+  <p class="support-text">Node 做事，Flow 调度，shared 通信 —— 仅此而已。</p>
+</div>
+
+<style>
+.footer-cta {
+  margin-top: 80px;
+  padding: 40px 24px;
+  text-align: center;
+  background: var(--vp-c-bg-soft);
+  border-radius: 24px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+  border: 1px solid var(--vp-c-bg-soft);
+  transition: border-color 0.3s;
+}
+
+.footer-cta:hover {
+  border-color: var(--vp-c-brand);
+}
+
+.support-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--vp-c-text-1);
+}
+
+.support-text {
+  font-size: 1.1rem;
+  color: var(--vp-c-text-2);
+}
+</style>
