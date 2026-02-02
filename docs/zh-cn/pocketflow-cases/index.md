@@ -848,7 +848,7 @@ def test_decide_action_returns_string():
 
 ## 配套示例代码
 
-本教程的所有案例都已整理为**完整可运行的 Python 脚本**，存放在 [`examples/`](./examples/) 文件夹中。
+本教程的所有案例都已整理为**完整可运行的 Python 脚本**，存放在 [`examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) 文件夹中。
 
 ### 环境配置
 
@@ -929,6 +929,7 @@ python 04_search_agent.py
 
 ### 下一步
 
-- 进入 [`examples/`](./examples/) 文件夹，动手跑通代码
+- 进入 [`examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) 文件夹，动手跑通本章的配套代码
+- 如果还不熟悉 Node / Flow 等核心概念，回到 [PocketFlow 原理入门](../pocketflow-intro/) 章节查看基础讲解和 [配套示例](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples)
 - 访问 [PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow) 查看更多示例和完整 cookbook
 - 选一个案例，尝试修改 `exec()` 逻辑来适配你自己的场景

@@ -329,7 +329,7 @@ flow.run({"name": "小明"})
 
 ### 6.4 配套示例代码
 
-本教程的所有代码示例都已整理为**完整可运行的 Python 脚本**，存放在 [`examples/`](./examples/) 文件夹中：
+本教程的所有代码示例都已整理为**完整可运行的 Python 脚本**，存放在 [`examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples) 文件夹中：
 
 | 文件 | 对应章节 | 核心概念 |
 | :--- | :--- | :--- |
@@ -384,3 +384,11 @@ python 03_flow_chain.py
 | **prep** | Preparation | **准备阶段**。从 shared 读取数据，传给 exec。 |
 | **exec** | Execution | **执行阶段**。核心业务逻辑，不直接访问 shared。 |
 | **post** | Post-processing | **后处理阶段**。将结果写回 shared，返回 action。 |
+
+---
+
+### 下一步
+
+- 进入 [`examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples) 文件夹，动手跑通本章的配套代码
+- 前往 [PocketFlow 应用案例](../pocketflow-cases/) 章节，通过 9 个实战案例学习如何构建聊天机器人、RAG、Agent 等应用
+- 访问 [PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow) 查看完整 cookbook
