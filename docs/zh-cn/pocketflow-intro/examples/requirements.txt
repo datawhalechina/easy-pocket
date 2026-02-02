@@ -1,0 +1,12 @@
+# PocketFlow 教程配套示例依赖
+#
+# 安装方式：pip install -r requirements.txt
+#
+# 版本策略说明：
+# - pocketflow 使用 >= 最低兼容版本，不锁定上限，以兼容框架未来更新
+# - 如遇到兼容性问题，可取消下方注释中的固定版本行
+#
+# 本教程基于 PocketFlow 的核心 API（Node, Flow, BatchNode, AsyncNode 等），
+# 这些 API 自 v0.0.1 起保持稳定。
+
+pocketflow>=0.0.1

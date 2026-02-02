@@ -1,0 +1,16 @@
+# PocketFlow 应用案例配套示例依赖
+#
+# 安装方式：pip install -r requirements.txt
+#
+# 版本策略：
+# - pocketflow 使用 >= 最低兼容版本，不锁定上限
+# - 本教程仅依赖 PocketFlow 核心 API，与框架版本松耦合
+#
+# 大部分示例（01-09）开箱即用，无需额外依赖。
+# 如需接入真实 LLM/搜索 API（案例 10），取消下方注释。
+
+pocketflow>=0.0.1
+
+# --- 可选依赖（接入真实 API 时使用） ---
+# openai>=1.0.0         # OpenAI API（案例 10 utils/call_llm.py）
+# requests>=2.28.0      # HTTP 请求（案例 10 utils/search_web.py）

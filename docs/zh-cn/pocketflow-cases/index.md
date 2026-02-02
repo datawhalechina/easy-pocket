@@ -846,6 +846,74 @@ def test_decide_action_returns_string():
 
 ---
 
+## 配套示例代码
+
+本教程的所有案例都已整理为**完整可运行的 Python 脚本**，存放在 [`examples/`](./examples/) 文件夹中。
+
+### 环境配置
+
+::: code-group
+
+```bash [Windows]
+python -m venv .venv
+.venv\Scripts\activate
+cd examples
+pip install -r requirements.txt
+```
+
+```bash [macOS / Linux]
+python -m venv .venv
+source .venv/bin/activate
+cd examples
+pip install -r requirements.txt
+```
+
+:::
+
+### 示例一览
+
+| 文件 | 案例 | 核心模式 |
+| :--- | :--- | :--- |
+| `01_chatbot.py` | 聊天机器人 | 链式 + 循环 |
+| `02_rag.py` | RAG 检索增强 | 链式 + BatchNode |
+| `03_writing_workflow.py` | 写作工作流 | 链式 |
+| `04_search_agent.py` | 搜索 Agent | 循环 + 条件分支 |
+| `05_multi_agent.py` | 多 Agent 协作 | 多 Agent + 循环 |
+| `06_map_reduce.py` | Map-Reduce | BatchNode |
+| `07_parallel_processing.py` | 并行处理 | AsyncParallelBatchNode |
+| `08_chain_of_thought.py` | 思维链推理 | 循环 + 自检 |
+| `09_mcp_tool.py` | MCP 工具集成 | Agent + 工具 |
+| `10_agentic_coding/` | 智能体编程 | 完整项目模板 |
+
+::: code-group
+
+```bash [按学习路径运行]
+# 零基础入门
+python 01_chatbot.py
+python 03_writing_workflow.py
+python 02_rag.py
+
+# Agent 方向
+python 04_search_agent.py
+python 05_multi_agent.py
+python 09_mcp_tool.py
+cd 10_agentic_coding && python main.py
+```
+
+```bash [运行单个示例]
+python 04_search_agent.py
+```
+
+:::
+
+::: info 关于示例代码
+- 所有示例默认使用**模拟 LLM**，无需 API 密钥，开箱即用
+- 如需接入真实 LLM，只需替换各文件中的 `mock_` 函数即可
+- 案例 10 是完整的多文件项目模板，包含 utils / nodes / flow / tests
+:::
+
+---
+
 ## 总结
 
 <el-card shadow="hover" style="border-radius: 16px; border: 2px dashed var(--vp-c-brand); margin: 20px 0;">
@@ -861,5 +929,6 @@ def test_decide_action_returns_string():
 
 ### 下一步
 
+- 进入 [`examples/`](./examples/) 文件夹，动手跑通代码
 - 访问 [PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow) 查看更多示例和完整 cookbook
-- 选一个案例，动手跑通代码，再尝试修改 `exec()` 逻辑来适配你自己的场景
+- 选一个案例，尝试修改 `exec()` 逻辑来适配你自己的场景

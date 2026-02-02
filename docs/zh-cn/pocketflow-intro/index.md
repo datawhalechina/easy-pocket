@@ -254,7 +254,33 @@ PocketFlow 推崇一种新的开发范式 —— **Agentic Coding**：
 
 ## 6. 快速上手
 
-### 6.1 安装
+### 6.1 环境配置
+
+#### Python 版本
+
+PocketFlow 需要 **Python 3.9+**（推荐 3.10 或更高版本）：
+
+```bash
+python --version
+```
+
+#### 创建虚拟环境（推荐）
+
+::: code-group
+
+```bash [Windows]
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+```bash [macOS / Linux]
+python -m venv .venv
+source .venv/bin/activate
+```
+
+:::
+
+### 6.2 安装 PocketFlow
 
 ::: code-group
 
@@ -262,14 +288,23 @@ PocketFlow 推崇一种新的开发范式 —— **Agentic Coding**：
 pip install pocketflow
 ```
 
+```bash [指定版本]
+# 如需锁定版本（教程编写时为 0.0.3）
+pip install pocketflow==0.0.3
+```
+
 ```bash [复制源码]
-# 或者直接复制 100 行源码到你的项目
-# https://github.com/The-Pocket/PocketFlow
+# PocketFlow 只有 100 行，也可以直接复制到项目中
+# https://github.com/The-Pocket/PocketFlow/blob/main/pocketflow/__init__.py
 ```
 
 :::
 
-### 6.2 第一个 Flow：Hello PocketFlow
+::: tip 零依赖
+PocketFlow 没有任何第三方依赖，安装后即可直接使用，不会影响你现有的项目环境。
+:::
+
+### 6.3 第一个 Flow：Hello PocketFlow
 
 ```python
 from pocketflow import Node, Flow
@@ -291,6 +326,48 @@ flow = Flow(start=greet)
 flow.run({"name": "小明"})
 # 输出：Hello, 小明! Welcome to PocketFlow.
 ```
+
+### 6.4 配套示例代码
+
+本教程的所有代码示例都已整理为**完整可运行的 Python 脚本**，存放在 [`examples/`](./examples/) 文件夹中：
+
+| 文件 | 对应章节 | 核心概念 |
+| :--- | :--- | :--- |
+| `01_hello_pocketflow.py` | 6.3 第一个 Flow | Node + Flow 基础用法 |
+| `02_node_lifecycle.py` | 1.1 Node 最小单元 | prep → exec → post 三阶段 |
+| `03_flow_chain.py` | 1.2 & 1.3 图执行 | `>>` 链式连接 |
+| `04_conditional_flow.py` | 1.3 条件连接 | `- "action" >>` 条件分支 |
+| `05_shared_store.py` | 2 Shared 通信 | 节点间数据传递 |
+| `06_retry_node.py` | 3.2 重试机制 | max_retries、exec_fallback |
+| `07_nested_flow.py` | 3.3 嵌套子流程 | Flow 作为节点 |
+| `08_batch_node.py` | 3.4 批量处理 | BatchNode |
+| `09_async_parallel.py` | 3.5 异步并发 | AsyncParallelBatchNode |
+| `10_loop_pattern.py` | 4 设计模式 | 循环/自校正 |
+
+::: code-group
+
+```bash [一键运行]
+cd examples
+pip install -r requirements.txt
+python 01_hello_pocketflow.py
+```
+
+```bash [按顺序学习]
+cd examples
+pip install -r requirements.txt
+python 01_hello_pocketflow.py
+python 02_node_lifecycle.py
+python 03_flow_chain.py
+# ... 依次运行
+```
+
+:::
+
+::: info 关于示例代码
+- 所有示例**自包含**，不需要 API 密钥或外部服务
+- LLM 调用使用模拟逻辑代替，便于理解核心机制
+- 如需接入真实 LLM，只需替换 `exec()` 中的模拟逻辑即可
+:::
 
 ---
 
