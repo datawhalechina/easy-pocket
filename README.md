@@ -36,47 +36,35 @@
 
 ---
 
-## 亮点
-
-| 特性 | 说明 |
-| :--- | :--- |
-| **源码级讲解** | 逐类解剖 100 行核心代码：BaseNode → Node → Flow → BatchNode → AsyncNode |
-| **交互式演示** | 每个概念配有可视化组件，在动手实验中理解 Node 生命周期、Flow 图执行 |
-| **10 大案例** | 聊天机器人、RAG、写作工作流、搜索 Agent、多 Agent、批处理、并行、思维链、MCP、智能体编程 |
-| **框架对比** | 与 LangChain、CrewAI、AutoGen 的全维度对比，理解极简设计的价值 |
-| **Agentic Coding** | 人类设计架构 + AI 写实现代码的新范式 |
-
----
-
 ## 内容导航
 
 本教程分为两大篇章，覆盖原理到实战：
 
 ### 原理篇：PocketFlow 核心解析
 
-| 章节 | 关键内容 | 状态 |
-| :--- | :--- | :--- |
-| [引言：为什么需要 LLM 框架](docs/zh-cn/pocketflow-intro/index.md) | 核心痛点与框架对比 | ✅ |
-| [核心抽象：Node 与 Flow](docs/zh-cn/pocketflow-intro/index.md) | 三阶段模型、图执行引擎、操作符重载 | ✅ |
-| [Shared 通信机制](docs/zh-cn/pocketflow-intro/index.md) | 节点间数据传递的设计哲学 | ✅ |
-| [源码解剖：100 行的全部秘密](docs/zh-cn/pocketflow-intro/index.md) | BaseNode、Node、Flow、BatchNode、AsyncNode | ✅ |
-| [六大设计模式](docs/zh-cn/pocketflow-intro/index.md) | 链式、分支、循环、嵌套、批量、并行 | ✅ |
-| [Agentic Coding 开发范式](docs/zh-cn/pocketflow-intro/index.md) | 人类设计架构，AI 写代码 | ✅ |
+| 章节 | 关键内容 |
+| :--- | :--- |
+| [引言：为什么需要 LLM 框架](docs/zh-cn/pocketflow-intro/index.md) | 核心痛点与框架对比 |
+| [核心抽象：Node 与 Flow](docs/zh-cn/pocketflow-intro/index.md) | 三阶段模型、图执行引擎、操作符重载 |
+| [Shared 通信机制](docs/zh-cn/pocketflow-intro/index.md) | 节点间数据传递的设计哲学 |
+| [源码解剖：100 行的全部秘密](docs/zh-cn/pocketflow-intro/index.md) | BaseNode、Node、Flow、BatchNode、AsyncNode |
+| [六大设计模式](docs/zh-cn/pocketflow-intro/index.md) | 链式、分支、循环、嵌套、批量、并行 |
+| [Agentic Coding 开发范式](docs/zh-cn/pocketflow-intro/index.md) | 人类设计架构，AI 写代码 |
 
 ### 案例篇：从入门到进阶
 
-| 案例 | 模式 | 难度 | 状态 |
-| :--- | :--- | :--- | :--- |
-| [聊天机器人](docs/zh-cn/pocketflow-cases/index.md) | 链式 + 循环 | ⭐ | ✅ |
-| [RAG 检索增强](docs/zh-cn/pocketflow-cases/index.md) | 链式 + BatchNode | ⭐ | ✅ |
-| [写作工作流](docs/zh-cn/pocketflow-cases/index.md) | 链式 | ⭐ | ✅ |
-| [搜索 Agent](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 条件分支 | ⭐⭐ | ✅ |
-| [多 Agent 协作](docs/zh-cn/pocketflow-cases/index.md) | 多 Agent + 循环 | ⭐⭐ | ✅ |
-| [Map-Reduce 批处理](docs/zh-cn/pocketflow-cases/index.md) | BatchNode | ⭐ | ✅ |
-| [并行处理 (8x 加速)](docs/zh-cn/pocketflow-cases/index.md) | AsyncParallelBatchNode | ⭐⭐ | ✅ |
-| [思维链推理](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 自检 | ⭐⭐⭐ | ✅ |
-| [MCP 工具集成](docs/zh-cn/pocketflow-cases/index.md) | Agent + 工具 | ⭐⭐⭐ | ✅ |
-| [智能体编程](docs/zh-cn/pocketflow-cases/index.md) | 完整项目模板 | ⭐⭐⭐ | ✅ |
+| 案例 | 模式 | 难度 |
+| :--- | :--- | :--- |
+| [聊天机器人](docs/zh-cn/pocketflow-cases/index.md) | 链式 + 循环 | ⭐ |
+| [RAG 检索增强](docs/zh-cn/pocketflow-cases/index.md) | 链式 + BatchNode | ⭐ |
+| [写作工作流](docs/zh-cn/pocketflow-cases/index.md) | 链式 | ⭐ |
+| [搜索 Agent](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 条件分支 | ⭐⭐ |
+| [多 Agent 协作](docs/zh-cn/pocketflow-cases/index.md) | 多 Agent + 循环 | ⭐⭐ |
+| [Map-Reduce 批处理](docs/zh-cn/pocketflow-cases/index.md) | BatchNode | ⭐ |
+| [并行处理 (8x 加速)](docs/zh-cn/pocketflow-cases/index.md) | AsyncParallelBatchNode | ⭐⭐ |
+| [思维链推理](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 自检 | ⭐⭐⭐ |
+| [MCP 工具集成](docs/zh-cn/pocketflow-cases/index.md) | Agent + 工具 | ⭐⭐⭐ |
+| [智能体编程](docs/zh-cn/pocketflow-cases/index.md) | 完整项目模板 | ⭐⭐⭐ |
 
 ---
 
@@ -123,16 +111,6 @@ pip install pocketflow
 ---
 
 ## 本地预览文档
-
-### 快捷方式
-
-在 AI IDE（VS Code / Cursor / Trae）对话框中输入：
-
-```
-请帮我运行这个项目的本地服务
-```
-
-### 手动启动
 
 ```bash
 npm install
