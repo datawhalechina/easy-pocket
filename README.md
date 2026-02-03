@@ -18,10 +18,10 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/zhimi/easy-pocket/stargazers" target="_blank">
-        <img src="https://img.shields.io/github/stars/zhimi/easy-pocket?color=660874&style=for-the-badge&logo=star&logoColor=white&labelColor=1a1a2e" alt="Stars"></a>
-    <a href="https://github.com/zhimi/easy-pocket/network/members" target="_blank">
-        <img src="https://img.shields.io/github/forks/zhimi/easy-pocket?color=660874&style=for-the-badge&logo=git-fork&logoColor=white&labelColor=1a1a2e" alt="Forks"></a>
+    <a href="https://github.com/zhimin-z/easy-pocket/stargazers" target="_blank">
+        <img src="https://img.shields.io/github/stars/zhimin-z/easy-pocket?color=660874&style=for-the-badge&logo=star&logoColor=white&labelColor=1a1a2e" alt="Stars"></a>
+    <a href="https://github.com/zhimin-z/easy-pocket/network/members" target="_blank">
+        <img src="https://img.shields.io/github/forks/zhimin-z/easy-pocket?color=660874&style=for-the-badge&logo=git-fork&logoColor=white&labelColor=1a1a2e" alt="Forks"></a>
     <a href="LICENSE" target="_blank">
         <img src="https://img.shields.io/badge/License-CC_BY_NC_SA_4.0-4ecdc4?style=for-the-badge&logo=creative-commons&logoColor=white&labelColor=1a1a2e" alt="License"></a>
 </p>
@@ -42,7 +42,7 @@
 | :--- | :--- |
 | **源码级讲解** | 逐类解剖 100 行核心代码：BaseNode → Node → Flow → BatchNode → AsyncNode |
 | **交互式演示** | 每个概念配有可视化组件，在动手实验中理解 Node 生命周期、Flow 图执行 |
-| **9 大案例** | 聊天机器人、RAG、Agent、写作工作流、多 Agent、批处理、并行处理等 |
+| **10 大案例** | 聊天机器人、RAG、写作工作流、搜索 Agent、多 Agent、批处理、并行、思维链、MCP、智能体编程 |
 | **框架对比** | 与 LangChain、CrewAI、AutoGen 的全维度对比，理解极简设计的价值 |
 | **Agentic Coding** | 人类设计架构 + AI 写实现代码的新范式 |
 
@@ -76,6 +76,7 @@
 | [并行处理 (8x 加速)](docs/zh-cn/pocketflow-cases/index.md) | AsyncParallelBatchNode | ⭐⭐ | ✅ |
 | [思维链推理](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 自检 | ⭐⭐⭐ | ✅ |
 | [MCP 工具集成](docs/zh-cn/pocketflow-cases/index.md) | Agent + 工具 | ⭐⭐⭐ | ✅ |
+| [智能体编程](docs/zh-cn/pocketflow-cases/index.md) | 完整项目模板 | ⭐⭐⭐ | ✅ |
 
 ---
 
@@ -89,7 +90,39 @@
 
 ---
 
-## 本地启动
+## 示例代码
+
+每篇教程都附带**完整可运行**的 Python 示例，无需 API 密钥，开箱即用。
+
+### 快速开始
+
+```bash
+# 1. 确认 Python 版本（需要 3.9+）
+python --version
+
+# 2. 创建虚拟环境
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# macOS / Linux:
+source .venv/bin/activate
+
+# 3. 安装依赖
+pip install pocketflow
+```
+
+### 示例文件夹
+
+| 教程 | 示例目录 | 内容 |
+| :--- | :--- | :--- |
+| 原理入门 | [`docs/zh-cn/pocketflow-intro/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples) | 10 个脚本：Node 生命周期、Flow 图执行、条件分支、批处理、异步并发等 |
+| 应用案例 | [`docs/zh-cn/pocketflow-cases/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) | 10 个案例：ChatBot、RAG、Agent、工作流、多 Agent、Map-Reduce、MCP 等 |
+
+> 所有示例使用模拟 LLM 实现，聚焦框架核心概念。如需接入真实 API，参见各目录下的 README 说明。
+
+---
+
+## 本地预览文档
 
 ### 快捷方式
 
@@ -109,10 +142,30 @@ npm run dev
 
 ---
 
+## 项目结构
+
+```
+easy-pocket/
+├── docs/
+│   ├── .vitepress/              # VitePress 配置
+│   ├── public/                  # 静态资源
+│   └── zh-cn/
+│       ├── pocketflow-intro/    # 原理入门教程
+│       │   ├── index.md
+│       │   └── examples/        # 10 个配套示例脚本
+│       └── pocketflow-cases/    # 应用案例教程
+│           ├── index.md
+│           └── examples/        # 10 个配套案例脚本 + 项目模板
+├── package.json
+└── README.md
+```
+
+---
+
 ## 参与贡献
 
-- 发现问题或有改进建议？欢迎 [提 Issue](https://github.com/zhimi/easy-pocket/issues)
-- 想参与内容贡献？欢迎 [提 Pull Request](https://github.com/zhimi/easy-pocket/pulls)
+- 发现问题或有改进建议？欢迎 [提 Issue](https://github.com/zhimin-z/easy-pocket/issues)
+- 想参与内容贡献？欢迎 [提 Pull Request](https://github.com/zhimin-z/easy-pocket/pulls)
 
 ---
 
