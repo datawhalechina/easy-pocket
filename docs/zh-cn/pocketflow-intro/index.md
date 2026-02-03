@@ -389,6 +389,5 @@ python 03_flow_chain.py
 
 ### 下一步
 
-- 进入 [`examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples) 文件夹，动手跑通本章的配套代码
-- 前往 [PocketFlow 应用案例](../pocketflow-cases/) 章节，通过 9 个实战案例学习如何构建聊天机器人、RAG、Agent 等应用
+- 前往 [PocketFlow 应用案例](../pocketflow-cases/) 学习实战案例
 - 访问 [PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow) 查看完整 cookbook

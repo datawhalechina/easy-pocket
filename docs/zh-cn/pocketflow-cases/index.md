@@ -929,7 +929,5 @@ python 04_search_agent.py
 
 ### 下一步
 
-- 进入 [`examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) 文件夹，动手跑通本章的配套代码
-- 如果还不熟悉 Node / Flow 等核心概念，回到 [PocketFlow 原理入门](../pocketflow-intro/) 章节查看基础讲解和 [配套示例](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples)
-- 访问 [PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow) 查看更多示例和完整 cookbook
-- 选一个案例，尝试修改 `exec()` 逻辑来适配你自己的场景
+- 回顾 [PocketFlow 原理入门](../pocketflow-intro/) 巩固核心概念
+- 访问 [PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow) 查看完整 cookbook
