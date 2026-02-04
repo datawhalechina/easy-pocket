@@ -9,9 +9,10 @@
 ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝       ╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   
 </pre>
 
-# Easy-Pocket : 从零掌握 PocketFlow
+# Easy-Pocket : 从零掌握 PocketFlow（⚠️ Alpha内测版）
 
-【⚠️ Alpha内测版本警告：此为早期内部构建版本，尚不完整且可能存在错误，欢迎大家提Issue反馈问题或建议。】
+> [!CAUTION]
+> ⚠️ Alpha内测版本警告：此为早期内部构建版本，尚不完整且可能存在错误，欢迎大家提Issue反馈问题或建议。
 
 <p align="center">
   <a href="https://github.com/The-Pocket/PocketFlow">PocketFlow 官方仓库</a> ·
