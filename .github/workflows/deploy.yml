@@ -39,9 +39,6 @@ jobs:
           cache: npm
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        # Note: Do not add 'enablement: true' here. It requires admin permissions
-        # that GITHUB_TOKEN doesn't have. Enable Pages manually in repository settings.
-        # See .github/DEPLOYMENT.md for setup instructions.
       - name: Install dependencies
         run: npm ci
       - name: Build with VitePress
