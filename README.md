@@ -76,7 +76,7 @@
 根据你的背景选择学习路径：
 
 - **零基础**：原理篇全篇 → 案例篇（聊天机器人 → 写作工作流 → RAG）
-- **想做 Agent**：原理篇 → 案例篇（搜索 Agent → 多 Agent → MCP）
+- **想做 Agent**：原理篇 → 案例篇（搜索 Agent → 多 Agent → MCP → 智能体编程）
 - **关注性能**：原理篇（BatchNode / AsyncNode）→ 案例篇（Map-Reduce → 并行处理）
 
 ---
