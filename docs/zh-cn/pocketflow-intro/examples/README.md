@@ -43,7 +43,7 @@ pip install -r requirements.txt
 
 | 文件 | 对应章节 | 核心概念 |
 | :--- | :--- | :--- |
-| `01_hello_pocketflow.py` | 6.2 第一个 Flow | Node + Flow 基础用法 |
+| `01_hello_pocketflow.py` | 6.3 第一个 Flow | Node + Flow 基础用法 |
 | `02_node_lifecycle.py` | 1.1 Node 最小单元 | prep → exec → post 三阶段 |
 | `03_flow_chain.py` | 1.2 & 1.3 Flow 图执行 | `>>` 链式连接、图遍历 |
 | `04_conditional_flow.py` | 1.3 条件连接 | `- "action" >>` 条件分支 |

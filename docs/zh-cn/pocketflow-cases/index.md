@@ -1,11 +1,11 @@
 ---
 title: 'PocketFlow 应用案例 —— 从入门到进阶的实战全景'
-description: '通过 9 个实战案例，学习如何用 PocketFlow 构建聊天机器人、RAG、Agent、工作流、批处理等 LLM 应用。'
+description: '通过 10 个实战案例，学习如何用 PocketFlow 构建聊天机器人、RAG、Agent、工作流、批处理等 LLM 应用。'
 ---
 
 # PocketFlow 应用案例 (Application Cases)
 
-> **学习指南**：本章精选了 PocketFlow 的 9 个应用案例，从入门到进阶，覆盖聊天、RAG、Agent、批处理、并行等常见模式。每个案例都包含 Flow 架构图、核心代码和学习要点。
+> **学习指南**：本章精选了 PocketFlow 的 10 个应用案例，从入门到进阶，覆盖聊天、RAG、Agent、批处理、并行等常见模式。每个案例都包含 Flow 架构图、核心代码和学习要点。
 
 <CaseShowcase />
 
@@ -116,7 +116,6 @@ send_reply = SendReply()
 
 get_input >> call_llm >> send_reply
 send_reply - "continue" >> get_input
-get_input - "end" >> None  # 退出
 
 flow = Flow(start=get_input)
 flow.run({})
@@ -273,6 +272,10 @@ class PolishNode(Node):
     def post(self, shared, prep_res, exec_res):
         shared["final_article"] = exec_res
 
+outline = OutlineNode()
+write_draft = WriteDraftNode()
+polish = PolishNode()
+
 outline >> write_draft >> polish
 flow = Flow(start=outline)
 flow.run({"topic": "PocketFlow 入门指南"})
@@ -342,10 +345,9 @@ class SynthesizeNode(Node):
         return call_llm_api(prompt)
 
 # 构建 Flow
-think >> search
-search >> think                      # 搜索后回到思考
-think - "enough" >> synthesize       # 信息充分则生成
 think - "need_more" >> search        # 信息不足则继续搜索
+think - "enough" >> synthesize       # 信息充分则生成
+search >> think                      # 搜索后回到思考
 ```
 
 ::: tip 学习要点
@@ -396,8 +398,8 @@ class Judge(Node):
 
 describer >> guesser >> judge
 judge - "wrong" >> describer     # 猜错了，再来
-judge - "correct" >> done_node   # 猜对了
-judge - "give_up" >> done_node   # 放弃
+judge - "correct" >> done         # 猜对了
+judge - "give_up" >> done         # 放弃
 ```
 
 ---
@@ -443,7 +445,7 @@ import asyncio
 from pocketflow import AsyncParallelBatchNode, AsyncFlow
 
 class ParallelProcess(AsyncParallelBatchNode):
-    def prep(self, shared):
+    async def prep_async(self, shared):
         return shared["items"]
 
     async def exec_async(self, item):
@@ -451,7 +453,7 @@ class ParallelProcess(AsyncParallelBatchNode):
         result = await async_api_call(item)
         return result
 
-    def post(self, shared, prep_res, exec_res):
+    async def post_async(self, shared, prep_res, exec_res):
         shared["results"] = exec_res
 
 # asyncio.gather() 自动并发所有 item
@@ -482,12 +484,15 @@ class Verify(Node):
 
     def post(self, shared, prep_res, exec_res):
         if "错误" in exec_res:
-            return "error"   # 重新推理
-        return "ok"          # 验证通过
+            return "error"      # 发现错误，重新推理
+        if "ANSWER" in shared.get("latest_step", ""):
+            return "ok"          # 已得出答案，验证通过
+        return "continue"        # 正确但未完成，继续推理
 
 step_reason >> verify
-verify - "error" >> step_reason  # 发现错误，重推
-verify - "ok" >> conclude        # 验证通过，输出
+verify - "error" >> step_reason     # 发现错误，重推
+verify - "continue" >> step_reason  # 继续推理下一步
+verify - "ok" >> conclude           # 验证通过，输出
 ```
 
 ---
@@ -514,8 +519,8 @@ class ExecuteTool(Node):
         return mcp_execute(tool_call)
 
 plan >> select_tool >> execute_tool >> reflect
-reflect - "continue" >> plan      # 需要更多工具
-reflect - "done" >> output        # 任务完成
+reflect - "continue" >> select_tool  # 还需要更多工具
+reflect - "done" >> output           # 任务完成
 ```
 
 ---

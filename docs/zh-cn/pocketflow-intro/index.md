@@ -159,7 +159,7 @@ class Node(BaseNode):
 ```
 
 ::: tip 实用场景
-当调用 LLM API 时，网络波动、限流等问题很常见。设置 `max_retries=3, wait=2` 就能自动重试 3 次，每次间隔 2 秒。
+当调用 LLM API 时，网络波动、限流等问题很常见。设置 `max_retries=3, wait=2` 就能最多尝试 3 次（首次 + 2 次重试），每次间隔 2 秒。
 :::
 
 ### 3.3 Flow —— 图执行引擎

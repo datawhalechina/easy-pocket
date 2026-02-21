@@ -1,6 +1,6 @@
 """
 示例 01：Hello PocketFlow
-对应教程：第 6.2 节 —— 第一个 Flow
+对应教程：第 6.3 节 —— 第一个 Flow
 
 演示最基本的 Node + Flow 用法：
 - 定义一个 GreetNode，实现 prep / exec / post 三阶段
