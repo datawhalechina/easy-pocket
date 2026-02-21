@@ -1,7 +1,7 @@
 .claude
 .vscode
+.omc
 .env
 node_modules
-docs/.vitepress/dist
 docs/.vitepress/cache
 test*
