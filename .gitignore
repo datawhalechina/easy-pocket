@@ -3,6 +3,7 @@
 .omc
 .env
 node_modules
+PocketFlow
 docs/.vitepress/cache
 docs/.vitepress/dist
 test*
