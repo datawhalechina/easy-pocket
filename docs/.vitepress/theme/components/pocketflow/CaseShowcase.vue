@@ -262,6 +262,22 @@ docs/design.md  # 先写设计
 utils/  # 实现工具
 nodes.py + flow.py + main.py  # Agent 实现`,
     points: ['人类负责系统设计，AI 负责实现', '设计文档是数据契约', '小步迭代 + Fail Fast + 可靠性补齐']
+  },
+  {
+    id: 'agent-skills',
+    icon: '🎭',
+    name: 'Agent Skills',
+    category: 'agent',
+    difficulty: 'medium',
+    diffLabel: '中级',
+    type: 'Agent',
+    anchor: '_12-agent-skills-技能路由',
+    desc: '将领域知识模块化为 Markdown 技能文件，Agent 根据用户请求动态选择技能并注入 prompt。',
+    flow: ['SelectSkill', 'ApplySkill'],
+    code: `select_skill >> apply_skill
+# SelectSkill 从 skills/*.md 选择技能
+# ApplySkill 将技能指令注入 LLM prompt`,
+    points: ['技能文件是纯 Markdown，非开发者也能维护', 'LLM 或规则路由动态选择技能', '新增能力 = 加一个 .md 文件，无需改代码']
   }
 ]
 

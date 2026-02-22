@@ -125,6 +125,7 @@ PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的�
 | [通信机制：Shared 与 Params](docs/zh-cn/pocketflow-intro/index.md) | Shared Store 全局共享 + Params 局部参数 |
 | [六大设计模式](docs/zh-cn/pocketflow-intro/index.md) | 链式、分支、循环、嵌套、批量、并行 |
 | [源码解剖：100 行的全部秘密](docs/zh-cn/pocketflow-intro/index.md) | BaseNode、Node、Flow、BatchNode、BatchFlow、AsyncNode |
+| [工具函数层：Node 里装什么？](docs/zh-cn/pocketflow-intro/index.md) | LLM 调用、Web 搜索、Embedding、向量数据库等工具函数分类 |
 | [Agentic Coding 开发范式](docs/zh-cn/pocketflow-intro/index.md) | 人类设计架构，AI 写代码 |
 
 ### 案例篇：从入门到进阶
@@ -142,6 +143,7 @@ PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的�
 | 9 | [思维链推理](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 自检 | ⭐⭐⭐ |
 | 10 | [MCP 工具集成](docs/zh-cn/pocketflow-cases/index.md) | Agent + 工具 | ⭐⭐⭐ |
 | 11 | [智能体编程](docs/zh-cn/pocketflow-cases/index.md) | 完整项目模板 | ⭐⭐⭐ |
+| 12 | [Agent Skills](docs/zh-cn/pocketflow-cases/index.md) | 链式 + 条件路由 | ⭐⭐ |
 
 ---
 
@@ -150,7 +152,7 @@ PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的�
 根据你的背景选择学习路径：
 
 - **零基础**：原理篇全篇 → 案例篇（聊天机器人 → 写作工作流 → RAG）
-- **想做 Agent**：原理篇 → 案例篇（搜索 Agent → 多 Agent → MCP → 智能体编程）
+- **想做 Agent**：原理篇 → 案例篇（搜索 Agent → 多 Agent → MCP → Agent Skills → 智能体编程）
 - **关注性能**：原理篇（BatchNode / AsyncNode）→ 案例篇（Map-Reduce → 并行处理）
 - **输出质量**：原理篇（循环/重试）→ 案例篇（结构化输出 → 思维链推理）
 
@@ -182,7 +184,7 @@ pip install pocketflow
 | 教程 | 示例目录 | 内容 |
 | :--- | :--- | :--- |
 | 原理入门 | [`docs/zh-cn/pocketflow-intro/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples) | 10 个脚本：Node 生命周期、Flow 图执行、条件分支、批处理、异步并发等 |
-| 应用案例 | [`docs/zh-cn/pocketflow-cases/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) | 11 个案例：ChatBot、写作工作流、RAG、Agent、多 Agent、Map-Reduce、结构化输出、MCP 等 |
+| 应用案例 | [`docs/zh-cn/pocketflow-cases/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) | 12 个案例：ChatBot、写作工作流、RAG、Agent、多 Agent、Map-Reduce、结构化输出、MCP、Agent Skills 等 |
 
 > 所有示例使用模拟 LLM 实现，聚焦框架核心概念。如需接入真实 API，参见各目录下的 README 说明。
 
@@ -211,7 +213,7 @@ easy-pocket/
 │       │   └── examples/        # 10 个配套示例脚本
 │       └── pocketflow-cases/    # 应用案例教程
 │           ├── index.md
-│           └── examples/        # 11 个配套案例脚本 + 项目模板
+│           └── examples/        # 12 个配套案例脚本 + 项目模板
 ├── package.json
 └── README.md
 ```

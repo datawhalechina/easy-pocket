@@ -1,11 +1,11 @@
 ---
 title: 'PocketFlow 应用案例 —— 从入门到进阶的实战全景'
-description: '通过 11 个实战案例，学习如何用 PocketFlow 构建聊天机器人、RAG、Agent、工作流、批处理等 LLM 应用。'
+description: '通过 12 个实战案例，学习如何用 PocketFlow 构建聊天机器人、RAG、Agent、工作流、批处理等 LLM 应用。'
 ---
 
 # PocketFlow 应用案例 (Application Cases)
 
-> **学习指南**：本章精选了 PocketFlow 的 11 个应用案例，从入门到进阶，覆盖聊天、RAG、Agent、批处理、并行等常见模式。每个案例都包含 Flow 架构图、核心代码和学习要点。
+> **学习指南**：本章精选了 PocketFlow 的 12 个应用案例，从入门到进阶，覆盖聊天、RAG、Agent、批处理、并行等常见模式。每个案例都包含 Flow 架构图、核心代码和学习要点。
 
 <CaseShowcase />
 
@@ -25,9 +25,9 @@ description: '通过 11 个实战案例，学习如何用 PocketFlow 构建聊�
   </el-tab-pane>
   <el-tab-pane label="想做 Agent">
 
-**推荐顺序**：搜索 Agent → 多 Agent 协作 → MCP 工具集成 → 智能体编程
+**推荐顺序**：搜索 Agent → 多 Agent 协作 → MCP 工具集成 → Agent Skills → 智能体编程
 
-Agent 的核心是"自主决策循环"。这四个案例从简单的工具调用，到多 Agent 协作，再到标准化工具集成，最后学习系统化构建 Agent 的工程方法论。
+Agent 的核心是"自主决策循环"。这五个案例从简单的工具调用，到多 Agent 协作，再到标准化工具集成和技能路由，最后学习系统化构建 Agent 的工程方法论。
 
   </el-tab-pane>
   <el-tab-pane label="关注性能">
@@ -1067,6 +1067,157 @@ def test_decide_action_returns_string():
 
 ---
 
+## 12. Agent Skills (技能路由)
+
+::: info 难度：中级 | 模式：链式 + 条件路由 | 关键词：技能文件、动态 Prompt、模块化知识
+:::
+
+Agent Skills 是一种将**领域知识模块化为独立文件**的模式。Agent 根据用户请求动态选择技能，将技能指令注入 LLM prompt，实现"一个 Agent，多种能力"。
+
+> **核心思路**：技能 = Markdown 文件，选择技能 = 路由节点，执行技能 = Prompt 注入。
+
+### 12.1 问题场景
+
+你有一个通用 Agent，但需要处理多种不同类型的任务 —— 写摘要、列清单、做评审。如果为每种任务写一个独立的 Node 和 Flow，代码会迅速膨胀。
+
+**Agent Skills 的解法**：把每种任务的指令写成一个 Markdown 文件（技能），Agent 在运行时根据用户输入**动态选择**并加载。
+
+### 12.2 架构设计
+
+```text
+  用户请求
+     │
+     ▼
+┌──────────┐    ┌──────────┐
+│SelectSkill│──▶│ApplySkill│
+│ 选择技能   │    │ 执行任务   │
+└──────────┘    └──────────┘
+     │                │
+     │ 读取 skills/    │ 技能指令 + 用户请求
+     │ 目录下的 .md    │ 拼入 LLM prompt
+     ▼                ▼
+ skills/           LLM 输出
+ ├── executive_brief.md
+ ├── checklist_writer.md
+ └── code_reviewer.md
+```
+
+**两个节点**，职责清晰：
+1. **SelectSkill**：列出所有可用技能，根据用户意图选择最匹配的一个
+2. **ApplySkill**：读取选中技能的指令，拼入 prompt，调用 LLM 执行
+
+### 12.3 技能文件示例
+
+技能文件就是普通的 Markdown，包含指令和规则：
+
+```markdown
+<!-- skills/executive_brief.md -->
+# 执行摘要技能
+你正在为高管撰写摘要。
+## 规则
+- 保持简洁，面向决策
+- 以 3 个要点开头
+- 包含风险和建议的下一步行动
+- 避免实现细节
+```
+
+```markdown
+<!-- skills/checklist_writer.md -->
+# 清单编写技能
+将请求转换为清晰、可执行的清单。
+## 规则
+- 使用编号步骤
+- 每步简短且可验证
+- 标注依赖和阻塞项
+- 以"完成标准"结尾
+```
+
+### 12.4 核心代码
+
+```python
+from pathlib import Path
+from pocketflow import Node, Flow
+
+def load_skills(skills_dir: str) -> dict:
+    """从目录加载所有 .md 技能文件"""
+    skills = {}
+    for md_file in sorted(Path(skills_dir).glob("*.md")):
+        skills[md_file.stem] = md_file.read_text(encoding="utf-8")
+    return skills
+
+class SelectSkill(Node):
+    """根据用户任务选择最匹配的技能"""
+    def prep(self, shared):
+        return {
+            "task": shared["task"],
+            "skills": load_skills(shared.get("skills_dir", "./skills")),
+        }
+
+    def exec(self, data):
+        skill_names = list(data["skills"].keys())
+        # 让 LLM 根据任务描述选择最匹配的技能
+        prompt = f"任务：{data['task']}\n可用技能：{skill_names}\n请返回最匹配的技能名。"
+        selected = call_llm(prompt)  # 返回技能名字符串
+        return selected, data["skills"].get(selected, "")
+
+    def post(self, shared, prep_res, exec_res):
+        skill_name, skill_content = exec_res
+        shared["selected_skill"] = skill_name
+        shared["skill_content"] = skill_content
+
+class ApplySkill(Node):
+    """将选中的技能注入 prompt 并执行任务"""
+    def prep(self, shared):
+        return {
+            "task": shared["task"],
+            "skill_name": shared["selected_skill"],
+            "skill_content": shared["skill_content"],
+        }
+
+    def exec(self, data):
+        prompt = f"""你正在执行一个 Agent Skill。
+技能名：{data['skill_name']}
+技能指令：
+---
+{data['skill_content']}
+---
+用户任务：{data['task']}
+请严格按照技能指令完成任务。"""
+        return call_llm(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        shared["result"] = exec_res
+
+# 构建 Flow
+select = SelectSkill()
+apply = ApplySkill()
+select >> apply
+flow = Flow(start=select)
+
+# 运行
+shared = {"task": "总结 PocketFlow 的核心优势，给技术 VP 汇报用"}
+flow.run(shared)
+print(shared["result"])
+```
+
+### 12.5 为什么这个模式有价值？
+
+| 传统做法 | Agent Skills |
+| :--- | :--- |
+| 每种任务写一个 Node 类 | 一个通用 Flow，技能文件即插即用 |
+| 新增任务 = 改代码 | 新增任务 = 加一个 .md 文件 |
+| 指令硬编码在 Python 中 | 指令与代码分离，非开发者也能维护 |
+| 测试需要跑整个 Flow | 技能文件可以独立 review 和迭代 |
+
+::: tip 学习要点
+- 技能文件是**纯 Markdown**，不是代码 —— 产品经理、运营人员都能编写和维护
+- SelectSkill 本身可以用 LLM 做路由（语义匹配），也可以用关键词规则（确定性路由）
+- 这个模式可以和 Agent 循环组合：Agent 在每轮决策中选择不同的 Skill 来执行
+- 详见 [原理篇 §6：工具函数层](../pocketflow-intro/#_6-工具函数层-node-里装什么) 了解 PocketFlow 的工具函数体系
+:::
+
+---
+
 ## 配套示例代码
 
 本教程的所有案例都已整理为**完整可运行的 Python 脚本**，存放在 [`examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) 文件夹中。
@@ -1106,6 +1257,7 @@ pip install -r requirements.txt
 | `08_chain_of_thought.py` | 9. 思维链推理 | 循环 + 自检 |
 | `09_mcp_tool.py` | 10. MCP 工具集成 | Agent + 工具 |
 | `10_agentic_coding/` | 11. 智能体编程 | 完整项目模板 |
+| `12_agent_skills.py` | 12. Agent Skills | 链式 + 条件路由 |
 
 ::: code-group
 
@@ -1119,6 +1271,7 @@ python 02_rag.py
 python 04_search_agent.py
 python 05_multi_agent.py
 python 09_mcp_tool.py
+python 12_agent_skills.py
 cd 10_agentic_coding && python main.py
 ```
 
