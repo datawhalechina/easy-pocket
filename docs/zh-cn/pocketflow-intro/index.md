@@ -27,6 +27,54 @@ description: '从零理解 PocketFlow 的核心原理：Node 三阶段模型、F
 
 <FrameworkCompareDemo />
 
+### 0.1 框架全景：PocketFlow 与主流框架的本质区别
+
+在深入学习之前，先建立一个关键认知 —— PocketFlow 和其他框架**不在同一个抽象层级**：
+
+| 框架 | 核心心智模型 | 给你的是什么 |
+| :--- | :--- | :--- |
+| **LangGraph** | 有状态状态机 | 强类型 State + 条件边函数 + 持久化检查点 |
+| **CrewAI** | 角色扮演团队 | Agent（角色/目标/背景故事）+ Manager 分配 Task |
+| **AutoGen** | Actor 消息传递 | Agent 是 Actor，通过异步消息协作 |
+| **PydanticAI** | 类型安全函数 | Agent = 带 Pydantic 验证的函数调用 |
+| **Agno** | 声明式记忆代理 | Agent 构造器内置 Memory + Knowledge + Tools |
+| **SmolAgents** | 代码即动作 | LLM 直接生成 Python 代码而非 JSON tool call |
+| **PocketFlow** | **最小有向图运行时** | **只有 Node + Flow 两个原语，其他一切自己搭** |
+
+::: tip 类比理解
+可以把这些框架想象成不同的建筑方式：
+
+- **LangGraph / CrewAI / AutoGen** = **精装房** —— 框架替你预制了"Agent 客厅"、"RAG 厨房"、"Memory 卧室"，你在现有房间里摆家具
+- **PydanticAI / Agno / SmolAgents** = **毛坯房** —— 给你墙体和水电，你自己做装修
+- **PocketFlow** = **一块地 + 物理定律** —— 只给你"节点"和"连线"这两条规则，你从地基开始搭
+
+PocketFlow 的 100 行代码相当于"物理定律" —— **少到不能再少，但足以构建一切。**
+:::
+
+这意味着 PocketFlow 里**没有任何预制模式类**。RAG、Agent、CoT、MapReduce 不是框架提供的功能，而是你用 Node + Flow 搭出来的**图拓扑**：
+
+```text
+线性工作流   A >> B >> C                      # 直线图
+条件分支     A - "yes" >> B; A - "no" >> C    # 分叉图
+Agent 循环   post() 返回 action 指回前序节点    # 带环图（有向有环图）
+RAG          离线索引链 + 在线查询链             # 两条独立链
+MapReduce    BatchNode 对列表每项执行 exec()   # 批处理图
+多 Agent     Flow 嵌套 Flow（Flow 本身也是 Node）# 嵌套子图
+```
+
+::: warning 核心洞察
+> **"Every LLM application is a directed graph. Nothing more."**
+> —— PocketFlow 创作者 Zachary Huang
+
+所有 LLM 应用的本质都是有向图：RAG 是图，Agent 是图（带环），CoT 是图（带循环），MapReduce 是图（带批处理），多 Agent 是图（嵌套子图）。
+
+既然一切都是图，框架只需要提供**图的运行时**。其他框架之所以膨胀到数万行，是因为在图运行时之上又堆了内置 LLM 客户端（→ 依赖膨胀）、预制模式类（→ 接口频繁变更）、可观测性集成（→ 商业锁定）。
+
+PocketFlow 的 100 行限制不是极简主义的美学追求，而是一种**架构纪律**：只保留不可删减的图运行时，其他一切由开发者自带。
+:::
+
+理解了这一点，接下来学习 Node 和 Flow 的每个设计决策时，你会更容易领悟 —— 它们不是"框架的功能"，而是"图的物理定律"。
+
 ---
 
 ## 1. 核心抽象：只有两个概念
