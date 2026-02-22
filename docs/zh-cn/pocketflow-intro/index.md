@@ -33,11 +33,12 @@ description: '从零理解 PocketFlow 的核心原理：Node 三阶段模型、F
 
 | 框架 | 核心心智模型 | 给你的是什么 |
 | :--- | :--- | :--- |
-| **LangGraph** | 有状态状态机 | 强类型 State + 条件边函数 + 持久化检查点 |
-| **CrewAI** | 角色扮演团队 | Agent（角色/目标/背景故事）+ Manager 分配 Task |
-| **AutoGen** | Actor 消息传递 | Agent 是 Actor，通过异步消息协作 |
-| **PydanticAI** | 类型安全函数 | Agent = 带 Pydantic 验证的函数调用 |
 | **Agno** | 声明式记忆代理 | Agent 构造器内置 Memory + Knowledge + Tools |
+| **AutoGen** | Actor 消息传递 | Agent 是 Actor，通过异步消息协作 |
+| **CrewAI** | 角色扮演团队 | Agent（角色/目标/背景故事）+ Manager 分配 Task |
+| **LangGraph** | 有状态状态机 | 强类型 State + 条件边函数 + 持久化检查点 |
+| **OpenAI Agents SDK** | 轻量 Agent + Handoff | Agent + Handoff + Guardrails + Tracing |
+| **PydanticAI** | 类型安全函数 | Agent = 带 Pydantic 验证的函数调用 |
 | **SmolAgents** | 代码即动作 | LLM 直接生成 Python 代码而非 JSON tool call |
 | **PocketFlow** | **最小有向图运行时** | **只有 Node + Flow 两个原语，其他一切自己搭** |
 

@@ -52,12 +52,12 @@
 | 框架 | 核心思路 | 代码量 | 依赖 | 厂商锁定 |
 | :--- | :--- | :--- | :--- | :--- |
 | **PocketFlow** | 最小有向图运行时：Node + Flow | **100 行** | **0** | **无** |
-| LangGraph | 有状态状态机 + 持久化检查点 | 数万行 | 多（LangChain 生态） | 中 |
-| CrewAI | 角色扮演团队，Manager 分配 Task | 数万行 | 中 | 低 |
-| AutoGen | Actor 模型，Agent 间异步消息传递 | 数万行 | 中 | 低-中 |
-| PydanticAI | 类型安全的函数调用 + Pydantic 验证 | 数千行 | 少 | 很低 |
 | Agno | 声明式 Agent，内置 Memory / Knowledge | 数千行 | 少 | 低 |
-| OpenAI Swarm | 无状态 Agent Handoff（已废弃） | 数百行 | 少 | 高（仅 OpenAI） |
+| AutoGen | Actor 模型，Agent 间异步消息传递 | 数万行 | 中 | 低-中 |
+| CrewAI | 角色扮演团队，Manager 分配 Task | 数万行 | 中 | 低 |
+| LangGraph | 有状态状态机 + 持久化检查点 | 数万行 | 多（LangChain 生态） | 中 |
+| OpenAI Agents SDK | 轻量 Agent + Handoff + Guardrails | 数千行 | 少 | 中（OpenAI 优先） |
+| PydanticAI | 类型安全的函数调用 + Pydantic 验证 | 数千行 | 少 | 很低 |
 | SmolAgents | LLM 生成 Python 代码而非 JSON tool call | ~1000 行 | 少 | 很低 |
 
 **关键差异**：PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的专用类 —— RAG、Agent、CoT、MapReduce **全部是同一套 Node→Flow 机制的不同图拓扑**：
