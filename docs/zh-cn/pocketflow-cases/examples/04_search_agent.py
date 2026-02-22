@@ -1,10 +1,10 @@
 """
-案例 04：搜索 Agent
-对应教程：第 4 节 —— 搜索 Agent
+案例 04：搜索智能体
+对应教程：第 4 节 —— 搜索智能体
 
 模式：循环 + 条件分支
 演示：
-- Think → Act → Observe 的 Agent 核心循环
+- Think → Act → Observe 的智能体核心循环
 - ThinkNode 自主决策是否需要更多搜索
 - 条件分支：need_more → 继续搜索 / enough → 生成答案
 
@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     flow = Flow(start=think)
 
-    print("=== 搜索 Agent 示例 ===\n")
+    print("=== 搜索智能体示例 ===\n")
     shared = {"question": "PocketFlow 是什么？有哪些设计模式？"}
     flow.run(shared)
 

@@ -45,19 +45,19 @@ pip install -r requirements.txt
 
 | 文件 | 案例 | 核心模式 | 交互方式 |
 | :--- | :--- | :--- | :--- |
-| `04_search_agent.py` | 搜索 Agent | 循环 + 条件分支 | 自动运行 |
-| `05_multi_agent.py` | 多 Agent 协作 | 多 Agent + 循环 | 自动运行 |
+| `04_search_agent.py` | 搜索智能体 | 循环 + 条件分支 | 自动运行 |
+| `05_multi_agent.py` | 多智能体协作 | 多智能体 + 循环 | 自动运行 |
 | `06_map_reduce.py` | Map-Reduce 批处理 | BatchNode | 自动运行 |
 | `07_parallel_processing.py` | 并行处理 | AsyncParallelBatchNode | 自动运行 |
 | `08_structured_output.py` | 结构化输出 | 循环 + 重试 + 校验 | 自动运行 |
-| `12_agent_skills.py` | Agent Skills | 链式 + 条件路由 | 自动运行 |
+| `12_agent_skills.py` | 智能体技能 | 链式 + 条件路由 | 自动运行 |
 
 ### 进阶案例
 
 | 文件 | 案例 | 核心模式 | 交互方式 |
 | :--- | :--- | :--- | :--- |
 | `09_chain_of_thought.py` | 思维链推理 | 循环 + 自检 | 自动运行 |
-| `10_mcp_tool.py` | MCP 工具集成 | Agent + 工具 | 自动运行 |
+| `10_mcp_tool.py` | MCP 工具集成 | 智能体 + 工具 | 自动运行 |
 | `11_agentic_coding/` | 智能体编程 | 完整项目模板 | 自动运行 |
 
 ## 运行示例
@@ -83,7 +83,7 @@ python 01_chatbot.py
 python 02_writing_workflow.py
 python 03_rag.py
 
-# Agent 方向：搜索 Agent → 多 Agent → Agent Skills → MCP → 智能体编程
+# 智能体方向：搜索智能体 → 多智能体 → 智能体技能 → MCP → 智能体编程
 python 04_search_agent.py
 python 05_multi_agent.py
 python 12_agent_skills.py
@@ -127,8 +127,8 @@ examples/
 ├── 01_chatbot.py                # 聊天机器人
 ├── 02_writing_workflow.py       # 写作工作流
 ├── 03_rag.py                    # RAG 检索增强
-├── 04_search_agent.py           # 搜索 Agent
-├── 05_multi_agent.py            # 多 Agent 协作
+├── 04_search_agent.py           # 搜索智能体
+├── 05_multi_agent.py            # 多智能体协作
 ├── 06_map_reduce.py             # Map-Reduce 批处理
 ├── 07_parallel_processing.py    # 并行处理
 ├── 08_structured_output.py      # 结构化输出
@@ -144,5 +144,5 @@ examples/
 │   │   └── search_web.py        # 搜索工具
 │   └── tests/                   # 单元测试
 │       └── test_nodes.py
-└── 12_agent_skills.py           # Agent Skills 技能路由
+└── 12_agent_skills.py           # 智能体技能路由
 ```

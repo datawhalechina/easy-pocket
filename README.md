@@ -35,7 +35,7 @@
 
 > **100 行代码，零依赖，构建 LLM 应用的一切。**
 
-[PocketFlow](https://github.com/The-Pocket/PocketFlow) 是一个仅 100 行 Python 代码的极简 LLM 应用框架。它用 **Node**（节点）和 **Flow**（流程）两个核心抽象，让你可以构建聊天机器人、RAG、Agent、工作流等所有主流 LLM 应用。
+[PocketFlow](https://github.com/The-Pocket/PocketFlow) 是一个仅 100 行 Python 代码的极简 LLM 应用框架。它用 **Node**（节点）和 **Flow**（流程）两个核心抽象，让你可以构建聊天机器人、RAG、智能体、工作流等所有主流 LLM 应用。
 
 **Easy-Pocket** 是 PocketFlow 的**交互式中文教程**，通过可视化演示和实战案例，带你从零理解框架原理、掌握应用开发。
 
@@ -71,7 +71,7 @@ PocketFlow 是一个**纯编排框架**（Orchestration Framework）—— 它�
 | **LLM** | 节点何时被调用、按什么顺序 | 用哪家 API（OpenAI / Claude / 本地模型） |
 | **Embedding** | 批量处理的并行调度 | 用哪个模型和向量数据库 |
 | **Memory** | shared 字典的读写传递 | 怎么持久化（文件 / Redis / 数据库） |
-| **工具调用** | Agent 循环的执行与分支 | 调用哪些外部 API 和工具 |
+| **工具调用** | 智能体 循环的执行与分支 | 调用哪些外部 API 和工具 |
 
 > **一句话定位**：PocketFlow = 图的运行时。你把具体实现填进 Node 的 `exec()` 方法，PocketFlow 负责把它们串成流程。
 
@@ -85,7 +85,7 @@ PocketFlow 是一个**纯编排框架**（Orchestration Framework）—— 它�
 | 初始状态 q₀ | `Flow(start=node)` |
 | 终止 | `post()` 返回的 action 无后继节点 → 流程结束 |
 
-不同 LLM 应用模式，对应不同的自动机拓扑：聊天机器人是带自环的单状态机，Agent 是有分支+环的自动机，结构化输出是带回退边的自动机。详见[原理篇 §2.4](docs/zh-cn/pocketflow-intro/index.md)。
+不同 LLM 应用模式，对应不同的自动机拓扑：聊天机器人是带自环的单状态机，智能体 是有分支+环的自动机，结构化输出是带回退边的自动机。详见[原理篇 §2.4](docs/zh-cn/pocketflow-intro/index.md)。
 
 ---
 
@@ -93,18 +93,18 @@ PocketFlow 是一个**纯编排框架**（Orchestration Framework）—— 它�
 
 理解了 PocketFlow 的定位后，我们可以将它与同一层级的编排框架进行对比。这些框架都解决"如何组织 LLM 调用"的问题，但设计哲学截然不同：
 
-> 其他框架给你**预制组件**（Agent 类、RAG 管道、Memory 模块），你在框架规定的结构里填写逻辑。
+> 其他框架给你**预制组件**（智能体 类、RAG 管道、Memory 模块），你在框架规定的结构里填写逻辑。
 >
 > PocketFlow 给你**图论原语**（Node + Flow），你用这两块积木**自己搭建**一切。
 
 | 框架 | 核心思路 | 代码量 | 依赖 | 厂商锁定 |
 | :--- | :--- | :--- | :--- | :--- |
 | **PocketFlow** | 最小有向图运行时：Node + Flow | **100 行** | **0** | **无** |
-| Agno | 声明式 Agent，内置 Memory / Knowledge | 数千行 | 少 | 低 |
-| AutoGen | Actor 模型，Agent 间异步消息传递 | 数万行 | 中 | 低-中 |
+| Agno | 声明式 智能体，内置 Memory / Knowledge | 数千行 | 少 | 低 |
+| AutoGen | Actor 模型，智能体 间异步消息传递 | 数万行 | 中 | 低-中 |
 | CrewAI | 角色扮演团队，Manager 分配 Task | 数万行 | 中 | 低 |
 | LangGraph | 有状态状态机 + 持久化检查点 | 数万行 | 多（LangChain 生态） | 中 |
-| OpenAI Agents SDK | 轻量 Agent + Handoff + Guardrails | 数千行 | 少 | 中（OpenAI 优先） |
+| OpenAI Agents SDK | 轻量 智能体 + Handoff + Guardrails | 数千行 | 少 | 中（OpenAI 优先） |
 | PydanticAI | 类型安全的函数调用 + Pydantic 验证 | 数千行 | 少 | 很低 |
 | SmolAgents | LLM 生成 Python 代码而非 JSON tool call | ~1000 行 | 少 | 很低 |
 
@@ -135,15 +135,15 @@ PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的�
 | 1 | [聊天机器人](docs/zh-cn/pocketflow-cases/index.md) | 链式 + 循环 | ⭐ |
 | 2 | [写作工作流](docs/zh-cn/pocketflow-cases/index.md) | 链式 | ⭐ |
 | 3 | [RAG 检索增强](docs/zh-cn/pocketflow-cases/index.md) | 链式 + BatchNode | ⭐ |
-| 4 | [搜索 Agent](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 条件分支 | ⭐⭐ |
-| 5 | [多 Agent 协作](docs/zh-cn/pocketflow-cases/index.md) | AsyncNode + 消息队列 | ⭐⭐ |
+| 4 | [搜索智能体](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 条件分支 | ⭐⭐ |
+| 5 | [多智能体 协作](docs/zh-cn/pocketflow-cases/index.md) | AsyncNode + 消息队列 | ⭐⭐ |
 | 6 | [Map-Reduce 批处理](docs/zh-cn/pocketflow-cases/index.md) | BatchNode | ⭐ |
 | 7 | [并行处理 (8x 加速)](docs/zh-cn/pocketflow-cases/index.md) | AsyncParallelBatchNode | ⭐⭐ |
 | 8 | [结构化输出](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 重试 + 校验 | ⭐⭐ |
 | 9 | [思维链推理](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 自检 | ⭐⭐⭐ |
-| 10 | [MCP 工具集成](docs/zh-cn/pocketflow-cases/index.md) | Agent + 工具 | ⭐⭐⭐ |
+| 10 | [MCP 工具集成](docs/zh-cn/pocketflow-cases/index.md) | 智能体 + 工具 | ⭐⭐⭐ |
 | 11 | [智能体编程](docs/zh-cn/pocketflow-cases/index.md) | 完整项目模板 | ⭐⭐⭐ |
-| 12 | [Agent Skills](docs/zh-cn/pocketflow-cases/index.md) | 链式 + 条件路由 | ⭐⭐ |
+| 12 | [智能体技能](docs/zh-cn/pocketflow-cases/index.md) | 链式 + 条件路由 | ⭐⭐ |
 
 ---
 
@@ -152,7 +152,7 @@ PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的�
 根据你的背景选择学习路径：
 
 - **零基础**：原理篇全篇 → 案例篇（聊天机器人 → 写作工作流 → RAG）
-- **想做 Agent**：原理篇 → 案例篇（搜索 Agent → 多 Agent → Agent Skills → MCP → 智能体编程）
+- **想做 智能体**：原理篇 → 案例篇（搜索智能体 → 多智能体 → 智能体技能 → MCP → 智能体编程）
 - **关注性能**：原理篇（BatchNode / AsyncNode）→ 案例篇（Map-Reduce → 并行处理）
 - **输出质量**：原理篇（循环/重试）→ 案例篇（结构化输出 → 思维链推理）
 
@@ -184,7 +184,7 @@ pip install pocketflow
 | 教程 | 示例目录 | 内容 |
 | :--- | :--- | :--- |
 | 原理入门 | [`docs/zh-cn/pocketflow-intro/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples) | 10 个脚本：Node 生命周期、Flow 图执行、条件分支、批处理、异步并发等 |
-| 应用案例 | [`docs/zh-cn/pocketflow-cases/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) | 12 个案例：ChatBot、写作工作流、RAG、Agent、多 Agent、Map-Reduce、结构化输出、MCP、Agent Skills 等 |
+| 应用案例 | [`docs/zh-cn/pocketflow-cases/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) | 12 个案例：ChatBot、写作工作流、RAG、智能体、多智能体、Map-Reduce、结构化输出、MCP、智能体技能 等 |
 
 > 所有示例使用模拟 LLM 实现，聚焦框架核心概念。如需接入真实 API，参见各目录下的 README 说明。
 

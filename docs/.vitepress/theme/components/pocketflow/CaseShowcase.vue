@@ -79,7 +79,7 @@ import { ref, computed } from 'vue'
 const categories = [
   { id: 'all', icon: '📋', label: '全部' },
   { id: 'basic', icon: '🌱', label: '入门' },
-  { id: 'agent', icon: '🤖', label: 'Agent' },
+  { id: 'agent', icon: '🤖', label: '智能体' },
   { id: 'data', icon: '📊', label: '数据处理' },
   { id: 'advanced', icon: '🚀', label: '进阶' }
 ]
@@ -136,35 +136,35 @@ retrieve >> generate`,
   {
     id: 'agent',
     icon: '🕵️',
-    name: '搜索 Agent',
+    name: '搜索智能体',
     category: 'agent',
     difficulty: 'medium',
     diffLabel: '中级',
-    type: 'Agent',
-    anchor: '_4-搜索-agent',
-    desc: '能够调用搜索工具的研究 Agent —— 理解问题、搜索网络、整合答案。',
+    type: '智能体',
+    anchor: '_4-搜索智能体',
+    desc: '能够调用搜索工具的研究智能体 —— 理解问题、搜索网络、整合答案。',
     flow: ['Think', 'Search', 'Synthesize'],
     code: `think - "need_more" >> search
 think - "enough" >> synthesize
 search >> think  # 搜索后回到思考`,
-    points: ['条件分支实现 Agent 自主决策', 'Tool-use 模式：exec() 调用外部工具', '循环搜索直到信息充分']
+    points: ['条件分支实现智能体自主决策', 'Tool-use 模式：exec() 调用外部工具', '循环搜索直到信息充分']
   },
   {
     id: 'multi-agent',
     icon: '👥',
-    name: '多 Agent 协作',
+    name: '多智能体协作',
     category: 'agent',
     difficulty: 'medium',
     diffLabel: '中级',
-    type: 'Agent',
-    anchor: '_5-多-agent-协作',
-    desc: 'Taboo 猜词游戏 —— 两个 AsyncNode Agent 通过消息队列异步通信，asyncio.gather 并发运行。',
+    type: '智能体',
+    anchor: '_5-多智能体协作',
+    desc: 'Taboo 猜词游戏 —— 两个 AsyncNode 智能体通过消息队列异步通信，asyncio.gather 并发运行。',
     flow: ['HinterAgent', 'GuesserAgent'],
     code: `hinter - "continue" >> hinter  # 自循环
 guesser - "continue" >> guesser
 await asyncio.gather(hinter_flow.run_async(shared),
                      guesser_flow.run_async(shared))`,
-    points: ['AsyncNode 异步三阶段执行', 'asyncio.Queue 实现 Agent 间消息传递', 'asyncio.gather 并发运行多个 Agent']
+    points: ['AsyncNode 异步三阶段执行', 'asyncio.Queue 实现智能体间消息传递', 'asyncio.gather 并发运行多个智能体']
   },
   {
     id: 'map-reduce',
@@ -239,12 +239,12 @@ verify - "ok" >> conclude`,
     diffLabel: '进阶',
     type: '集成',
     anchor: '_10-mcp-工具集成',
-    desc: '通过 Model Context Protocol 集成外部工具，构建具备丰富工具使用能力的 Agent。',
+    desc: '通过 Model Context Protocol 集成外部工具，构建具备丰富工具使用能力的智能体。',
     flow: ['Plan', 'SelectTool', 'Execute', 'Reflect'],
     code: `plan >> select_tool >> execute >> reflect
 reflect - "done" >> output
 reflect - "continue" >> plan`,
-    points: ['MCP 协议标准化工具调用', 'Agent 自主选择和使用工具', '反思循环优化执行结果']
+    points: ['MCP 协议标准化工具调用', '智能体自主选择和使用工具', '反思循环优化执行结果']
   },
   {
     id: 'agentic-coding',
@@ -260,19 +260,19 @@ reflect - "continue" >> plan`,
     code: `# 设计文档优先
 docs/design.md  # 先写设计
 utils/  # 实现工具
-nodes.py + flow.py + main.py  # Agent 实现`,
+nodes.py + flow.py + main.py  # 智能体实现`,
     points: ['人类负责系统设计，AI 负责实现', '设计文档是数据契约', '小步迭代 + Fail Fast + 可靠性补齐']
   },
   {
     id: 'agent-skills',
     icon: '🎭',
-    name: 'Agent Skills',
+    name: '智能体技能',
     category: 'agent',
     difficulty: 'medium',
     diffLabel: '中级',
-    type: 'Agent',
-    anchor: '_12-agent-skills-技能路由',
-    desc: '将领域知识模块化为 Markdown 技能文件，Agent 根据用户请求动态选择技能并注入 prompt。',
+    type: '智能体',
+    anchor: '_12-智能体技能-技能路由',
+    desc: '将领域知识模块化为 Markdown 技能文件，智能体根据用户请求动态选择技能并注入 prompt。',
     flow: ['SelectSkill', 'ApplySkill'],
     code: `select_skill >> apply_skill
 # SelectSkill 从 skills/*.md 选择技能

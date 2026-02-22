@@ -1,11 +1,11 @@
 """
-案例 12：Agent Skills (技能路由)
-对应教程：第 12 节 —— Agent Skills
+案例 12：智能体技能 (技能路由)
+对应教程：第 12 节 —— 智能体技能
 
 模式：链式 + 条件分支
 演示：
 - 把领域知识模块化为 Markdown 技能文件
-- Agent 根据用户请求动态选择匹配的技能
+- 智能体根据用户请求动态选择匹配的技能
 - 将技能指令注入 LLM prompt，执行任务
 
 注意：本示例使用模拟 LLM，无需 API 密钥。
@@ -177,7 +177,7 @@ class ApplySkill(Node):
 # ========== 构建 Flow 并运行 ==========
 
 if __name__ == "__main__":
-    print("=== Agent Skills 示例 ===\n")
+    print("=== 智能体技能示例 ===\n")
 
     select = SelectSkill()
     apply = ApplySkill()

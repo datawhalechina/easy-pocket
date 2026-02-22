@@ -1,7 +1,7 @@
 """
 Flow 定义
 
-构建搜索 Agent 的完整流程图：
+构建搜索智能体的完整流程图：
 DecideAction → Search → DecideAction (循环)
 DecideAction → Answer (结束)
 """
@@ -11,7 +11,7 @@ from nodes import DecideAction, Search, Answer, SafeAnswer
 
 
 def create_agent_flow(safe_mode: bool = False):
-    """创建 Agent Flow
+    """创建智能体 Flow
 
     Args:
         safe_mode: 是否使用带重试的 SafeAnswer 节点

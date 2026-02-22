@@ -1,12 +1,12 @@
 """
-案例 05：多 Agent 协作 (Taboo 猜词游戏)
-对应教程：第 5 节 —— 多 Agent 协作
+案例 05：多智能体协作 (Taboo 猜词游戏)
+对应教程：第 5 节 —— 多智能体协作
 
 模式：AsyncNode + 消息队列 + 并发
 演示：
 - HinterAgent：描述目标词（不能说禁忌词）
 - GuesserAgent：根据描述猜词
-- 两个 Agent 通过 asyncio.Queue 异步通信
+- 两个智能体通过 asyncio.Queue 异步通信
 - 使用 asyncio.gather() 并发运行
 
 注意：本示例使用模拟 LLM，无需 API 密钥。
@@ -41,10 +41,10 @@ async def mock_guesser_llm(hint: str, round_num: int) -> str:
     return guesses[idx]
 
 
-# ========== Agent 节点定义 ==========
+# ========== 智能体节点定义 ==========
 
 class HinterAgent(AsyncNode):
-    """提示者 Agent：描述目标词，不能使用禁忌词"""
+    """提示者智能体：描述目标词，不能使用禁忌词"""
 
     async def prep_async(self, shared):
         msg = await shared["hinter_queue"].get()  # 等待来自 guesser 的消息
@@ -70,7 +70,7 @@ class HinterAgent(AsyncNode):
 
 
 class GuesserAgent(AsyncNode):
-    """猜测者 Agent：根据提示猜词"""
+    """猜测者智能体：根据提示猜词"""
 
     async def prep_async(self, shared):
         hint = await shared["guesser_queue"].get()  # 等待来自 hinter 的提示
@@ -104,7 +104,7 @@ class GuesserAgent(AsyncNode):
 # ========== 构建 Flow 并运行 ==========
 
 async def main():
-    # 每个 Agent 自循环
+    # 每个智能体自循环
     hinter = HinterAgent()
     hinter - "continue" >> hinter
     hinter_flow = AsyncFlow(start=hinter)
@@ -121,13 +121,13 @@ async def main():
         "guesser_queue": asyncio.Queue(),
     }
 
-    print("=== Taboo 猜词游戏 (异步多 Agent) ===\n")
+    print("=== Taboo 猜词游戏 (异步多智能体) ===\n")
     print(f"目标词：{shared['word']}（禁忌词：{shared['taboo_words']}）\n")
 
     # 发送启动信号
     shared["hinter_queue"].put_nowait("start")
 
-    # 两个 Agent 并发运行
+    # 两个智能体并发运行
     await asyncio.gather(
         hinter_flow.run_async(shared),
         guesser_flow.run_async(shared),

@@ -17,7 +17,7 @@ features:
   - title: 交互式教学
     details: 每个核心概念都配有交互式可视化演示，动手实验中就能理解 Node 生命周期和 Flow 图执行。
   - title: 案例驱动
-    details: 9 个实战案例，从聊天机器人到多 Agent 协作，从 RAG 到并行批处理，覆盖入门到进阶。
+    details: 9 个实战案例，从聊天机器人到多智能体协作，从 RAG 到并行批处理，覆盖入门到进阶。
   - title: Agentic Coding
     details: 人类设计架构，AI 写实现代码。PocketFlow 的极简设计让 AI 也能顺畅地理解和生成代码。
 ---
@@ -27,7 +27,7 @@ features:
   <p style="font-size: 1.2rem; color: var(--vp-c-text-2); max-width: 800px; margin: 0 auto; line-height: 1.6;">
     PocketFlow 是一个仅 100 行代码的 LLM 应用框架。<br>
     它用 <strong>Node</strong>（节点）和 <strong>Flow</strong>（流程）两个极简抽象，<br>
-    让你可以构建聊天机器人、RAG、Agent、工作流等所有主流 LLM 应用。<br>
+    让你可以构建聊天机器人、RAG、智能体、工作流等所有主流 LLM 应用。<br>
     零依赖、零供应商锁定、零学习门槛。
   </p>
 </div>
@@ -40,7 +40,7 @@ features:
   </a>
   <a href="./pocketflow-cases/" class="stage-card">
     <div class="stage-icon">案例篇</div>
-    <p>9 个实战案例：聊天机器人、RAG、写作工作流、搜索 Agent、多 Agent 协作、批处理、并行执行等。</p>
+    <p>9 个实战案例：聊天机器人、RAG、写作工作流、搜索智能体、多智能体协作、批处理、并行执行等。</p>
     <span>查看案例 →</span>
   </a>
 </div>

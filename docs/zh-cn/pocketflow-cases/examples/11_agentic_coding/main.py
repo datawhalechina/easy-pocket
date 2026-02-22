@@ -1,7 +1,7 @@
 """
 主入口
 
-运行搜索 Agent：
+运行搜索智能体：
   python main.py
 """
 

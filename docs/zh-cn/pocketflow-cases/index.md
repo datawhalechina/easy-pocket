@@ -1,11 +1,11 @@
 ---
 title: 'PocketFlow 应用案例 —— 从入门到进阶的实战全景'
-description: '通过 12 个实战案例，学习如何用 PocketFlow 构建聊天机器人、RAG、Agent、工作流、批处理等 LLM 应用。'
+description: '通过 12 个实战案例，学习如何用 PocketFlow 构建聊天机器人、RAG、智能体、工作流、批处理等 LLM 应用。'
 ---
 
 # PocketFlow 应用案例 (Application Cases)
 
-> **学习指南**：本章精选了 PocketFlow 的 12 个应用案例，从入门到进阶，覆盖聊天、RAG、Agent、批处理、并行等常见模式。每个案例都包含 Flow 架构图、核心代码和学习要点。
+> **学习指南**：本章精选了 PocketFlow 的 12 个应用案例，从入门到进阶，覆盖聊天、RAG、智能体、批处理、并行等常见模式。每个案例都包含 Flow 架构图、核心代码和学习要点。
 
 <CaseShowcase />
 
@@ -23,11 +23,11 @@ description: '通过 12 个实战案例，学习如何用 PocketFlow 构建聊�
 这三个案例覆盖了 PocketFlow 的核心模式：链式调用、循环、条件分支、BatchNode。掌握它们，你就能构建大多数 LLM 应用。
 
   </el-tab-pane>
-  <el-tab-pane label="想做 Agent">
+  <el-tab-pane label="想做 智能体">
 
-**推荐顺序**：搜索 Agent → 多 Agent 协作 → Agent Skills → MCP 工具集成 → 智能体编程
+**推荐顺序**：搜索智能体 → 多智能体 协作 → 智能体技能 → MCP 工具集成 → 智能体编程
 
-Agent 的核心是"自主决策循环"。这五个案例从简单的工具调用，到多 Agent 协作，再到技能路由和标准化工具集成，最后学习系统化构建 Agent 的工程方法论。
+智能体 的核心是"自主决策循环"。这五个案例从简单的工具调用，到多智能体 协作，再到技能路由和标准化工具集成，最后学习系统化构建 智能体 的工程方法论。
 
   </el-tab-pane>
   <el-tab-pane label="关注性能">
@@ -327,7 +327,7 @@ online_flow = Flow(start=retrieve)
 
 ---
 
-## 4. 搜索 Agent
+## 4. 搜索智能体
 
 ::: info 难度：中级 | 模式：循环 + 条件分支 | 关键词：工具调用、自主决策
 :::
@@ -401,9 +401,9 @@ flow = Flow(start=think)
 flow.run({"question": "PocketFlow 和 LangChain 有什么区别？"})
 ```
 
-### 4.3 Agent 设计最佳实践
+### 4.3 智能体 设计最佳实践
 
-构建高性能 Agent 时，以下原则至关重要：
+构建高性能 智能体 时，以下原则至关重要：
 
 **上下文管理**：向 LLM 提供**相关且精简**的上下文，而非全量信息。LLM 在处理过长文本时容易"迷失在中间"（lost in the middle），应该用 RAG 检索相关片段而非直接塞入完整历史。
 
@@ -413,29 +413,29 @@ flow.run({"question": "PocketFlow 和 LangChain 有什么区别？"})
 
 **参数化动作**：让 action 通过参数灵活化。例如 `search_data(query="...", source="db")` 比固定的 `search_database` 和 `search_csv` 更灵活通用。
 
-**错误恢复**：支持**回退**操作，让 Agent 能撤销失败的步骤。部分回退比完全重启更高效。
+**错误恢复**：支持**回退**操作，让 智能体 能撤销失败的步骤。部分回退比完全重启更高效。
 
 ::: tip 学习要点
-- **Agent 核心模式**：Think → Act → Observe 的循环
+- **智能体 核心模式**：Think → Act → Observe 的循环
 - **自主决策**：LLM 在 `exec()` 中判断是否需要更多信息
 - **工具调用**：`SearchNode.exec()` 调用外部搜索 API
 :::
 
 ---
 
-## 5. 多 Agent 协作
+## 5. 多智能体 协作
 
 ::: info 难度：中级 | 模式：AsyncNode + 消息队列 + 并发 | 关键词：异步通信、协作博弈
 :::
 
 ### 5.1 场景
 
-Taboo 猜词游戏：一个 Agent 描述词语（不能说出关键词），另一个 Agent 猜词。两个 Agent 通过**异步消息队列**通信，使用 `asyncio.gather()` **并发运行**。
+Taboo 猜词游戏：一个 智能体 描述词语（不能说出关键词），另一个 智能体 猜词。两个 智能体 通过**异步消息队列**通信，使用 `asyncio.gather()` **并发运行**。
 
 ### 5.2 架构
 
 ```
-HinterAgent ←──── asyncio.Queue ────→ GuesserAgent
+Hinter智能体 ←──── asyncio.Queue ────→ Guesser智能体
    ↻ "continue"                          ↻ "continue"
          └───── asyncio.gather() ──────────┘
 ```
@@ -446,7 +446,7 @@ HinterAgent ←──── asyncio.Queue ────→ GuesserAgent
 import asyncio
 from pocketflow import AsyncNode, AsyncFlow
 
-class HinterAgent(AsyncNode):
+class Hinter智能体(AsyncNode):
     """提示者：描述目标词，不能使用禁忌词"""
     async def prep_async(self, shared):
         msg = await shared["hinter_queue"].get()  # 等待消息
@@ -469,7 +469,7 @@ class HinterAgent(AsyncNode):
             return "end"
         return "continue"
 
-class GuesserAgent(AsyncNode):
+class Guesser智能体(AsyncNode):
     """猜测者：根据提示猜词"""
     async def prep_async(self, shared):
         hint = await shared["guesser_queue"].get()  # 等待提示
@@ -492,16 +492,16 @@ class GuesserAgent(AsyncNode):
         await shared["hinter_queue"].put(exec_res)  # 告诉提示者猜错了
         return "continue"
 
-# 每个 Agent 自循环
-hinter = HinterAgent()
+# 每个 智能体 自循环
+hinter = Hinter智能体()
 hinter - "continue" >> hinter
 hinter_flow = AsyncFlow(start=hinter)
 
-guesser = GuesserAgent()
+guesser = Guesser智能体()
 guesser - "continue" >> guesser
 guesser_flow = AsyncFlow(start=guesser)
 
-# 两个 Agent 并发运行
+# 两个 智能体 并发运行
 async def main():
     shared = {
         "word": "大熊猫",
@@ -521,9 +521,9 @@ asyncio.run(main())
 
 ::: tip 学习要点
 - **AsyncNode**：使用 `prep_async` / `exec_async` / `post_async` 异步三阶段
-- **消息队列**：`asyncio.Queue` 实现 Agent 间的异步通信
-- **并发执行**：`asyncio.gather()` 让两个 Agent 同时运行，通过队列协调
-- **自循环**：`agent - "continue" >> agent` 实现 Agent 的持续运行循环
+- **消息队列**：`asyncio.Queue` 实现 智能体 间的异步通信
+- **并发执行**：`asyncio.gather()` 让两个 智能体 同时运行，通过队列协调
+- **自循环**：`agent - "continue" >> agent` 实现 智能体 的持续运行循环
 - **AsyncFlow**：AsyncNode **必须**包裹在 AsyncFlow 中，不能用普通 Flow
 :::
 
@@ -792,7 +792,7 @@ flow.run({"question": "一个水池有 A、B 两个进水管，A 管 4 小时注
 
 ## 10. MCP 工具集成
 
-::: info 难度：进阶 | 模式：Agent + 工具 | 关键词：MCP 协议、标准化工具调用、扩展能力
+::: info 难度：进阶 | 模式：智能体 + 工具 | 关键词：MCP 协议、标准化工具调用、扩展能力
 :::
 
 ### 10.1 架构
@@ -878,8 +878,8 @@ flow.run({"task": "查询北京今天的天气并生成播报文案"})
 
 ::: tip 学习要点
 - **MCP 是协议，不是工具**：它定义了"如何调用工具"的标准，具体有哪些工具由你的 MCP 服务器决定
-- **与搜索 Agent 的区别**：搜索 Agent 只有一个工具（搜索），MCP Agent 可以选择多种工具
-- **Reflect 节点**：Agent 每次使用工具后反思是否已完成任务，避免不必要的额外调用
+- **与搜索智能体 的区别**：搜索智能体 只有一个工具（搜索），MCP 智能体 可以选择多种工具
+- **Reflect 节点**：智能体 每次使用工具后反思是否已完成任务，避免不必要的额外调用
 - **`get_mcp_tools()` 和 `mcp_execute()`**：这两个是你的工具函数（参见[原理篇 §6](../pocketflow-intro/#_6-工具函数层-node-里装什么)），具体实现取决于你连接的 MCP 服务器
 :::
 
@@ -908,7 +908,7 @@ flow.run({"task": "查询北京今天的天气并生成播报文案"})
 | 3. Utilities | 中 | 中 | 列出外部能力/接口 |
 | 4. Data 设计 | 低 | 高 | 设计 shared 数据契约 |
 | 5. Node 设计 | 低 | 高 | 明确每个节点读写 |
-| 6. 实现 | 低 | 高 | 让 Agent 写代码 |
+| 6. 实现 | 低 | 高 | 让 智能体 写代码 |
 | 7. 优化 | 中 | 中 | 调整拆分与提示词 |
 | 8. 可靠性 | 低 | 高 | 补测试、补校验 |
 
@@ -924,11 +924,11 @@ flow.run({"task": "查询北京今天的天气并生成播报文案"})
 2. **Flow**：用节点描述系统如何协作
    - 识别设计模式：
      - [Map Reduce](https://the-pocket.github.io/PocketFlow/design_pattern/mapreduce.html)
-     - [Agent](https://the-pocket.github.io/PocketFlow/design_pattern/agent.html)
+     - [智能体](https://the-pocket.github.io/PocketFlow/design_pattern/agent.html)
      - [RAG](https://the-pocket.github.io/PocketFlow/design_pattern/rag.html)
    - 每个节点写一句话职责
    - 如果是 Map-Reduce：说明"拆分"和"聚合"
-   - 如果是 Agent：说明"上下文"和"行动空间"
+   - 如果是 智能体：说明"上下文"和"行动空间"
    - 如果是 RAG：说明"离线索引"和"在线检索"
    - 画流程图（示例）：
 
@@ -989,7 +989,7 @@ flow.run({"task": "查询北京今天的天气并生成播报文案"})
    - `exec`：调用哪个 Utility（不写异常处理）
    - `post`：写回 shared 的什么字段
 
-6. **Implementation**：开始让 Agent 写代码
+6. **Implementation**：开始让 智能体 写代码
    - **Keep it simple**：不要一上来就追求复杂特性
    - **Fail fast**：用 Node 的重试/回退机制快速暴露薄弱环节
    - 添加足够日志，方便调试
@@ -1211,20 +1211,20 @@ def test_decide_action_returns_string():
 
 ---
 
-## 12. Agent Skills (技能路由)
+## 12. 智能体技能 (技能路由)
 
 ::: info 难度：中级 | 模式：链式 + 条件路由 | 关键词：技能文件、动态 Prompt、模块化知识
 :::
 
-Agent Skills 是一种将**领域知识模块化为独立文件**的模式。Agent 根据用户请求动态选择技能，将技能指令注入 LLM prompt，实现"一个 Agent，多种能力"。
+智能体技能 是一种将**领域知识模块化为独立文件**的模式。智能体 根据用户请求动态选择技能，将技能指令注入 LLM prompt，实现"一个 智能体，多种能力"。
 
 > **核心思路**：技能 = Markdown 文件，选择技能 = 路由节点，执行技能 = Prompt 注入。
 
 ### 12.1 问题场景
 
-你有一个通用 Agent，但需要处理多种不同类型的任务 —— 写摘要、列清单、做评审。如果为每种任务写一个独立的 Node 和 Flow，代码会迅速膨胀。
+你有一个通用 智能体，但需要处理多种不同类型的任务 —— 写摘要、列清单、做评审。如果为每种任务写一个独立的 Node 和 Flow，代码会迅速膨胀。
 
-**Agent Skills 的解法**：把每种任务的指令写成一个 Markdown 文件（技能），Agent 在运行时根据用户输入**动态选择**并加载。
+**智能体技能 的解法**：把每种任务的指令写成一个 Markdown 文件（技能），智能体 在运行时根据用户输入**动态选择**并加载。
 
 ### 12.2 架构设计
 
@@ -1319,7 +1319,7 @@ class ApplySkill(Node):
         }
 
     def exec(self, data):
-        prompt = f"""你正在执行一个 Agent Skill。
+        prompt = f"""你正在执行一个智能体技能。
 技能名：{data['skill_name']}
 技能指令：
 ---
@@ -1346,7 +1346,7 @@ print(shared["result"])
 
 ### 12.5 为什么这个模式有价值？
 
-| 传统做法 | Agent Skills |
+| 传统做法 | 智能体技能 |
 | :--- | :--- |
 | 每种任务写一个 Node 类 | 一个通用 Flow，技能文件即插即用 |
 | 新增任务 = 改代码 | 新增任务 = 加一个 .md 文件 |
@@ -1356,7 +1356,7 @@ print(shared["result"])
 ::: tip 学习要点
 - 技能文件是**纯 Markdown**，不是代码 —— 产品经理、运营人员都能编写和维护
 - SelectSkill 本身可以用 LLM 做路由（语义匹配），也可以用关键词规则（确定性路由）
-- 这个模式可以和 Agent 循环组合：Agent 在每轮决策中选择不同的 Skill 来执行
+- 这个模式可以和 智能体 循环组合：智能体 在每轮决策中选择不同的 Skill 来执行
 - 详见 [原理篇 §6：工具函数层](../pocketflow-intro/#_6-工具函数层-node-里装什么) 了解 PocketFlow 的工具函数体系
 :::
 
@@ -1393,15 +1393,15 @@ pip install -r requirements.txt
 | `01_chatbot.py` | 1. 聊天机器人 | 链式 + 循环 |
 | `02_writing_workflow.py` | 2. 写作工作流 | 链式 |
 | `03_rag.py` | 3. RAG 检索增强 | 链式 + BatchNode |
-| `04_search_agent.py` | 4. 搜索 Agent | 循环 + 条件分支 |
-| `05_multi_agent.py` | 5. 多 Agent 协作 | AsyncNode + 消息队列 |
+| `04_search_agent.py` | 4. 搜索智能体 | 循环 + 条件分支 |
+| `05_multi_agent.py` | 5. 多智能体 协作 | AsyncNode + 消息队列 |
 | `06_map_reduce.py` | 6. Map-Reduce | BatchNode |
 | `07_parallel_processing.py` | 7. 并行处理 | AsyncParallelBatchNode |
 | `08_structured_output.py` | 8. 结构化输出 | 循环 + 重试 + 校验 |
 | `09_chain_of_thought.py` | 9. 思维链推理 | 循环 + 自检 |
-| `10_mcp_tool.py` | 10. MCP 工具集成 | Agent + 工具 |
+| `10_mcp_tool.py` | 10. MCP 工具集成 | 智能体 + 工具 |
 | `11_agentic_coding/` | 11. 智能体编程 | 完整项目模板 |
-| `12_agent_skills.py` | 12. Agent Skills | 链式 + 条件路由 |
+| `12_agent_skills.py` | 12. 智能体技能 | 链式 + 条件路由 |
 
 ::: code-group
 
@@ -1411,7 +1411,7 @@ python 01_chatbot.py
 python 02_writing_workflow.py
 python 03_rag.py
 
-# Agent 方向
+# 智能体 方向
 python 04_search_agent.py
 python 05_multi_agent.py
 python 12_agent_skills.py

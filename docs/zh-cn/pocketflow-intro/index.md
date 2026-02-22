@@ -36,26 +36,26 @@ description: '从零理解 PocketFlow 的核心原理：Node 三阶段模型、F
 
 | 框架 | 核心心智模型 | 给你的是什么 |
 | :--- | :--- | :--- |
-| **Agno** | 声明式记忆代理 | Agent 构造器内置 Memory + Knowledge + Tools |
-| **AutoGen** | Actor 消息传递 | Agent 是 Actor，通过异步消息协作 |
-| **CrewAI** | 角色扮演团队 | Agent（角色/目标/背景故事）+ Manager 分配 Task |
+| **Agno** | 声明式记忆代理 | 智能体 构造器内置 Memory + Knowledge + Tools |
+| **AutoGen** | Actor 消息传递 | 智能体 是 Actor，通过异步消息协作 |
+| **CrewAI** | 角色扮演团队 | 智能体（角色/目标/背景故事）+ Manager 分配 Task |
 | **LangGraph** | 有状态状态机 | 强类型 State + 条件边函数 + 持久化检查点 |
-| **OpenAI Agents SDK** | 轻量 Agent + Handoff | Agent + Handoff + Guardrails + Tracing |
-| **PydanticAI** | 类型安全函数 | Agent = 带 Pydantic 验证的函数调用 |
+| **OpenAI Agents SDK** | 轻量 智能体 + Handoff | 智能体 + Handoff + Guardrails + Tracing |
+| **PydanticAI** | 类型安全函数 | 智能体 = 带 Pydantic 验证的函数调用 |
 | **SmolAgents** | 代码即动作 | LLM 直接生成 Python 代码而非 JSON tool call |
 | **PocketFlow** | **最小有向图运行时** | **只有 Node + Flow 两个原语，其他一切自己搭** |
 
 ::: tip 类比理解
 可以把这些框架想象成不同的建筑方式：
 
-- **LangGraph / CrewAI / AutoGen** = **精装房** —— 框架替你预制了"Agent 客厅"、"RAG 厨房"、"Memory 卧室"，你在现有房间里摆家具
+- **LangGraph / CrewAI / AutoGen** = **精装房** —— 框架替你预制了"智能体 客厅"、"RAG 厨房"、"Memory 卧室"，你在现有房间里摆家具
 - **PydanticAI / Agno / SmolAgents** = **毛坯房** —— 给你墙体和水电，你自己做装修
 - **PocketFlow** = **一块地 + 物理定律** —— 只给你"节点"和"连线"这两条规则，你从地基开始搭
 
 PocketFlow 的 100 行代码相当于"物理定律" —— **少到不能再少，但足以构建一切。**
 :::
 
-这意味着 PocketFlow 里**没有任何预制模式类** —— RAG、Agent、CoT、MapReduce 都是你用 Node + Flow 搭出来的不同图拓扑。
+这意味着 PocketFlow 里**没有任何预制模式类** —— RAG、智能体、CoT、MapReduce 都是你用 Node + Flow 搭出来的不同图拓扑。
 
 > **"Every LLM application is a directed graph. Nothing more."**
 > —— PocketFlow 创作者 Zachary Huang
@@ -289,7 +289,7 @@ check_node - "reject"  >> reject_node
      ▼
    [结束]
 
-搜索 Agent —— 有分支 + 环的自动机
+搜索智能体 —— 有分支 + 环的自动机
           "need_more"
   ┌──── Think ────────▶ Search ──┐
   │       │                      │
@@ -313,9 +313,9 @@ check_node - "reject"  >> reject_node
 | :--- | :--- | :--- | :--- |
 | 聊天机器人 | 单状态 + 自环 | 1 | 最简单的循环 |
 | 写作工作流 | 线性链 | 3 | 无分支、无环 |
-| 搜索 Agent | 分支 + 环 | 3 | LLM 决定转移方向 |
+| 搜索智能体 | 分支 + 环 | 3 | LLM 决定转移方向 |
 | 结构化输出 | 回退边 | 3-4 | 校验失败回退重试 |
-| 多 Agent | 并发自动机组 | N×M | 多台自动机通过队列通信 |
+| 多智能体 | 并发自动机组 | N×M | 多台自动机通过队列通信 |
 
 ::: tip 与 LangGraph"状态机"的区别
 LangGraph 也自称"状态机"，但含义不同：
@@ -391,9 +391,9 @@ Params 的值由**父 Flow 传入**：当 Flow 执行子节点时，会自动调
 | 模式 | 图形态 | 关键技巧 | 对应案例 |
 | :--- | :--- | :--- | :--- |
 | **链式调用** | A → B → C 顺序执行 | `a >> b >> c` | [写作工作流](../pocketflow-cases/#_2-写作工作流-writing-workflow) |
-| **条件分支** | 根据结果走不同路径 | `node - "action" >> target` | [搜索 Agent](../pocketflow-cases/#_4-搜索-agent) |
+| **条件分支** | 根据结果走不同路径 | `node - "action" >> target` | [搜索智能体](../pocketflow-cases/#_4-搜索智能体) |
 | **循环/重试** | 不满意则重做 | `post()` 返回 action 指回前序节点 | [聊天机器人](../pocketflow-cases/#_1-聊天机器人-chatbot) |
-| **嵌套子流程** | Flow 中包含子 Flow | Flow 继承自 BaseNode | [多 Agent 协作](../pocketflow-cases/#_5-多-agent-协作) |
+| **嵌套子流程** | Flow 中包含子 Flow | Flow 继承自 BaseNode | [多智能体协作](../pocketflow-cases/#_5-多智能体协作) |
 | **批量处理** | 列表中的每个元素独立处理 | BatchNode / BatchFlow | [Map-Reduce](../pocketflow-cases/#_6-map-reduce-批处理) |
 | **并行执行** | 多个任务同时运行 | AsyncParallelBatchNode | [并行处理](../pocketflow-cases/#_7-并行处理-8x-加速) |
 
@@ -657,10 +657,10 @@ class AnalyzeNode(Node):
 - **设计模式**（§4）= 图拓扑，决定节点之间**怎么连**
 - **工具函数**（本节）= 节点内部，决定每个节点**做什么**
 
-两者正交：同一个 LLM 调用工具可以用在链式工作流里，也可以用在 Agent 循环里。PocketFlow 不限制你用什么工具，你可以自由组合。
+两者正交：同一个 LLM 调用工具可以用在链式工作流里，也可以用在 智能体 循环里。PocketFlow 不限制你用什么工具，你可以自由组合。
 :::
 
-更进一步，工具函数也可以被**模块化为技能文件**（Markdown），Agent 在运行时动态选择并注入 prompt —— 这就是 **Agent Skills** 模式。详见 [应用案例第 12 节：Agent Skills](../pocketflow-cases/#_12-agent-skills-技能路由)。
+更进一步，工具函数也可以被**模块化为技能文件**（Markdown），智能体 在运行时动态选择并注入 prompt —— 这就是 **智能体技能** 模式。详见 [应用案例第 12 节：智能体技能](../pocketflow-cases/#_12-智能体技能-技能路由)。
 
 ---
 
