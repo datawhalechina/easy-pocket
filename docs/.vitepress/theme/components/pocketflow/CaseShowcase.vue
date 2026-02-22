@@ -101,23 +101,6 @@ send_reply - "continue" >> get_input  # 循环对话`,
     points: ['Node 间通过 shared["history"] 传递对话历史', '循环模式：post() 返回 "continue" 实现多轮']
   },
   {
-    id: 'rag',
-    icon: '📚',
-    name: 'RAG 检索增强生成',
-    category: 'basic',
-    difficulty: 'easy',
-    diffLabel: '入门',
-    type: '检索',
-    anchor: '_2-rag-检索增强生成',
-    desc: '经典 RAG 流程：离线构建向量索引，在线检索相关文档片段并增强 LLM 生成。',
-    flow: ['Chunking', 'Embedding', 'Indexing', 'Retrieval', 'Generation'],
-    code: `# 离线索引
-chunk >> embed >> index
-# 在线查询
-retrieve >> generate`,
-    points: ['BatchNode 批量处理文档切片', '向量相似度搜索 Top-K 文档', 'Prompt 模板拼接 context + question']
-  },
-  {
     id: 'workflow',
     icon: '📝',
     name: '写作工作流',
@@ -125,13 +108,30 @@ retrieve >> generate`,
     difficulty: 'easy',
     diffLabel: '入门',
     type: '工作流',
-    anchor: '_3-写作工作流-writing-workflow',
+    anchor: '_2-写作工作流-writing-workflow',
     desc: '多步骤写作流程：先列大纲，再分章节撰写，最后统一润色风格。',
     flow: ['Outline', 'WriteDraft', 'Polish'],
     code: `outline >> write_draft >> polish
 flow = Flow(start=outline)
 flow.run({"topic": "AI 编程入门"})`,
     points: ['链式 Flow 的经典应用', 'shared 逐步累积中间产物', '每个节点专注一个写作阶段']
+  },
+  {
+    id: 'rag',
+    icon: '📚',
+    name: 'RAG 检索增强生成',
+    category: 'basic',
+    difficulty: 'easy',
+    diffLabel: '入门',
+    type: '检索',
+    anchor: '_3-rag-检索增强生成',
+    desc: '经典 RAG 流程：离线构建向量索引，在线检索相关文档片段并增强 LLM 生成。',
+    flow: ['Chunking', 'Embedding', 'Indexing', 'Retrieval', 'Generation'],
+    code: `# 离线索引
+chunk >> embed >> index
+# 在线查询
+retrieve >> generate`,
+    points: ['BatchNode 批量处理文档切片', '向量相似度搜索 Top-K 文档', 'Prompt 模板拼接 context + question']
   },
   {
     id: 'agent',
@@ -144,9 +144,9 @@ flow.run({"topic": "AI 编程入门"})`,
     anchor: '_4-搜索-agent',
     desc: '能够调用搜索工具的研究 Agent —— 理解问题、搜索网络、整合答案。',
     flow: ['Think', 'Search', 'Synthesize'],
-    code: `think >> search
-search - "need_more" >> think    # 信息不足则继续搜索
-search - "enough" >> synthesize  # 信息充分则生成答案`,
+    code: `think - "need_more" >> search
+think - "enough" >> synthesize
+search >> think  # 搜索后回到思考`,
     points: ['条件分支实现 Agent 自主决策', 'Tool-use 模式：exec() 调用外部工具', '循环搜索直到信息充分']
   },
   {
@@ -158,12 +158,13 @@ search - "enough" >> synthesize  # 信息充分则生成答案`,
     diffLabel: '中级',
     type: 'Agent',
     anchor: '_5-多-agent-协作',
-    desc: 'Taboo 猜词游戏 —— 两个 Agent 异步通信，一个描述一个猜测。',
-    flow: ['Describer', 'Guesser', 'Judge'],
-    code: `describer >> guesser >> judge
-judge - "correct" >> done
-judge - "wrong" >> describer  # 再来一轮`,
-    points: ['多 Agent 通过 shared 通信', 'Flow 嵌套：每个 Agent 可以是子 Flow', '循环+条件分支组合']
+    desc: 'Taboo 猜词游戏 —— 两个 AsyncNode Agent 通过消息队列异步通信，asyncio.gather 并发运行。',
+    flow: ['HinterAgent', 'GuesserAgent'],
+    code: `hinter - "continue" >> hinter  # 自循环
+guesser - "continue" >> guesser
+await asyncio.gather(hinter_flow.run_async(shared),
+                     guesser_flow.run_async(shared))`,
+    points: ['AsyncNode 异步三阶段执行', 'asyncio.Queue 实现 Agent 间消息传递', 'asyncio.gather 并发运行多个 Agent']
   },
   {
     id: 'map-reduce',
@@ -198,6 +199,22 @@ judge - "wrong" >> describer  # 再来一轮`,
     points: ['AsyncParallelBatchNode 实现真并发', 'I/O 密集任务获得数倍加速', '与同步版本代码结构完全一致']
   },
   {
+    id: 'structured-output',
+    icon: '📋',
+    name: '结构化输出',
+    category: 'advanced',
+    difficulty: 'medium',
+    diffLabel: '中级',
+    type: '可靠性',
+    anchor: '_8-结构化输出-structured-output',
+    desc: '让 LLM 输出严格 JSON 格式 —— 生成、解析校验、格式不对则自动重新生成。',
+    flow: ['Generate', 'Validate', 'Check'],
+    code: `generate >> validate >> check
+check - "retry" >> generate  # 格式不对，重来
+check - "done" >> output`,
+    points: ['双层重试：节点内解析重试 + Flow 层生成重试', 'exec_fallback 返回 None 触发重新生成', '正则提取 + JSON 解析 + 字段校验']
+  },
+  {
     id: 'thinking',
     icon: '🧠',
     name: '思维链推理',
@@ -205,7 +222,7 @@ judge - "wrong" >> describer  # 再来一轮`,
     difficulty: 'hard',
     diffLabel: '进阶',
     type: '推理',
-    anchor: '_8-思维链推理-chain-of-thought',
+    anchor: '_9-思维链推理-chain-of-thought',
     desc: '实现 Chain-of-Thought 推理 —— 分步思考，逐步求解复杂问题。',
     flow: ['Decompose', 'StepReason', 'Verify', 'Conclude'],
     code: `decompose >> step_reason >> verify
@@ -221,7 +238,7 @@ verify - "ok" >> conclude`,
     difficulty: 'hard',
     diffLabel: '进阶',
     type: '集成',
-    anchor: '_9-mcp-工具集成',
+    anchor: '_10-mcp-工具集成',
     desc: '通过 Model Context Protocol 集成外部工具，构建具备丰富工具使用能力的 Agent。',
     flow: ['Plan', 'SelectTool', 'Execute', 'Reflect'],
     code: `plan >> select_tool >> execute >> reflect
@@ -237,7 +254,7 @@ reflect - "continue" >> plan`,
     difficulty: 'hard',
     diffLabel: '进阶',
     type: '方法论',
-    anchor: '_10-智能体编程-agentic-coding',
+    anchor: '_11-智能体编程-agentic-coding',
     desc: '人类设计 + AI 实现的高效协作范式 —— 8 步流程从需求到可靠系统的完整工程实践。',
     flow: ['Requirements', 'Flow设计', 'Utilities', 'Data', 'Node', 'Implementation', 'Optimization', 'Reliability'],
     code: `# 设计文档优先

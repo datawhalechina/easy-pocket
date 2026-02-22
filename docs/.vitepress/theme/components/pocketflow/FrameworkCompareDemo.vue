@@ -24,6 +24,10 @@
         <div class="th other">LangChain</div>
         <div class="th other">CrewAI</div>
         <div class="th other">AutoGen</div>
+        <div class="th other">Agno</div>
+        <div class="th other">PydanticAI</div>
+        <div class="th other">SmolAgents</div>
+        <div class="th other">OpenAI SDK</div>
       </div>
 
       <div v-for="row in rows" :key="row.dim" class="table-row">
@@ -37,6 +41,10 @@
         <div class="td other">{{ row.lc }}</div>
         <div class="td other">{{ row.crew }}</div>
         <div class="td other">{{ row.auto }}</div>
+        <div class="td other">{{ row.agno }}</div>
+        <div class="td other">{{ row.pydantic }}</div>
+        <div class="td other">{{ row.smol }}</div>
+        <div class="td other">{{ row.openai }}</div>
       </div>
     </div>
 
@@ -54,14 +62,11 @@
 
 <script setup>
 const rows = [
-  { icon: '📏', dim: '核心代码量', pf: '~100 行', lc: '~405K 行', crew: '~18K 行', auto: '~7K 行', pfBest: true },
-  { icon: '📦', dim: '依赖数量', pf: '0', lc: '大量', crew: '中等', auto: '中等', pfBest: true },
-  { icon: '🔒', dim: '供应商锁定', pf: '无', lc: '部分', crew: '部分', auto: '部分', pfBest: true },
-  { icon: '📈', dim: '学习曲线', pf: '极低', lc: '陡峭', crew: '中等', auto: '中等', pfBest: true },
-  { icon: '🧩', dim: '设计模式', pf: 'Node + Flow 图', lc: 'Chain / Agent', crew: 'Role-based', auto: 'Conversation', pfBest: false },
-  { icon: '🔄', dim: '异步支持', pf: '内置', lc: '部分', crew: '内置', auto: '内置', pfBest: false },
-  { icon: '🔀', dim: '并行批处理', pf: '内置', lc: '需扩展', crew: '内置', auto: '内置', pfBest: false },
-  { icon: '🎯', dim: '适用场景', pf: '通用 LLM 应用', lc: '通用 LLM 应用', crew: '多 Agent', auto: '多 Agent', pfBest: false }
+  { icon: '📏', dim: '核心代码量', pf: '~100 行', lc: '~405K', crew: '~18K', auto: '~7K', agno: '~15K', pydantic: '~8K', smol: '~5K', openai: '~3K', pfBest: true },
+  { icon: '📦', dim: '依赖数量', pf: '0', lc: '大量', crew: '中等', auto: '中等', agno: '中等', pydantic: '少量', smol: '少量', openai: '少量', pfBest: true },
+  { icon: '🔒', dim: '供应商锁定', pf: '无', lc: '部分', crew: '部分', auto: '部分', agno: '低', pydantic: '低', smol: '低', openai: '中', pfBest: true },
+  { icon: '📈', dim: '学习曲线', pf: '极低', lc: '陡峭', crew: '中等', auto: '中等', agno: '低', pydantic: '低', smol: '低', openai: '低', pfBest: true },
+  { icon: '🧩', dim: '心智模型', pf: '有向图', lc: '状态机', crew: '角色团队', auto: 'Actor', agno: '声明式', pydantic: '类型函数', smol: '代码生成', openai: 'Handoff', pfBest: false }
 ]
 
 const insights = [
@@ -112,8 +117,8 @@ const insights = [
 
 .table-header, .table-row {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;
-  min-width: 550px;
+  grid-template-columns: 1.2fr repeat(8, 1fr);
+  min-width: 850px;
 }
 
 .table-header {

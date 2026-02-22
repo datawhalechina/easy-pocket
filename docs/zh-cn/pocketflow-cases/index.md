@@ -1,11 +1,11 @@
 ---
 title: 'PocketFlow 应用案例 —— 从入门到进阶的实战全景'
-description: '通过 10 个实战案例，学习如何用 PocketFlow 构建聊天机器人、RAG、Agent、工作流、批处理等 LLM 应用。'
+description: '通过 11 个实战案例，学习如何用 PocketFlow 构建聊天机器人、RAG、Agent、工作流、批处理等 LLM 应用。'
 ---
 
 # PocketFlow 应用案例 (Application Cases)
 
-> **学习指南**：本章精选了 PocketFlow 的 10 个应用案例，从入门到进阶，覆盖聊天、RAG、Agent、批处理、并行等常见模式。每个案例都包含 Flow 架构图、核心代码和学习要点。
+> **学习指南**：本章精选了 PocketFlow 的 11 个应用案例，从入门到进阶，覆盖聊天、RAG、Agent、批处理、并行等常见模式。每个案例都包含 Flow 架构图、核心代码和学习要点。
 
 <CaseShowcase />
 
@@ -20,7 +20,7 @@ description: '通过 10 个实战案例，学习如何用 PocketFlow 构建聊�
 
 **推荐顺序**：聊天机器人 → 写作工作流 → RAG
 
-这三个案例覆盖了 PocketFlow 的核心模式：链式调用、循环、条件分支。掌握它们，你就能构建大多数 LLM 应用。
+这三个案例覆盖了 PocketFlow 的核心模式：链式调用、循环、条件分支、BatchNode。掌握它们，你就能构建大多数 LLM 应用。
 
   </el-tab-pane>
   <el-tab-pane label="想做 Agent">
@@ -32,9 +32,16 @@ Agent 的核心是"自主决策循环"。这四个案例从简单的工具调用
   </el-tab-pane>
   <el-tab-pane label="关注性能">
 
-**推荐顺序**：Map-Reduce 批处理 → 并行图片处理
+**推荐顺序**：Map-Reduce 批处理 → 并行处理
 
 BatchNode 和 AsyncParallelBatchNode 是 PocketFlow 处理性能问题的核心工具。这两个案例展示如何用简洁的代码获得数倍加速。
+
+  </el-tab-pane>
+  <el-tab-pane label="输出质量">
+
+**推荐顺序**：结构化输出 → 思维链推理
+
+这两个案例展示如何提升 LLM 输出的可靠性：结构化输出确保格式正确可解析，思维链推理提升逻辑推理的准确性。
 
   </el-tab-pane>
 </el-tabs>
@@ -129,114 +136,18 @@ flow.run({})
 
 ---
 
-## 2. RAG 检索增强生成
+## 2. 写作工作流 (Writing Workflow)
 
-::: info 难度：入门 | 模式：链式 + BatchNode | 关键词：向量检索、知识库
+::: info 难度：入门 | 模式：链式 | 关键词：多步骤生成、内容流水线
 :::
 
 ### 2.1 架构
 
 ```
-离线索引：Chunk → Embed → Index
-在线查询：Retrieve → Generate
-```
-
-### 2.2 核心思路
-
-RAG 分两个阶段：
-
-**离线阶段**（构建索引）：
-1. **Chunk**：将文档切分成小片段
-2. **Embed**：使用 BatchNode 批量计算向量
-3. **Index**：存入向量数据库
-
-**在线阶段**（回答问题）：
-1. **Retrieve**：根据问题检索相关片段
-2. **Generate**：将检索到的 context 和 question 拼接，调用 LLM
-
-### 2.3 关键代码
-
-```python
-from pocketflow import Node, BatchNode, Flow
-
-class ChunkNode(Node):
-    def prep(self, shared):
-        return shared["documents"]
-
-    def exec(self, docs):
-        # 将文档切分为 chunk
-        chunks = []
-        for doc in docs:
-            chunks.extend(split_text(doc, chunk_size=500))
-        return chunks
-
-    def post(self, shared, prep_res, exec_res):
-        shared["chunks"] = exec_res
-
-class EmbedBatch(BatchNode):
-    """使用 BatchNode 批量处理每个 chunk"""
-    def prep(self, shared):
-        return shared["chunks"]  # 返回列表
-
-    def exec(self, chunk):
-        # 每个 chunk 独立计算 embedding
-        return compute_embedding(chunk)
-
-    def post(self, shared, prep_res, exec_res):
-        shared["embeddings"] = exec_res  # 所有结果的列表
-
-class RetrieveNode(Node):
-    def prep(self, shared):
-        return shared["question"]
-
-    def exec(self, question):
-        q_embedding = compute_embedding(question)
-        # 向量相似度搜索
-        top_k = vector_search(q_embedding, k=3)
-        return top_k
-
-    def post(self, shared, prep_res, exec_res):
-        shared["context"] = "\n".join(exec_res)
-
-class GenerateNode(Node):
-    def prep(self, shared):
-        return {
-            "context": shared["context"],
-            "question": shared["question"]
-        }
-
-    def exec(self, data):
-        prompt = f"""基于以下信息回答问题：
-{data['context']}
-
-问题：{data['question']}"""
-        return call_llm_api(prompt)
-
-    def post(self, shared, prep_res, exec_res):
-        shared["answer"] = exec_res
-        print(f"Answer: {exec_res}")
-```
-
-::: tip 学习要点
-- **BatchNode**：`EmbedBatch` 的 `prep()` 返回列表，`exec()` 对每个 chunk 独立执行
-- **两条 Flow**：离线索引和在线查询是独立的 Flow，共享同一个向量数据库
-- **Prompt 拼接**：GenerateNode 将检索结果和问题组合成 prompt
-:::
-
----
-
-## 3. 写作工作流 (Writing Workflow)
-
-::: info 难度：入门 | 模式：链式 | 关键词：多步骤生成、内容流水线
-:::
-
-### 3.1 架构
-
-```
 Outline → WriteDraft → Polish
 ```
 
-### 3.2 核心代码
+### 2.2 核心代码
 
 ```python
 class OutlineNode(Node):
@@ -280,6 +191,139 @@ outline >> write_draft >> polish
 flow = Flow(start=outline)
 flow.run({"topic": "PocketFlow 入门指南"})
 ```
+
+::: tip 学习要点
+- **最简链式模式**：三个节点顺序执行，每个节点做一件事
+- **任务分解原则**：复杂任务拆分为小步骤，每步用一个 Node 处理
+- **不要过度拆分**：太细的拆分会导致节点间上下文不连贯
+:::
+
+---
+
+## 3. RAG 检索增强生成
+
+::: info 难度：入门 | 模式：链式 + BatchNode | 关键词：向量检索、知识库
+:::
+
+### 3.1 架构
+
+```
+离线索引：Chunk → Embed → Index
+在线查询：Retrieve → Generate
+```
+
+### 3.2 核心思路
+
+RAG 分两个阶段：
+
+**离线阶段**（构建索引）：
+1. **Chunk**：将文档切分成小片段
+2. **Embed**：使用 BatchNode 批量计算向量
+3. **Index**：存入向量数据库
+
+**在线阶段**（回答问题）：
+1. **Retrieve**：根据问题检索相关片段
+2. **Generate**：将检索到的 context 和 question 拼接，调用 LLM
+
+### 3.3 关键代码
+
+```python
+from pocketflow import Node, BatchNode, Flow
+
+# ===== 离线阶段 =====
+
+class ChunkNode(Node):
+    def prep(self, shared):
+        return shared["documents"]
+
+    def exec(self, docs):
+        chunks = []
+        for doc in docs:
+            chunks.extend(split_text(doc, chunk_size=500))
+        return chunks
+
+    def post(self, shared, prep_res, exec_res):
+        shared["chunks"] = exec_res
+
+class EmbedBatch(BatchNode):
+    """使用 BatchNode 批量处理每个 chunk"""
+    def prep(self, shared):
+        return shared["chunks"]  # 返回列表
+
+    def exec(self, chunk):
+        # 每个 chunk 独立计算 embedding
+        return compute_embedding(chunk)
+
+    def post(self, shared, prep_res, exec_res):
+        shared["embeddings"] = exec_res  # 所有结果的列表
+
+class IndexNode(Node):
+    """将 chunk 与 embedding 配对存入索引"""
+    def prep(self, shared):
+        return {
+            "chunks": shared["chunks"],
+            "embeddings": shared["embeddings"],
+        }
+
+    def exec(self, data):
+        # 构建索引（实际场景使用向量数据库）
+        index = list(zip(data["chunks"], data["embeddings"]))
+        return index
+
+    def post(self, shared, prep_res, exec_res):
+        shared["index"] = exec_res
+
+# ===== 在线阶段 =====
+
+class RetrieveNode(Node):
+    def prep(self, shared):
+        return shared["question"]
+
+    def exec(self, question):
+        q_embedding = compute_embedding(question)
+        top_k = vector_search(q_embedding, k=3)
+        return top_k
+
+    def post(self, shared, prep_res, exec_res):
+        shared["context"] = "\n".join(exec_res)
+
+class GenerateNode(Node):
+    def prep(self, shared):
+        return {
+            "context": shared["context"],
+            "question": shared["question"]
+        }
+
+    def exec(self, data):
+        prompt = f"""基于以下信息回答问题：
+{data['context']}
+
+问题：{data['question']}"""
+        return call_llm_api(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        shared["answer"] = exec_res
+        print(f"Answer: {exec_res}")
+
+# 构建离线 Flow
+chunk = ChunkNode()
+embed = EmbedBatch()
+index = IndexNode()
+chunk >> embed >> index
+offline_flow = Flow(start=chunk)
+
+# 构建在线 Flow
+retrieve = RetrieveNode()
+generate = GenerateNode()
+retrieve >> generate
+online_flow = Flow(start=retrieve)
+```
+
+::: tip 学习要点
+- **BatchNode**：`EmbedBatch` 的 `prep()` 返回列表，`exec()` 对每个 chunk 独立执行
+- **两条 Flow**：离线索引和在线查询是独立的 Flow，共享同一个向量数据库
+- **三节点离线流水线**：Chunk → Embed → Index 完整覆盖索引构建过程
+:::
 
 ---
 
@@ -350,6 +394,20 @@ think - "enough" >> synthesize       # 信息充分则生成
 search >> think                      # 搜索后回到思考
 ```
 
+### 4.3 Agent 设计最佳实践
+
+构建高性能 Agent 时，以下原则至关重要：
+
+**上下文管理**：向 LLM 提供**相关且精简**的上下文，而非全量信息。LLM 在处理过长文本时容易"迷失在中间"（lost in the middle），应该用 RAG 检索相关片段而非直接塞入完整历史。
+
+**动作空间设计**：每个 action 应**结构清晰、含义明确**，避免语义重叠。例如，不要同时定义 `search_database` 和 `query_csv` —— 应该合并为统一的 `search_data(source, query)` 接口。
+
+**渐进式信息展示**：不要一次性展示全部信息。先给 LLM 概览（目录、摘要），让它选择要深入的部分。每次最多输入约 500 行内容。
+
+**参数化动作**：让 action 通过参数灵活化。例如 `search_data(query="...", source="db")` 比固定的 `search_database` 和 `search_csv` 更灵活通用。
+
+**错误恢复**：支持**回退**操作，让 Agent 能撤销失败的步骤。部分回退比完全重启更高效。
+
 ::: tip 学习要点
 - **Agent 核心模式**：Think → Act → Observe 的循环
 - **自主决策**：LLM 在 `exec()` 中判断是否需要更多信息
@@ -360,47 +418,107 @@ search >> think                      # 搜索后回到思考
 
 ## 5. 多 Agent 协作
 
-::: info 难度：中级 | 模式：多 Agent + 循环 | 关键词：异步通信、角色扮演
+::: info 难度：中级 | 模式：AsyncNode + 消息队列 + 并发 | 关键词：异步通信、协作博弈
 :::
 
 ### 5.1 场景
 
-Taboo 猜词游戏：一个 Agent 描述词语（不能说出关键词），另一个 Agent 猜词。
+Taboo 猜词游戏：一个 Agent 描述词语（不能说出关键词），另一个 Agent 猜词。两个 Agent 通过**异步消息队列**通信，使用 `asyncio.gather()` **并发运行**。
 
-### 5.2 核心代码
+### 5.2 架构
+
+```
+HinterAgent ←──── asyncio.Queue ────→ GuesserAgent
+   ↻ "continue"                          ↻ "continue"
+         └───── asyncio.gather() ──────────┘
+```
+
+### 5.3 核心代码
 
 ```python
-class Describer(Node):
-    def exec(self, data):
-        prompt = f"请描述'{data['word']}'，但不能使用这些词：{data['taboo_words']}"
-        return call_llm_api(prompt)
+import asyncio
+from pocketflow import AsyncNode, AsyncFlow
 
-    def post(self, shared, prep_res, exec_res):
-        shared["description"] = exec_res
+class HinterAgent(AsyncNode):
+    """提示者：描述目标词，不能使用禁忌词"""
+    async def prep_async(self, shared):
+        msg = await shared["hinter_queue"].get()  # 等待消息
+        return {
+            "msg": msg,
+            "word": shared["word"],
+            "taboo_words": shared["taboo_words"],
+        }
 
-class Guesser(Node):
-    def exec(self, description):
-        prompt = f"根据以下描述猜一个词：{description}"
-        return call_llm_api(prompt)
+    async def exec_async(self, data):
+        if data["msg"] == "start":
+            prompt = f"请描述'{data['word']}'，不能使用：{data['taboo_words']}"
+        else:
+            prompt = f"对方猜的是'{data['msg']}'，不对。换个方式描述'{data['word']}'，不能使用：{data['taboo_words']}"
+        return await async_call_llm(prompt)
 
-    def post(self, shared, prep_res, exec_res):
-        shared["guess"] = exec_res
+    async def post_async(self, shared, prep_res, exec_res):
+        await shared["guesser_queue"].put(exec_res)  # 发送提示给猜测者
+        if shared.get("game_over"):
+            return "end"
+        return "continue"
 
-class Judge(Node):
-    def post(self, shared, prep_res, exec_res):
-        if shared["guess"].lower() == shared["word"].lower():
-            print("猜对了！")
-            return "correct"
+class GuesserAgent(AsyncNode):
+    """猜测者：根据提示猜词"""
+    async def prep_async(self, shared):
+        hint = await shared["guesser_queue"].get()  # 等待提示
+        return hint
+
+    async def exec_async(self, hint):
+        prompt = f"根据以下描述猜一个词：{hint}"
+        return await async_call_llm(prompt)
+
+    async def post_async(self, shared, prep_res, exec_res):
+        if exec_res.strip() == shared["word"]:
+            shared["game_over"] = True
+            print(f"猜对了！答案是「{shared['word']}」")
+            return "end"
         shared["round"] = shared.get("round", 0) + 1
         if shared["round"] >= 5:
-            return "give_up"
-        return "wrong"
+            shared["game_over"] = True
+            print(f"超过 5 轮，游戏结束。答案是「{shared['word']}」")
+            return "end"
+        await shared["hinter_queue"].put(exec_res)  # 告诉提示者猜错了
+        return "continue"
 
-describer >> guesser >> judge
-judge - "wrong" >> describer     # 猜错了，再来
-judge - "correct" >> done         # 猜对了
-judge - "give_up" >> done         # 放弃
+# 每个 Agent 自循环
+hinter = HinterAgent()
+hinter - "continue" >> hinter
+hinter_flow = AsyncFlow(start=hinter)
+
+guesser = GuesserAgent()
+guesser - "continue" >> guesser
+guesser_flow = AsyncFlow(start=guesser)
+
+# 两个 Agent 并发运行
+async def main():
+    shared = {
+        "word": "大熊猫",
+        "taboo_words": ["熊猫", "国宝", "黑白"],
+        "hinter_queue": asyncio.Queue(),
+        "guesser_queue": asyncio.Queue(),
+    }
+    shared["hinter_queue"].put_nowait("start")  # 启动信号
+
+    await asyncio.gather(
+        hinter_flow.run_async(shared),
+        guesser_flow.run_async(shared),
+    )
+
+asyncio.run(main())
 ```
+
+::: tip 学习要点
+- **AsyncNode**：使用 `prep_async` / `exec_async` / `post_async` 异步三阶段
+- **消息队列**：`asyncio.Queue` 实现 Agent 间的异步通信
+- **并发执行**：`asyncio.gather()` 让两个 Agent 同时运行，通过队列协调
+- **自循环**：`agent - "continue" >> agent` 实现 Agent 的持续运行循环
+- **AsyncFlow**：AsyncNode **必须**包裹在 AsyncFlow 中，不能用普通 Flow
+:::
 
 ---
 
@@ -462,7 +580,105 @@ class ParallelProcess(AsyncParallelBatchNode):
 
 ---
 
-## 8. 思维链推理 (Chain-of-Thought)
+## 8. 结构化输出 (Structured Output)
+
+::: info 难度：中级 | 模式：循环 + 重试 + 校验 | 关键词：JSON 解析、格式验证、可靠输出
+:::
+
+### 8.1 架构
+
+```
+Generate → Validate → Check
+                        |
+              "retry" ──┘  "done" → Output
+```
+
+### 8.2 核心思路
+
+LLM 的输出是自由文本，但下游系统往往需要**结构化数据**（JSON、表格、特定格式）。核心挑战是：LLM 可能输出格式不对的内容。解决方案：**生成 → 解析校验 → 不对就重来**。
+
+### 8.3 关键代码
+
+```python
+import json
+import re
+from pocketflow import Node, Flow
+
+class GenerateJSON(Node):
+    def prep(self, shared):
+        return shared["task"]
+
+    def exec(self, task):
+        prompt = f"""请为以下任务生成严格的 JSON 格式结果：
+{task}
+
+输出格式：{{"name": "...", "score": 0-100, "reason": "..."}}
+只输出 JSON，不要其他文字。"""
+        return call_llm_api(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        shared["raw_output"] = exec_res
+
+class ValidateJSON(Node):
+    """解析并校验 JSON 格式，利用 max_retries 自动重试解析"""
+    def prep(self, shared):
+        return shared["raw_output"]
+
+    def exec(self, raw):
+        # 提取 JSON 部分
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if not match:
+            raise ValueError("输出中未找到 JSON")
+        data = json.loads(match.group())
+        # 校验必需字段和类型
+        assert "name" in data, "缺少 name 字段"
+        assert "score" in data, "缺少 score 字段"
+        assert isinstance(data["score"], (int, float)), "score 必须是数字"
+        assert 0 <= data["score"] <= 100, "score 必须在 0-100 之间"
+        return data
+
+    def exec_fallback(self, prep_res, exc):
+        # 解析失败，返回 None 触发重新生成
+        print(f"解析失败：{exc}")
+        return None
+
+class CheckResult(Node):
+    def prep(self, shared):
+        return shared.get("result")
+
+    def post(self, shared, prep_res, exec_res):
+        if shared.get("result") is None:
+            shared["retry_count"] = shared.get("retry_count", 0) + 1
+            if shared["retry_count"] >= 3:
+                return "give_up"
+            return "retry"       # 解析失败，让 LLM 重新生成
+        return "done"
+
+# 构建 Flow
+generate = GenerateJSON()
+validate = ValidateJSON(max_retries=2)  # 解析本身可重试 2 次
+check = CheckResult()
+output = Node()  # 占位输出节点
+
+generate >> validate >> check
+check - "retry" >> generate      # 格式不对，重新生成
+check - "done" >> output         # 格式正确，输出结果
+check - "give_up" >> output      # 多次失败，放弃
+
+flow = Flow(start=generate)
+flow.run({"task": "评估候选人张三的 Python 编程能力"})
+```
+
+::: tip 学习要点
+- **双层重试**：`ValidateJSON(max_retries=2)` 在节点内重试解析，`check - "retry" >> generate` 在 Flow 层重试生成
+- **exec_fallback**：解析失败时不抛异常，而是返回 `None` 让后续节点决策
+- **防御性解析**：用正则提取 JSON、逐字段校验，应对 LLM 输出的不确定性
+- **退出条件**：设置最大重试次数，避免无限循环
+:::
+
+---
+
+## 9. 思维链推理 (Chain-of-Thought)
 
 ::: info 难度：进阶 | 模式：循环 + 自检 | 关键词：推理、验证
 :::
@@ -497,7 +713,7 @@ verify - "ok" >> conclude           # 验证通过，输出
 
 ---
 
-## 9. MCP 工具集成
+## 10. MCP 工具集成
 
 ::: info 难度：进阶 | 模式：Agent + 工具 | 关键词：MCP 协议、扩展能力
 :::
@@ -525,7 +741,7 @@ reflect - "done" >> output           # 任务完成
 
 ---
 
-## 10. 智能体编程 (Agentic Coding)
+## 11. 智能体编程 (Agentic Coding)
 
 ::: info 难度：进阶 | 模式：人类设计 + 代理实现 | 关键词：系统设计、数据契约、可靠性
 :::
@@ -539,7 +755,7 @@ reflect - "done" >> output           # 任务完成
 
 > **官方指南**：[Agentic Coding: Humans Design, Agents Code](https://the-pocket.github.io/PocketFlow/guide.html#agentic-coding-humans-design-agents-code)
 
-### 10.1 分工原则（谁负责什么）
+### 11.1 分工原则（谁负责什么）
 
 | 步骤 | 人类参与度 | AI 参与度 | 关键目标 |
 | --- | --- | --- | --- |
@@ -552,13 +768,13 @@ reflect - "done" >> output           # 任务完成
 | 7. 优化 | 中 | 中 | 调整拆分与提示词 |
 | 8. 可靠性 | 低 | 高 | 补测试、补校验 |
 
-### 10.2 8 步流程（写在设计文档里）
+### 11.2 8 步流程（写在设计文档里）
 
 1. **Requirements**：明确需求，判断是否适合用 AI 解决
    - **适合**：重复性、规则清晰的任务（填表、邮件回复）
    - **适合**：输入明确的创作任务（生成文案、写 SQL）
    - **不适合**：高度模糊且需复杂决策的问题（商业战略、公司治理）
-   - **以用户为中心**：先写“用户问题”，再写“功能清单”
+   - **以用户为中心**：先写"用户问题"，再写"功能清单"
    - **复杂度与价值平衡**：优先交付高价值、低复杂度能力
 
 2. **Flow**：用节点描述系统如何协作
@@ -567,9 +783,9 @@ reflect - "done" >> output           # 任务完成
      - [Agent](https://the-pocket.github.io/PocketFlow/design_pattern/agent.html)
      - [RAG](https://the-pocket.github.io/PocketFlow/design_pattern/rag.html)
    - 每个节点写一句话职责
-   - 如果是 Map-Reduce：说明“拆分”和“聚合”
-   - 如果是 Agent：说明“上下文”和“行动空间”
-   - 如果是 RAG：说明“离线索引”和“在线检索”
+   - 如果是 Map-Reduce：说明"拆分"和"聚合"
+   - 如果是 Agent：说明"上下文"和"行动空间"
+   - 如果是 RAG：说明"离线索引"和"在线检索"
    - 画流程图（示例）：
 
    ```mermaid
@@ -591,7 +807,7 @@ reflect - "done" >> output           # 任务完成
    如果人类无法画出 Flow，AI 就无法自动化。建议先手动解几条样例，建立直觉。
    :::
 
-3. **Utilities**：识别并实现外部工具（系统的“身体”）
+3. **Utilities**：识别并实现外部工具（系统的"身体"）
    - 读取输入：拉取消息、读文件、查数据库
    - 写入输出：发送通知、生成报告
    - 调用外部工具：搜索、API、数据库、LLM
@@ -642,11 +858,11 @@ reflect - "done" >> output           # 任务完成
 8. **Reliability**：补齐稳定性
    - `exec` 内增加结果校验
    - 适当提升 `max_retries` 和 `wait`
-   - 加入“自评估节点”对结果做二次检查
+   - 加入"自评估节点"对结果做二次检查
 
    <div align="center"><img src="https://github.com/the-pocket/.github/raw/main/assets/success.png?raw=true" width="420"/></div>
 
-### 10.3 最小设计文档模板（节选）
+### 11.3 最小设计文档模板（节选）
 
 ~~~markdown
 # Design Doc: 项目名
@@ -680,7 +896,7 @@ shared = {
 - Node B: ...
 ~~~
 
-### 10.4 示例工程结构
+### 11.4 示例工程结构
 
 ```
 my_project/
@@ -696,7 +912,7 @@ my_project/
      └── design.md
 ```
 
-### 10.5 Utilities 实战代码（可直接运行）
+### 11.5 Utilities 实战代码（可直接运行）
 
 ```python
 # utils/call_llm.py
@@ -731,7 +947,7 @@ if __name__ == "__main__":
     print(search_web("PocketFlow agentic coding"))
 ```
 
-### 10.6 Node/Flow/Main 实战代码
+### 11.6 Node/Flow/Main 实战代码
 
 ```python
 # nodes.py
@@ -812,7 +1028,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### 10.7 可靠性增强（重试 + 回退）
+### 11.7 可靠性增强（重试 + 回退）
 
 ```python
 from pocketflow import Node
@@ -830,7 +1046,7 @@ class SafeAnswer(Node):
 safe_answer = SafeAnswer(max_retries=3, wait=2)
 ```
 
-### 10.8 最小可运行测试
+### 11.8 最小可运行测试
 
 ```python
 # tests/test_nodes.py
@@ -844,9 +1060,9 @@ def test_decide_action_returns_string():
 ```
 
 ::: tip 学习要点
-- 智能体编程的核心不是“让 AI 写代码”，而是**让 AI 严格按设计实现**
+- 智能体编程的核心不是"让 AI 写代码"，而是**让 AI 严格按设计实现**
 - 设计文档越清晰，Flow 的可维护性与稳定性越高
-- 可靠性靠“检查 + 重试 + 评估节点”来补齐
+- 可靠性靠"检查 + 重试 + 评估节点"来补齐
 :::
 
 ---
@@ -879,16 +1095,17 @@ pip install -r requirements.txt
 
 | 文件 | 案例 | 核心模式 |
 | :--- | :--- | :--- |
-| `01_chatbot.py` | 聊天机器人 | 链式 + 循环 |
-| `02_rag.py` | RAG 检索增强 | 链式 + BatchNode |
-| `03_writing_workflow.py` | 写作工作流 | 链式 |
-| `04_search_agent.py` | 搜索 Agent | 循环 + 条件分支 |
-| `05_multi_agent.py` | 多 Agent 协作 | 多 Agent + 循环 |
-| `06_map_reduce.py` | Map-Reduce | BatchNode |
-| `07_parallel_processing.py` | 并行处理 | AsyncParallelBatchNode |
-| `08_chain_of_thought.py` | 思维链推理 | 循环 + 自检 |
-| `09_mcp_tool.py` | MCP 工具集成 | Agent + 工具 |
-| `10_agentic_coding/` | 智能体编程 | 完整项目模板 |
+| `01_chatbot.py` | 1. 聊天机器人 | 链式 + 循环 |
+| `03_writing_workflow.py` | 2. 写作工作流 | 链式 |
+| `02_rag.py` | 3. RAG 检索增强 | 链式 + BatchNode |
+| `04_search_agent.py` | 4. 搜索 Agent | 循环 + 条件分支 |
+| `05_multi_agent.py` | 5. 多 Agent 协作 | AsyncNode + 消息队列 |
+| `06_map_reduce.py` | 6. Map-Reduce | BatchNode |
+| `07_parallel_processing.py` | 7. 并行处理 | AsyncParallelBatchNode |
+| `08_structured_output.py` | 8. 结构化输出 | 循环 + 重试 + 校验 |
+| `08_chain_of_thought.py` | 9. 思维链推理 | 循环 + 自检 |
+| `09_mcp_tool.py` | 10. MCP 工具集成 | Agent + 工具 |
+| `10_agentic_coding/` | 11. 智能体编程 | 完整项目模板 |
 
 ::: code-group
 
@@ -914,7 +1131,7 @@ python 04_search_agent.py
 ::: info 关于示例代码
 - 所有示例默认使用**模拟 LLM**，无需 API 密钥，开箱即用
 - 如需接入真实 LLM，只需替换各文件中的 `mock_` 函数即可
-- 案例 10 是完整的多文件项目模板，包含 utils / nodes / flow / tests
+- 案例 11 是完整的多文件项目模板，包含 utils / nodes / flow / tests
 :::
 
 ---
