@@ -38,8 +38,8 @@ pip install -r requirements.txt
 | 文件 | 案例 | 核心模式 | 交互方式 |
 | :--- | :--- | :--- | :--- |
 | `01_chatbot.py` | 聊天机器人 | 链式 + 循环 | 需要终端输入 |
-| `02_rag.py` | RAG 检索增强 | 链式 + BatchNode | 自动运行 |
-| `03_writing_workflow.py` | 写作工作流 | 链式 | 自动运行 |
+| `02_writing_workflow.py` | 写作工作流 | 链式 | 自动运行 |
+| `03_rag.py` | RAG 检索增强 | 链式 + BatchNode | 自动运行 |
 
 ### 中级案例
 
@@ -49,14 +49,16 @@ pip install -r requirements.txt
 | `05_multi_agent.py` | 多 Agent 协作 | 多 Agent + 循环 | 自动运行 |
 | `06_map_reduce.py` | Map-Reduce 批处理 | BatchNode | 自动运行 |
 | `07_parallel_processing.py` | 并行处理 | AsyncParallelBatchNode | 自动运行 |
+| `08_structured_output.py` | 结构化输出 | 循环 + 重试 + 校验 | 自动运行 |
+| `12_agent_skills.py` | Agent Skills | 链式 + 条件路由 | 自动运行 |
 
 ### 进阶案例
 
 | 文件 | 案例 | 核心模式 | 交互方式 |
 | :--- | :--- | :--- | :--- |
-| `08_chain_of_thought.py` | 思维链推理 | 循环 + 自检 | 自动运行 |
-| `09_mcp_tool.py` | MCP 工具集成 | Agent + 工具 | 自动运行 |
-| `10_agentic_coding/` | 智能体编程 | 完整项目模板 | 自动运行 |
+| `09_chain_of_thought.py` | 思维链推理 | 循环 + 自检 | 自动运行 |
+| `10_mcp_tool.py` | MCP 工具集成 | Agent + 工具 | 自动运行 |
+| `11_agentic_coding/` | 智能体编程 | 完整项目模板 | 自动运行 |
 
 ## 运行示例
 
@@ -64,12 +66,12 @@ pip install -r requirements.txt
 # 运行单个示例
 python 01_chatbot.py
 
-# 案例 10 是多文件项目，需要进入目录运行
-cd 10_agentic_coding
+# 案例 11 是多文件项目，需要进入目录运行
+cd 11_agentic_coding
 python main.py
 
-# 运行案例 10 的单元测试
-cd 10_agentic_coding
+# 运行案例 11 的单元测试
+cd 11_agentic_coding
 python tests/test_nodes.py
 ```
 
@@ -78,14 +80,15 @@ python tests/test_nodes.py
 ```bash
 # 零基础入门：ChatBot → 写作工作流 → RAG
 python 01_chatbot.py
-python 03_writing_workflow.py
-python 02_rag.py
+python 02_writing_workflow.py
+python 03_rag.py
 
-# Agent 方向：搜索 Agent → 多 Agent → MCP → 智能体编程
+# Agent 方向：搜索 Agent → 多 Agent → Agent Skills → MCP → 智能体编程
 python 04_search_agent.py
 python 05_multi_agent.py
-python 09_mcp_tool.py
-cd 10_agentic_coding && python main.py
+python 12_agent_skills.py
+python 10_mcp_tool.py
+cd 11_agentic_coding && python main.py
 
 # 性能方向：Map-Reduce → 并行处理
 python 06_map_reduce.py
@@ -102,7 +105,7 @@ python 07_parallel_processing.py
 
 ### 接入真实 LLM
 
-以案例 10 为例，修改 `10_agentic_coding/utils/call_llm.py`：
+以案例 11 为例，修改 `11_agentic_coding/utils/call_llm.py`：
 
 ```python
 # 取消注释 OpenAI 实现部分，注释掉模拟实现
@@ -122,22 +125,24 @@ examples/
 ├── README.md                    # 本文件
 ├── requirements.txt             # 依赖管理
 ├── 01_chatbot.py                # 聊天机器人
-├── 02_rag.py                    # RAG 检索增强
-├── 03_writing_workflow.py       # 写作工作流
+├── 02_writing_workflow.py       # 写作工作流
+├── 03_rag.py                    # RAG 检索增强
 ├── 04_search_agent.py           # 搜索 Agent
 ├── 05_multi_agent.py            # 多 Agent 协作
 ├── 06_map_reduce.py             # Map-Reduce 批处理
 ├── 07_parallel_processing.py    # 并行处理
-├── 08_chain_of_thought.py       # 思维链推理
-├── 09_mcp_tool.py               # MCP 工具集成
-└── 10_agentic_coding/           # 智能体编程（完整项目模板）
-    ├── main.py                  # 主入口
-    ├── nodes.py                 # 节点定义
-    ├── flow.py                  # Flow 构建
-    ├── utils/                   # 工具函数
-    │   ├── __init__.py
-    │   ├── call_llm.py          # LLM 调用
-    │   └── search_web.py        # 搜索工具
-    └── tests/                   # 单元测试
-        └── test_nodes.py
+├── 08_structured_output.py      # 结构化输出
+├── 09_chain_of_thought.py       # 思维链推理
+├── 10_mcp_tool.py               # MCP 工具集成
+├── 11_agentic_coding/           # 智能体编程（完整项目模板）
+│   ├── main.py                  # 主入口
+│   ├── nodes.py                 # 节点定义
+│   ├── flow.py                  # Flow 构建
+│   ├── utils/                   # 工具函数
+│   │   ├── __init__.py
+│   │   ├── call_llm.py          # LLM 调用
+│   │   └── search_web.py        # 搜索工具
+│   └── tests/                   # 单元测试
+│       └── test_nodes.py
+└── 12_agent_skills.py           # Agent Skills 技能路由
 ```

@@ -25,9 +25,9 @@ description: '通过 12 个实战案例，学习如何用 PocketFlow 构建聊�
   </el-tab-pane>
   <el-tab-pane label="想做 Agent">
 
-**推荐顺序**：搜索 Agent → 多 Agent 协作 → MCP 工具集成 → Agent Skills → 智能体编程
+**推荐顺序**：搜索 Agent → 多 Agent 协作 → Agent Skills → MCP 工具集成 → 智能体编程
 
-Agent 的核心是"自主决策循环"。这五个案例从简单的工具调用，到多 Agent 协作，再到标准化工具集成和技能路由，最后学习系统化构建 Agent 的工程方法论。
+Agent 的核心是"自主决策循环"。这五个案例从简单的工具调用，到多 Agent 协作，再到技能路由和标准化工具集成，最后学习系统化构建 Agent 的工程方法论。
 
   </el-tab-pane>
   <el-tab-pane label="关注性能">
@@ -96,7 +96,7 @@ class CallLLM(Node):
 
     def exec(self, history):
         # 调用你的 LLM API
-        response = call_llm_api(history)
+        response = call_llm(history)
         return response
 
     def post(self, shared, prep_res, exec_res):
@@ -156,7 +156,7 @@ class OutlineNode(Node):
 
     def exec(self, topic):
         prompt = f"为主题'{topic}'列出文章大纲（3-5 个章节）"
-        return call_llm_api(prompt)
+        return call_llm(prompt)
 
     def post(self, shared, prep_res, exec_res):
         shared["outline"] = exec_res
@@ -167,7 +167,7 @@ class WriteDraftNode(Node):
 
     def exec(self, outline):
         prompt = f"根据以下大纲撰写完整文章：\n{outline}"
-        return call_llm_api(prompt)
+        return call_llm(prompt)
 
     def post(self, shared, prep_res, exec_res):
         shared["draft"] = exec_res
@@ -178,7 +178,7 @@ class PolishNode(Node):
 
     def exec(self, draft):
         prompt = f"润色以下文章，使语言更流畅：\n{draft}"
-        return call_llm_api(prompt)
+        return call_llm(prompt)
 
     def post(self, shared, prep_res, exec_res):
         shared["final_article"] = exec_res
@@ -299,7 +299,7 @@ class GenerateNode(Node):
 {data['context']}
 
 问题：{data['question']}"""
-        return call_llm_api(prompt)
+        return call_llm(prompt)
 
     def post(self, shared, prep_res, exec_res):
         shared["answer"] = exec_res
@@ -359,7 +359,7 @@ class ThinkNode(Node):
         prompt = f"""问题：{data['question']}
 已有信息：{data['search_results']}
 请决定：还需要搜索什么？输出搜索关键词，或输出 ENOUGH 表示信息充分。"""
-        return call_llm_api(prompt)
+        return call_llm(prompt)
 
     def post(self, shared, prep_res, exec_res):
         if "ENOUGH" in exec_res:
@@ -386,12 +386,19 @@ class SynthesizeNode(Node):
 
     def exec(self, data):
         prompt = f"基于以下搜索结果回答问题...\n{data}"
-        return call_llm_api(prompt)
+        return call_llm(prompt)
 
 # 构建 Flow
+think = ThinkNode()
+search = SearchNode()
+synthesize = SynthesizeNode()
+
 think - "need_more" >> search        # 信息不足则继续搜索
 think - "enough" >> synthesize       # 信息充分则生成
 search >> think                      # 搜索后回到思考
+
+flow = Flow(start=think)
+flow.run({"question": "PocketFlow 和 LangChain 有什么区别？"})
 ```
 
 ### 4.3 Agent 设计最佳实践
@@ -536,7 +543,7 @@ class EvalResume(BatchNode):
     def exec(self, resume):
         # 每份简历独立评分
         prompt = f"请为以下简历评分(1-10)：\n{resume}"
-        score = call_llm_api(prompt)
+        score = call_llm(prompt)
         return {"resume": resume, "score": int(score)}
 
     def post(self, shared, prep_res, exec_res):
@@ -614,7 +621,7 @@ class GenerateJSON(Node):
 
 输出格式：{{"name": "...", "score": 0-100, "reason": "..."}}
 只输出 JSON，不要其他文字。"""
-        return call_llm_api(prompt)
+        return call_llm(prompt)
 
     def post(self, shared, prep_res, exec_res):
         shared["raw_output"] = exec_res
@@ -641,6 +648,9 @@ class ValidateJSON(Node):
         # 解析失败，返回 None 触发重新生成
         print(f"解析失败：{exc}")
         return None
+
+    def post(self, shared, prep_res, exec_res):
+        shared["result"] = exec_res  # 写入解析结果（成功为 dict，失败为 None）
 
 class CheckResult(Node):
     def prep(self, shared):
@@ -680,64 +690,198 @@ flow.run({"task": "评估候选人张三的 Python 编程能力"})
 
 ## 9. 思维链推理 (Chain-of-Thought)
 
-::: info 难度：进阶 | 模式：循环 + 自检 | 关键词：推理、验证
+::: info 难度：进阶 | 模式：循环 + 自检 | 关键词：分步推理、自我验证、复杂问题求解
 :::
 
+### 9.1 架构
+
+```
+StepReason → Verify
+    ↑          │ │
+    │  "error" ─┘ │
+    │  "continue"─┘
+    │              "ok"
+    │               ↓
+    └────────   Conclude
+```
+
+### 9.2 核心思路
+
+复杂问题（数学、逻辑、多步规划）直接让 LLM 一步回答容易出错。解决方案：**分步推理，每步验证**。
+
+1. **StepReason**：每次只推理一步，追加到推理链
+2. **Verify**：检查最新一步是否正确，不正确则回退重推
+3. **Conclude**：推理完成后，整合所有步骤给出最终答案
+
+### 9.3 关键代码
+
 ```python
+from pocketflow import Node, Flow
+
 class StepReason(Node):
+    def prep(self, shared):
+        return {
+            "question": shared["question"],
+            "steps": shared.get("steps", []),
+        }
+
     def exec(self, data):
         prompt = f"""问题：{data['question']}
-当前推理步骤：{data['steps']}
+已有推理步骤：{data['steps']}
 请继续推理下一步，输出格式：
 STEP: [推理过程]
-ANSWER: [如果得出答案]"""
-        return call_llm_api(prompt)
+ANSWER: [如果已得出最终答案]"""
+        return call_llm(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        shared.setdefault("steps", []).append(exec_res)
+        shared["latest_step"] = exec_res
 
 class Verify(Node):
+    def prep(self, shared):
+        return {
+            "steps": shared["steps"],
+            "latest_step": shared["latest_step"],
+        }
+
     def exec(self, data):
-        prompt = f"请验证以下推理过程是否正确：\n{data}"
-        return call_llm_api(prompt)
+        prompt = f"请验证以下推理是否正确：\n{data['steps']}\n如果有错误请指出。"
+        return call_llm(prompt)
 
     def post(self, shared, prep_res, exec_res):
         if "错误" in exec_res:
-            return "error"      # 发现错误，重新推理
+            shared["steps"].pop()       # 移除错误的步骤
+            return "error"              # 回退重推
         if "ANSWER" in shared.get("latest_step", ""):
-            return "ok"          # 已得出答案，验证通过
-        return "continue"        # 正确但未完成，继续推理
+            return "ok"                 # 已得出答案
+        return "continue"               # 正确但未完成
+
+class Conclude(Node):
+    def prep(self, shared):
+        return shared["steps"]
+
+    def exec(self, steps):
+        prompt = f"基于以下推理步骤，给出最终答案：\n{steps}"
+        return call_llm(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        shared["answer"] = exec_res
+
+# 构建 Flow
+step_reason = StepReason()
+verify = Verify()
+conclude = Conclude()
 
 step_reason >> verify
 verify - "error" >> step_reason     # 发现错误，重推
 verify - "continue" >> step_reason  # 继续推理下一步
 verify - "ok" >> conclude           # 验证通过，输出
+
+flow = Flow(start=step_reason)
+flow.run({"question": "一个水池有 A、B 两个进水管，A 管 4 小时注满，B 管 6 小时注满，同时开两管几小时注满？"})
 ```
+
+::: tip 学习要点
+- **分步推理**：每次只推理一步，降低单步出错概率
+- **自我验证**：Verify 节点检查推理正确性，错误则回退
+- **步骤管理**：`shared["steps"]` 列表记录完整推理链，验证失败时 `pop()` 回退
+- **与结构化输出的区别**：结构化输出校验**格式**，思维链校验**逻辑**
+:::
 
 ---
 
 ## 10. MCP 工具集成
 
-::: info 难度：进阶 | 模式：Agent + 工具 | 关键词：MCP 协议、扩展能力
+::: info 难度：进阶 | 模式：Agent + 工具 | 关键词：MCP 协议、标准化工具调用、扩展能力
 :::
 
-Model Context Protocol (MCP) 是一种标准化的工具调用协议。PocketFlow 通过 Node 的 `exec()` 方法自然地集成 MCP 工具：
+### 10.1 架构
+
+```
+SelectTool → ExecuteTool → Reflect
+    ↑                         │
+    └──── "continue" ─────────┘
+                              │ "done"
+                              ▼
+                           Output
+```
+
+### 10.2 核心思路
+
+Model Context Protocol (MCP) 是一种标准化的工具调用协议 —— 让 LLM 能以统一的方式调用各种外部工具（搜索、数据库、文件系统等）。PocketFlow 通过 Node 的 `exec()` 方法自然地集成 MCP 工具。
 
 > **入门推荐**：[MCP Lite Dev 教程](https://datawhalechina.github.io/mcp-lite-dev) 提供了详细的 MCP 协议学习指南和最佳实践。
 
+### 10.3 关键代码
+
 ```python
+from pocketflow import Node, Flow
+
 class SelectTool(Node):
+    """让 LLM 从可用工具中选择最合适的"""
+    def prep(self, shared):
+        return {
+            "task": shared["task"],
+            "results": shared.get("results", []),
+        }
+
     def exec(self, data):
-        available_tools = get_mcp_tools()  # 获取可用工具列表
-        prompt = f"任务：{data['task']}\n可用工具：{available_tools}\n请选择合适的工具。"
-        return call_llm_api(prompt)
+        available_tools = get_mcp_tools()  # 获取 MCP 工具列表
+        prompt = f"任务：{data['task']}\n已有结果：{data['results']}\n可用工具：{available_tools}\n请选择工具并指定参数。"
+        return call_llm(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        shared["tool_call"] = exec_res
 
 class ExecuteTool(Node):
-    def exec(self, tool_call):
-        # 通过 MCP 协议调用工具
-        return mcp_execute(tool_call)
+    """通过 MCP 协议调用选中的工具"""
+    def prep(self, shared):
+        return shared["tool_call"]
 
-plan >> select_tool >> execute_tool >> reflect
+    def exec(self, tool_call):
+        return mcp_execute(tool_call)  # MCP 标准调用
+
+    def post(self, shared, prep_res, exec_res):
+        shared.setdefault("results", []).append(exec_res)
+
+class Reflect(Node):
+    """判断任务是否完成"""
+    def prep(self, shared):
+        return {
+            "task": shared["task"],
+            "results": shared["results"],
+        }
+
+    def exec(self, data):
+        prompt = f"任务：{data['task']}\n已获得：{data['results']}\n任务完成了吗？输出 DONE 或 CONTINUE。"
+        return call_llm(prompt)
+
+    def post(self, shared, prep_res, exec_res):
+        if "DONE" in exec_res:
+            shared["answer"] = exec_res
+            return "done"
+        return "continue"
+
+# 构建 Flow
+select_tool = SelectTool()
+execute_tool = ExecuteTool()
+reflect = Reflect()
+output = Node()  # 占位输出节点
+
+select_tool >> execute_tool >> reflect
 reflect - "continue" >> select_tool  # 还需要更多工具
 reflect - "done" >> output           # 任务完成
+
+flow = Flow(start=select_tool)
+flow.run({"task": "查询北京今天的天气并生成播报文案"})
 ```
+
+::: tip 学习要点
+- **MCP 是协议，不是工具**：它定义了"如何调用工具"的标准，具体有哪些工具由你的 MCP 服务器决定
+- **与搜索 Agent 的区别**：搜索 Agent 只有一个工具（搜索），MCP Agent 可以选择多种工具
+- **Reflect 节点**：Agent 每次使用工具后反思是否已完成任务，避免不必要的额外调用
+- **`get_mcp_tools()` 和 `mcp_execute()`**：这两个是你的工具函数（参见[原理篇 §6](../pocketflow-intro/#_6-工具函数层-node-里装什么)），具体实现取决于你连接的 MCP 服务器
+:::
 
 ---
 
@@ -1247,16 +1391,16 @@ pip install -r requirements.txt
 | 文件 | 案例 | 核心模式 |
 | :--- | :--- | :--- |
 | `01_chatbot.py` | 1. 聊天机器人 | 链式 + 循环 |
-| `03_writing_workflow.py` | 2. 写作工作流 | 链式 |
-| `02_rag.py` | 3. RAG 检索增强 | 链式 + BatchNode |
+| `02_writing_workflow.py` | 2. 写作工作流 | 链式 |
+| `03_rag.py` | 3. RAG 检索增强 | 链式 + BatchNode |
 | `04_search_agent.py` | 4. 搜索 Agent | 循环 + 条件分支 |
 | `05_multi_agent.py` | 5. 多 Agent 协作 | AsyncNode + 消息队列 |
 | `06_map_reduce.py` | 6. Map-Reduce | BatchNode |
 | `07_parallel_processing.py` | 7. 并行处理 | AsyncParallelBatchNode |
 | `08_structured_output.py` | 8. 结构化输出 | 循环 + 重试 + 校验 |
-| `08_chain_of_thought.py` | 9. 思维链推理 | 循环 + 自检 |
-| `09_mcp_tool.py` | 10. MCP 工具集成 | Agent + 工具 |
-| `10_agentic_coding/` | 11. 智能体编程 | 完整项目模板 |
+| `09_chain_of_thought.py` | 9. 思维链推理 | 循环 + 自检 |
+| `10_mcp_tool.py` | 10. MCP 工具集成 | Agent + 工具 |
+| `11_agentic_coding/` | 11. 智能体编程 | 完整项目模板 |
 | `12_agent_skills.py` | 12. Agent Skills | 链式 + 条件路由 |
 
 ::: code-group
@@ -1264,15 +1408,15 @@ pip install -r requirements.txt
 ```bash [按学习路径运行]
 # 零基础入门
 python 01_chatbot.py
-python 03_writing_workflow.py
-python 02_rag.py
+python 02_writing_workflow.py
+python 03_rag.py
 
 # Agent 方向
 python 04_search_agent.py
 python 05_multi_agent.py
-python 09_mcp_tool.py
 python 12_agent_skills.py
-cd 10_agentic_coding && python main.py
+python 10_mcp_tool.py
+cd 11_agentic_coding && python main.py
 ```
 
 ```bash [运行单个示例]

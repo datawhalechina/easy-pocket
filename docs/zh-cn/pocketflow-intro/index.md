@@ -29,6 +29,9 @@ description: '从零理解 PocketFlow 的核心原理：Node 三阶段模型、F
 
 ### 0.1 框架全景：PocketFlow 与主流框架的本质区别
 
+::: details 💡 初次阅读可跳过 —— 先跑通代码，再回来对比框架差异
+:::
+
 在深入学习之前，先建立一个关键认知 —— PocketFlow 和其他框架**不在同一个抽象层级**：
 
 | 框架 | 核心心智模型 | 给你的是什么 |
@@ -254,6 +257,9 @@ check_node - "reject"  >> reject_node
 :::
 
 ### 2.4 形式化视角：PocketFlow 即有限状态自动机
+
+::: details 💡 可选阅读 —— 本节从理论角度解析 PocketFlow，不影响后续学习。如果你只想快速上手，可以跳过直接进入 [§3 通信机制](#_3-通信机制-shared-store-与-params)。
+:::
 
 如果你学过编译原理或形式语言，会发现 PocketFlow 的执行模型和**有限状态自动机**（Finite State Automaton, FSA）几乎同构。这不是巧合 —— PocketFlow 的设计就是在 LLM 场景下实现了一台 FSA。
 
