@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="2752" height="1536" alt="Easy-Pocket 核心概念宣传图_高清紧凑版" src="https://github.com/user-attachments/assets/e056fbcc-bf62-4ab9-b2ea-00d51720abca" />
+<img width="2752" height="1536" alt="Easy-Pocket 核心概念宣传图_高清紧凑版" src="https://github.com/user-attachments/assets/51d8ae61-b90b-49ea-8b9e-894012cd1499" />
 
 ```text
            ███████╗ █████╗ ███████╗██╗   ██╗    ██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗
