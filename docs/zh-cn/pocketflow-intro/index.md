@@ -70,14 +70,14 @@ PocketFlow 的 100 行源码由 **12 个类**组成，分为两大家族，通�
 
 ```text
 ┌─── Node 家族（做事）─────────────┐  ┌─── Flow 家族（调度）─────────────┐
-│                                  │  │                                  │
-│  BaseNode    三阶段 + 操作符重载  │  │  Flow          图遍历引擎        │
-│  Node        + 重试机制          │  │  BatchFlow     多组 params 迭代  │
+│                                 │  │                                 │
+│  BaseNode    三阶段              │  │  Flow          图遍历引擎        │
+│  Node        重试机制            │  │  BatchFlow     多组 params 迭代  │
 │  BatchNode   批量执行 exec       │  │  AsyncFlow     异步图遍历        │
-│  AsyncNode   async/await 执行    │  │  AsyncBatchFlow      顺序异步    │
+│  AsyncNode   异步执行            │  │  AsyncBatchFlow      顺序异步    │
 │  AsyncBatchNode      顺序异步批  │  │  AsyncParallelBatchFlow 并行异步 │
-│  AsyncParallelBatchNode 并行批   │  │                                  │
-└──────────────────────────────────┘  └──────────────────────────────────┘
+│  AsyncParallelBatchNode 并行批   │  │                                 │
+└─────────────────────────────────┘  └─────────────────────────────────┘
           │                                       │
           │  prep(shared) → exec(prep_res) → post(shared, ...) → action
           │                                       │
