@@ -90,7 +90,7 @@
    * - 在小屏幕设备上，VitePress 会自动调整布局为响应式
    * - 建议值范围：1200px - 1800px（固定宽度）或 80% - 95%（百分比）
    */
-  --vp-layout-max-width: 95%;
+  --vp-layout-max-width: 100%;
 }
 
 /* ----------------------------------------------------------------------------
@@ -367,8 +367,9 @@
   width: 180px !important;
 }
 
-/* 6. 减小内容区域左右内边距 */
-.VPDoc.has-aside .content-container .content {
+/* 6. 减小内容区域内边距，最大化文字可用宽度 */
+.VPDoc .content-container .content {
+  padding-left: 16px !important;
   padding-right: 16px !important;
 }
 
@@ -377,6 +378,22 @@
  */
 .VPDoc .container {
   margin: 0;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* 7. 左侧边栏：减少内部左边距，文字贴近浏览器左缘 */
+.VPSidebar {
+  padding-left: 8px !important;
+}
+
+/* 8. 右侧目录：减少内部右边距，文字贴近浏览器右缘 */
+.VPDoc .aside {
+  padding-right: 0 !important;
+}
+
+.VPDoc .aside-content {
+  padding-right: 8px !important;
 }
 
 /* ============================================================================
