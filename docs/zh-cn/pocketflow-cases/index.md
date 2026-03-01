@@ -560,10 +560,41 @@ class EvalResume(BatchNode):
 
 ---
 
+::: warning 从同步到异步：真实业务的必然选择
+上面的 BatchNode 使用同步 `exec()`，适合教学演示。但在真实业务中，LLM API 调用、Web 搜索、数据库查询都是 **I/O 密集型网络请求** —— 每次要等几百毫秒到几秒。同步逐个处理 8 个请求，总耗时 = 8 × 单次；异步并行则可以同时发出，总耗时 ≈ 单次。
+
+PocketFlow 提供三种批处理模式：
+
+| 模式 | 类 | 执行方式 | 适用场景 |
+| :--- | :--- | :--- | :--- |
+| **同步逐个** | `BatchNode` | `for item: exec(item)` | 教学演示、CPU 密集、需严格顺序 |
+| **异步逐个** | `AsyncBatchNode` | `for item: await exec(item)` | API 有速率限制、需要顺序但不阻塞事件循环 |
+| **异步并行** | `AsyncParallelBatchNode` | `asyncio.gather(*all)` | **最常用** —— I/O 密集场景，N 倍加速 |
+
+本教程的案例使用同步模拟函数降低入门门槛。接入真实 API 时，只需将 `Node` 换成 `AsyncNode`、`exec()` 换成 `async exec_async()`，逻辑完全不变。
+:::
+
 ## 7. 并行处理 (8x 加速)
 
 ::: info 难度：中级 | 模式：AsyncParallelBatchNode | 关键词：并发、I/O 密集
 :::
+
+### 7.1 场景
+
+你需要对 8 篇文章分别调用 LLM 生成摘要。同步 BatchNode 每篇等 2 秒，总计 16 秒；用 `AsyncParallelBatchNode` 并行执行，8 篇同时请求，总计约 2 秒 —— **8 倍加速**。
+
+### 7.2 架构
+
+```
+           ┌─ exec_async(item1) ─┐
+           ├─ exec_async(item2) ─┤
+prep_async ├─ exec_async(item3) ─┤ post_async
+  (列表)   ├─       ...         ─┤  (结果列表)
+           └─ exec_async(item8) ─┘
+              asyncio.gather()
+```
+
+### 7.3 核心代码
 
 ```python
 import asyncio
@@ -571,19 +602,38 @@ from pocketflow import AsyncParallelBatchNode, AsyncFlow
 
 class ParallelProcess(AsyncParallelBatchNode):
     async def prep_async(self, shared):
-        return shared["items"]
+        return shared["items"]       # 返回待处理列表
 
     async def exec_async(self, item):
-        # 每个 item 并发执行
+        # 每个 item 并发执行，不互相等待
         result = await async_api_call(item)
         return result
 
     async def post_async(self, shared, prep_res, exec_res):
-        shared["results"] = exec_res
-
-# asyncio.gather() 自动并发所有 item
-# I/O 密集场景下可获得 N 倍加速
+        shared["results"] = exec_res  # 结果列表，顺序与输入一致
 ```
+
+### 7.4 对比：同步 vs 异步并行
+
+```python
+# 同步方式（案例 6）—— 逐个执行，总耗时 = N × 单次
+class SyncProcess(BatchNode):
+    def exec(self, item):
+        return call_api(item)           # 阻塞等待
+
+# 异步并行（本案例）—— 全部同时发出，总耗时 ≈ 单次
+class ParallelProcess(AsyncParallelBatchNode):
+    async def exec_async(self, item):
+        return await async_api_call(item)  # 非阻塞
+```
+
+::: tip 学习要点
+- **为什么用异步**：真实 LLM API 都是网络 I/O，天然适合 async/await，同步会白白浪费等待时间
+- **接口对称**：BatchNode → AsyncParallelBatchNode，`exec()` → `async exec_async()`，其余逻辑不变
+- **结果有序**：`asyncio.gather()` 返回的结果列表与输入顺序一致
+- **AsyncFlow**：异步节点必须包裹在 `AsyncFlow` 中运行，不能用普通 `Flow`
+- **何时不用并行**：API 有速率限制时，改用 `AsyncBatchNode`（顺序异步），避免被限流
+:::
 
 ---
 

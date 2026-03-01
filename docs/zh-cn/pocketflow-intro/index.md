@@ -62,6 +62,40 @@ PocketFlow 的 100 行代码相当于"物理定律" —— **少到不能再少�
 
 理解了这一点，接下来学习 Node 和 Flow 时你会发现：它们不是"框架的功能"，而是"图的物理定律"。具体的图拓扑与自动机映射，见 [§2.4 形式化视角](#_2-4-形式化视角-pocketflow-即有限状态自动机)。
 
+### 0.2 PocketFlow 架构总览
+
+::: details 💡 初次阅读可跳过 —— 先跑通代码，学完再回来看全貌
+:::
+
+PocketFlow 的 100 行源码由 **12 个类**组成，分为两大家族，通过三种机制通信：
+
+```text
+┌─── Node 家族（做事）─────────────┐  ┌─── Flow 家族（调度）─────────────┐
+│                                  │  │                                  │
+│  BaseNode    三阶段 + 操作符重载  │  │  Flow          图遍历引擎        │
+│  Node        + 重试机制          │  │  BatchFlow     多组 params 迭代  │
+│  BatchNode   批量执行 exec       │  │  AsyncFlow     异步图遍历        │
+│  AsyncNode   async/await 执行    │  │  AsyncBatchFlow      顺序异步    │
+│  AsyncBatchNode      顺序异步批  │  │  AsyncParallelBatchFlow 并行异步 │
+│  AsyncParallelBatchNode 并行批   │  │                                  │
+└──────────────────────────────────┘  └──────────────────────────────────┘
+          │                                       │
+          │  prep(shared) → exec(prep_res) → post(shared, ...) → action
+          │                                       │
+          └──── shared（全局字典）  ◄──► 所有节点读写 ──────┘
+                params（局部参数）  ◄── Flow 向下传递
+                action（路由字符串） ──► post() 返回，Flow 据此跳转
+```
+
+| 维度 | 同步 | 异步顺序 | 异步并行 |
+| :--- | :--- | :--- | :--- |
+| **单节点** | `Node` | `AsyncNode` | — |
+| **批量节点** | `BatchNode` | `AsyncBatchNode` | `AsyncParallelBatchNode` |
+| **流程** | `Flow` | `AsyncFlow` | — |
+| **批量流程** | `BatchFlow` | `AsyncBatchFlow` | `AsyncParallelBatchFlow` |
+
+> 12 个类 = BaseNode 基类 + 上表 10 个组合 + `_ConditionalTransition` 辅助类。详细继承关系见 [§5 深入源码](#_5-深入源码-100-行的全部秘密)。
+
 ---
 
 ## 1. 快速上手
@@ -213,6 +247,10 @@ prep(shared)  →  exec(prep_res)  →  post(shared, prep_res, exec_res)
 - `prep` 和 `post` 负责和外部世界（shared）交互
 - `exec` 是纯粹的业务逻辑，完全不知道 shared 的存在
 - 这让 `exec` 可以被独立测试、独立重试、独立替换
+:::
+
+::: warning node.run() vs flow.run()
+直接调用 `node.run(shared)` 只会执行**这一个节点**，不会沿着 `>>` 连接运行后继节点。如果你连接了后继，PocketFlow 会发出警告：*"Node won't run successors. Use Flow."* 要让整条链路跑起来，必须用 `Flow(start=node).run(shared)`。
 :::
 
 ### 2.2 Flow —— 图编排引擎
@@ -442,19 +480,23 @@ PocketFlow 没有为每种模式创建专门的类 —— 它们都是 Node + Fl
 PocketFlow 的 100 行源码包含 **12 个类**，构成以下层次结构：
 
 ```
-BaseNode                          ← 万物之基（params / successors / 三阶段 / 操作符重载）
-├── Node(BaseNode)                ← 可重试的执行单元（max_retries / wait / exec_fallback）
-│   ├── BatchNode(Node)           ← 批量处理节点（对列表逐一执行 exec）
-│   └── AsyncNode(Node)           ← 异步节点（async 版三阶段）
-│       ├── AsyncBatchNode        ← 顺序异步批处理
-│       └── AsyncParallelBatchNode← 并行异步批处理（asyncio.gather）
-├── Flow(BaseNode)                ← 图执行引擎（遍历有向图）
-│   ├── BatchFlow(Flow)           ← 批量运行整条 Flow（不同 params）
-│   └── AsyncFlow(Flow, AsyncNode)← 异步图执行引擎（支持混合同步/异步节点）
-│       ├── AsyncBatchFlow        ← 顺序异步批量 Flow
-│       └── AsyncParallelBatchFlow← 并行异步批量 Flow
-└── _ConditionalTransition        ← 辅助类（实现 - "action" >> 语法）
+BaseNode                                       ← 万物之基（params / successors / 三阶段 / 操作符重载）
+├── Node(BaseNode)                             ← 可重试的执行单元（max_retries / wait / exec_fallback）
+│   ├── BatchNode(Node)                        ← 批量处理节点（对列表逐一执行 exec）
+│   └── AsyncNode(Node)                        ← 异步节点（async 版三阶段）
+│       ├── AsyncBatchNode(AsyncNode, BatchNode)        ← 顺序异步批处理 ◆
+│       └── AsyncParallelBatchNode(AsyncNode, BatchNode)← 并行异步批处理 ◆
+├── Flow(BaseNode)                             ← 图执行引擎（遍历有向图）
+│   ├── BatchFlow(Flow)                        ← 批量运行整条 Flow（不同 params）
+│   └── AsyncFlow(Flow, AsyncNode)             ← 异步图执行引擎（混合同步/异步节点）◆
+│       ├── AsyncBatchFlow(AsyncFlow, BatchFlow)        ← 顺序异步批量 Flow ◆
+│       └── AsyncParallelBatchFlow(AsyncFlow, BatchFlow)← 并行异步批量 Flow ◆
+└── _ConditionalTransition                     ← 辅助类（实现 - "action" >> 语法）
 ```
+
+::: info ◆ 菱形继承（Diamond Inheritance）
+标记 ◆ 的类同时继承两个父类，形成菱形继承。例如 `AsyncBatchNode(AsyncNode, BatchNode)` —— 从 AsyncNode 获得 async 能力，从 BatchNode 获得批量循环，Python 的 MRO（方法解析顺序）确保 `_exec()` 等方法的调用顺序正确。这种"能力叠加"设计让 12 个类覆盖了所有同步/异步 × 单个/批量 × 顺序/并行的组合。
+:::
 
 下面逐一解读关键类。
 
@@ -493,6 +535,8 @@ class Node(BaseNode):
 
 ::: tip 实用场景
 当调用 LLM API 时，网络波动、限流等问题很常见。设置 `max_retries=3, wait=2` 就能最多尝试 3 次（首次 + 2 次重试），每次间隔 2 秒。所有重试耗尽后，`exec_fallback(prep_res, exc)` 会被调用 —— 你可以覆写它来返回降级结果而非抛出异常。
+
+注意源码中 `for self.cur_retry in range(self.max_retries)` —— 重试计数器 `self.cur_retry` 是节点实例属性，你可以在 `exec()` 中读取它（`self.cur_retry`）来判断当前是第几次重试，从而在不同重试轮次采用不同策略。
 :::
 
 ### 5.3 Flow —— 图执行引擎
@@ -511,7 +555,28 @@ class Flow(BaseNode):
         return last_action
 ```
 
+**三个关键细节：**
+
+**1. `copy.copy` —— 防止状态泄漏**
+
+注意 `_orch` 中的 `copy.copy(self.start_node)` 和 `copy.copy(self.get_next_node(...))`。每次执行都对节点做浅拷贝，这意味着**同一条 Flow 可以安全地多次运行**，每次运行使用独立的节点副本，不会因上一次运行残留的 `params`、`cur_retry` 等内部状态而互相干扰。
+
+**2. Flow 自身也有 prep/post 生命周期**
+
+Flow 继承自 BaseNode，因此它的 `_run()` 实际上是 `prep → _orch → post`。大多数时候你不需要覆写 Flow 的 `prep/post`，但 **BatchFlow 正是利用了这一点** —— 它覆写 `prep()` 返回 params 列表，再在 `_run()` 中逐一迭代（见 §5.5）。
+
+**3. `Flow.post` 默认透传 last_action**
+
+源码中 `Flow.post()` 被覆写为 `return exec_res`，即把最后一个节点的 action 原样返回。这使得**嵌套 Flow 可以参与父 Flow 的路由** —— 子 Flow 内部最后一个节点返回的 action 会传递给父 Flow，决定父 Flow 的下一跳。
+
 注意 `curr.set_params(p)` —— Flow 在执行每个子节点前，都会将自身的 params 传递给子节点。这就是第 3.2 节 Params 机制的运作方式。
+
+::: warning get_next_node 的优雅终止
+`post()` 返回的 action 如果在 `successors` 中找不到匹配，Flow **不会崩溃** —— 它会发出一条 warning 并正常结束。这意味着：
+- 返回 `None`（即 `post()` 没有显式 return）→ 如果没有 `"default"` 后继，Flow 结束
+- 返回一个未注册的 action → Flow 发出警告并结束
+- 这是**有意为之**的设计，让流程终止变得简单自然
+:::
 
 ```python
 # 子 Flow 作为一个 Node 参与到父 Flow 中
@@ -580,6 +645,12 @@ batch_flow.run(shared)
 
 ### 5.6 AsyncNode 与异步家族
 
+::: tip 为什么需要 async？
+本教程的案例使用同步模拟函数来降低门槛，但**真实业务几乎都是异步的**。LLM API 调用（OpenAI、Claude）、Web 搜索、数据库查询都是网络 I/O —— 每次请求要等几百毫秒到几秒。同步代码在等待期间阻塞整个线程；async/await 让 Python 在等待 I/O 时去处理其他任务。
+
+生产环境中，你几乎总是用 `AsyncNode` + `AsyncFlow` 替代 `Node` + `Flow`。接口完全对称，只需给方法加上 `async` 前缀和 `_async` 后缀，逻辑代码不变。
+:::
+
 AsyncNode 提供三阶段执行的 `async/await` 版本：
 
 ```python
@@ -598,6 +669,20 @@ class AsyncNode(Node):
 - AsyncNode **必须**包裹在 `AsyncFlow` 中运行
 - 反过来，`AsyncFlow` **可以**包含普通同步 Node（它会自动判断用 `_run` 还是 `_run_async`）
 :::
+
+AsyncFlow 是如何做到"混合同步/异步节点"的？关键在 `_orch_async` 的一行 `isinstance` 检测：
+
+```python
+# AsyncFlow._orch_async 核心逻辑（简化）
+while curr:
+    if isinstance(curr, AsyncNode):
+        last_action = await curr._run_async(shared)   # 异步节点
+    else:
+        last_action = curr._run(shared)                # 普通同步节点
+    curr = self.get_next_node(curr, last_action)
+```
+
+这意味着你可以在一条 AsyncFlow 中自由混搭同步和异步节点 —— AsyncFlow 会自动为每个节点选择正确的调用方式。
 
 基于 AsyncNode，PocketFlow 提供了一系列异步组合类：
 
@@ -635,8 +720,6 @@ class AsyncParallelBatchNode(AsyncNode, BatchNode):
 | **文本切片** | 将长文档拆成小块 | 按段落 / 按 token 数 / 递归拆分 |
 | **Embedding** | 将文本转为向量 | OpenAI / HuggingFace / 本地模型 |
 | **向量数据库** | 存储和检索向量 | Pinecone / FAISS / Chroma |
-| **语音合成** | 文本转语音 | TTS API |
-| **可视化与调试** | 追踪 Flow 执行过程 | 日志 / 追踪工具 |
 
 ```python
 # 典型的工具函数：LLM 调用封装
