@@ -40,7 +40,7 @@
               <span class="io-label">输入</span>
               <code class="io-val">{{ phase.input }}</code>
             </div>
-            <div class="io-arrow">→</div>
+            <div class="io-arrow">↓</div>
             <div class="io-out">
               <span class="io-label">输出</span>
               <code class="io-val">{{ phase.output }}</code>
@@ -248,14 +248,24 @@ const reset = () => {
 
 .phase-io {
   display: flex;
-  align-items: center;
-  gap: 0.3rem;
+  flex-direction: column;
+  gap: 0.25rem;
   font-size: 0.75rem;
+}
+
+.io-in, .io-out {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  background: var(--vp-c-bg-soft);
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
 }
 
 .io-label {
   color: var(--vp-c-text-3);
   font-size: 0.7rem;
+  flex-shrink: 0;
 }
 
 .io-val {
@@ -266,7 +276,9 @@ const reset = () => {
 
 .io-arrow {
   color: var(--vp-c-text-3);
-  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  line-height: 1;
 }
 
 .phase-connector {

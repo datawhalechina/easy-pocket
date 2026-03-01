@@ -114,7 +114,7 @@
 /* --vp-sidebar-width: 272px; */
 
 :root {
-  --vp-sidebar-width: 300px;
+  --vp-sidebar-width: 232px;
 }
 
 /* 侧边栏背景色
@@ -339,7 +339,7 @@
  * 推荐值：1264px（适合 1920px 宽屏）/ 1600px（适合 2560px 宽屏）
  */
 .VPDoc:not(.has-sidebar) .content {
-  max-width: 1264px !important;
+  max-width: 100% !important;
 }
 
 /* 3. 有右侧目录时的内容容器宽度（最重要）
@@ -352,7 +352,24 @@
  * 如果你的内容区域被限制在 688px，主要就是这个选择器在起作用。
  */
 .VPDoc.has-aside .content-container {
-  max-width: 1168px !important;
+  max-width: 100% !important;
+}
+
+/* 5. 缩小右侧目录（Aside）宽度，给内容区让出更多空间
+ * 默认值：224px
+ */
+.VPDoc .aside {
+  max-width: 180px !important;
+  width: 180px !important;
+}
+
+.VPDoc .aside-container {
+  width: 180px !important;
+}
+
+/* 6. 减小内容区域左右内边距 */
+.VPDoc.has-aside .content-container .content {
+  padding-right: 16px !important;
 }
 
 /* 4. 通用容器边距重置

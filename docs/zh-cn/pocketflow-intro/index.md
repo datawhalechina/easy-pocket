@@ -29,8 +29,7 @@ description: '从零理解 PocketFlow 的核心原理：Node 三阶段模型、F
 
 ### 0.1 框架全景：PocketFlow 与主流框架的本质区别
 
-::: details 💡 初次阅读可跳过 —— 先跑通代码，再回来对比框架差异
-:::
+:::: details 💡 初次阅读可跳过 —— 先跑通代码，再回来对比框架差异
 
 在深入学习之前，先建立一个关键认知 —— PocketFlow 和其他框架**不在同一个抽象层级**：
 
@@ -61,11 +60,11 @@ PocketFlow 的 100 行代码相当于"物理定律" —— **少到不能再少�
 > —— PocketFlow 创作者 Zachary Huang
 
 理解了这一点，接下来学习 Node 和 Flow 时你会发现：它们不是"框架的功能"，而是"图的物理定律"。具体的图拓扑与自动机映射，见 [§2.4 形式化视角](#_2-4-形式化视角-pocketflow-即有限状态自动机)。
+::::
 
 ### 0.2 PocketFlow 架构总览
 
 ::: details 💡 初次阅读可跳过 —— 先跑通代码，学完再回来看全貌
-:::
 
 PocketFlow 的 100 行源码由 **12 个类**组成，分为两大家族，通过三种机制通信：
 
@@ -95,6 +94,7 @@ PocketFlow 的 100 行源码由 **12 个类**组成，分为两大家族，通�
 | **批量流程** | `BatchFlow` | `AsyncBatchFlow` | `AsyncParallelBatchFlow` |
 
 > 12 个类 = BaseNode 基类 + 上表 10 个组合 + `_ConditionalTransition` 辅助类。详细继承关系见 [§5 深入源码](#_5-深入源码-100-行的全部秘密)。
+:::
 
 ---
 
@@ -192,25 +192,6 @@ flow.run({"name": "小明"})
 | `09_async_parallel.py` | 5.6 异步家族 | AsyncParallelBatchNode |
 | `10_loop_pattern.py` | 4 设计模式 | 循环/自校正 |
 
-::: code-group
-
-```bash [一键运行]
-cd examples
-pip install -r requirements.txt
-python 01_hello_pocketflow.py
-```
-
-```bash [按顺序学习]
-cd examples
-pip install -r requirements.txt
-python 01_hello_pocketflow.py
-python 02_node_lifecycle.py
-python 03_flow_chain.py
-# ... 依次运行
-```
-
-:::
-
 ::: info 关于示例代码
 - 所有示例**自包含**，不需要 API 密钥或外部服务
 - LLM 调用使用模拟逻辑代替，便于理解核心机制
@@ -296,8 +277,7 @@ check_node - "reject"  >> reject_node
 
 ### 2.4 形式化视角：PocketFlow 即有限状态自动机
 
-::: details 💡 可选阅读 —— 本节从理论角度解析 PocketFlow，不影响后续学习。如果你只想快速上手，可以跳过直接进入 [§3 通信机制](#_3-通信机制-shared-store-与-params)。
-:::
+:::: details 💡 可选阅读 —— 本节从理论角度解析 PocketFlow，不影响后续学习。如果你只想快速上手，可以跳过直接进入 [§3 通信机制](#_3-通信机制-shared-store-与-params)。
 
 如果你学过编译原理或形式语言，会发现 PocketFlow 的执行模型和**有限状态自动机**（Finite State Automaton, FSA）几乎同构。这不是巧合 —— PocketFlow 的设计就是在 LLM 场景下实现了一台 FSA。
 
@@ -362,6 +342,7 @@ LangGraph 也自称"状态机"，但含义不同：
 
 PocketFlow 更接近经典 FSA：**状态转移由 action 字符串驱动，状态数据在自动机之外管理**。这让框架保持在 100 行，同时你可以自由选择任何持久化方案。
 :::
+::::
 
 ---
 
