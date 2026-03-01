@@ -100,7 +100,7 @@ PocketFlow 的 100 行源码由 **12 个类**组成，分为两大家族，通�
 
 ## 1. 快速上手
 
-先跑起来，再理解原理。
+先跑起来，再理解原理。如果你更喜欢看视频，可以先看 [官方视频教程](https://youtu.be/0Zr3NwcvpA0)，配合 [官方文档](https://the-pocket.github.io/PocketFlow/) 一起学习。
 
 ### 1.1 环境配置
 
@@ -790,3 +790,4 @@ Agentic Coding 包含 8 个步骤：需求澄清 → Flow 设计 → Utilities �
 
 - 前往 [PocketFlow 应用案例](../pocketflow-cases/) 学习实战案例
 - 访问 [PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow) 查看完整 cookbook
+- PocketFlow 也有其他语言版本：[TypeScript](https://github.com/The-Pocket/PocketFlow-Typescript) · [Java](https://github.com/The-Pocket/PocketFlow-Java) · [C++](https://github.com/The-Pocket/PocketFlow-CPP) · [Go](https://github.com/The-Pocket/PocketFlow-Go) · [Rust](https://github.com/The-Pocket/PocketFlow-Rust) · [PHP](https://github.com/The-Pocket/PocketFlow-PHP)
