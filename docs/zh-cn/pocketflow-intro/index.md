@@ -771,19 +771,6 @@ Agentic Coding 包含 8 个步骤：需求澄清 → Flow 设计 → Utilities �
 | **post** | Post-processing | **后处理阶段**。将结果写回 shared，返回 action。 |
 | **exec_fallback** | Execution Fallback | **降级回调**。所有重试耗尽后调用，可覆写以返回兜底结果。 |
 
-## 总结
-
-<el-card shadow="hover" style="border-radius: 16px; border: 2px dashed var(--vp-c-brand); margin: 20px 0;">
-  <div style="text-align: center;">
-    <div style="font-size: 1.25rem; font-weight: 600; color: var(--vp-c-text-1);">
-      100 行代码，覆盖主流场景
-    </div>
-    <div style="color: var(--vp-c-text-3); margin-top: 0.5rem;">
-      Node 做事，Flow 调度，shared 通信 —— 三个概念，构建一切。
-    </div>
-  </div>
-</el-card>
-
 ### 下一步
 
 - 前往 [PocketFlow 应用案例](../pocketflow-cases/) 学习实战案例

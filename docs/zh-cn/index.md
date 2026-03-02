@@ -28,7 +28,8 @@ features:
     PocketFlow 是一个仅 100 行代码的 LLM 应用框架。<br>
     它用 <strong>Node</strong>（节点）和 <strong>Flow</strong>（流程）两个极简抽象，<br>
     让你可以构建聊天机器人、RAG、智能体、工作流等所有主流 LLM 应用。<br>
-    零依赖、零供应商锁定、零学习门槛。
+    零依赖、零供应商锁定、零学习门槛。<br>
+    <strong>Node 做事，Flow 调度，shared 通信 —— 三个概念，构建一切。</strong>
   </p>
 </div>
 
@@ -118,11 +119,6 @@ features:
   line-height: 1.5;
 }
 </style>
-
-<div class="footer-cta">
-  <h3 class="support-title">100 行代码，构建你需要的 LLM 应用</h3>
-  <p class="support-text">Node 做事，Flow 调度，shared 通信 —— 仅此而已。</p>
-</div>
 
 <style>
 .footer-cta {
