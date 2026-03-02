@@ -1,40 +1,3 @@
-/* ============================================================================
-   公告栏样式
-   ============================================================================ */
-
-/* 关键：告诉 VitePress 公告栏的高度，让导航栏正确下移 */
-:root {
-  --vp-layout-top-height: 40px;
-}
-
-.announcement-banner {
-  background: linear-gradient(90deg, #ffdfae 0%, #ffbd53 100%);
-  color: #fff;
-  padding: 8px 16px;
-  text-align: center;
-  color: #000;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.5;
-  height: var(--vp-layout-top-height);
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* 固定在顶部 */
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: var(--vp-z-index-layout-top, 40);
-}
-
-/* 暗色模式下的公告栏样式 */
-.dark .announcement-banner {
-  background: linear-gradient(90deg, #5e4219 0%, #583c10 100%);
-  color: #fff;
-}
-
 /* 全局图片样式设置 */
 .vp-doc img {
   max-height: 50vh;
@@ -114,7 +77,7 @@
 /* --vp-sidebar-width: 272px; */
 
 :root {
-  --vp-sidebar-width: 232px;
+  --vp-sidebar-width: 208px;
 }
 
 /* 侧边栏背景色
@@ -324,76 +287,104 @@
    - https://github.com/vuejs/vitepress/discussions/1709
    ============================================================================ */
 
-/* 1. 无侧边栏时的容器宽度
- * 说明：当页面没有左侧边栏时（如首页），容器的最大宽度
- * 默认值：约 1136px
- * 推荐值：1584px（适合 1920px 宽屏）/ 2000px（适合 2560px 宽屏）
- */
-.VPDoc:not(.has-sidebar) .container {
-  max-width: 2000px !important;
-}
+/* ============================================================================
+   极限宽屏布局覆盖（逐层压死 VitePress scoped CSS）
 
-/* 2. 无侧边栏时的内容宽度
- * 说明：当页面没有左侧边栏时，主内容区域的最大宽度
- * 默认值：约 912px
- * 推荐值：1264px（适合 1920px 宽屏）/ 1600px（适合 2560px 宽屏）
- */
-.VPDoc:not(.has-sidebar) .content {
-  max-width: 100% !important;
-}
+   VitePress DOM 结构:
+   .VPDoc (padding: 48px 32px 0)           ← 第1层 padding
+     .container (margin: 0 auto)            ← 居中 + max-width
+       .aside (padding-left: 32px, max-width: 256px)  ← 第2层
+         .aside-container (width: 224px, position: fixed)
+         .aside-curtain (width: 224px)
+       .content (padding: 0 32px 128px)     ← 第3层 padding
+         .content-container (max-width: 688px) ← 第4层！主要瓶颈
+   ============================================================================ */
 
-/* 3. 有右侧目录时的内容容器宽度（最重要）
- * 说明：当页面有右侧目录（Aside）时，内容容器的最大宽度
- * 这是导致 688px 限制的主要原因
- * 默认值：约 912px
- * 推荐值：1168px（适合 1920px 宽屏）/ 1500px（适合 2560px 宽屏）
- *
- * 💡 这是最关键的规则！
- * 如果你的内容区域被限制在 688px，主要就是这个选择器在起作用。
- */
-.VPDoc.has-aside .content-container {
-  max-width: 100% !important;
-}
-
-/* 5. 缩小右侧目录（Aside）宽度，给内容区让出更多空间
- * 默认值：224px
- */
-.VPDoc .aside {
-  max-width: 180px !important;
-  width: 180px !important;
-}
-
-.VPDoc .aside-container {
-  width: 180px !important;
-}
-
-/* 6. 减小内容区域内边距，最大化文字可用宽度 */
-.VPDoc .content-container .content {
-  padding-left: 16px !important;
-  padding-right: 16px !important;
-}
-
-/* 4. 通用容器边距重置
- * 说明：移除容器的默认边距，让内容更靠近边缘
- */
-.VPDoc .container {
-  margin: 0;
+/* --- 第1层：VPDoc 自身的水平 padding --- */
+.VPDoc {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
 
-/* 7. 左侧边栏：减少内部左边距，文字贴近浏览器左缘 */
+/* --- 第2层：.container 居中和宽度限制 --- */
+.VPDoc .container {
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: 100% !important;
+}
+
+.VPDoc:not(.has-sidebar) .container {
+  max-width: 100% !important;
+}
+
+/* --- 第3层：.content 的水平 padding（默认 32px） --- */
+.VPDoc .content {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  max-width: 100% !important;
+}
+
+.VPDoc:not(.has-sidebar) .content {
+  max-width: 100% !important;
+}
+
+/* --- 第4层：.content-container 的 max-width（默认 688px，主瓶颈） --- */
+.VPDoc .content-container {
+  max-width: 100% !important;
+  flex-grow: 1 !important;
+  min-width: 0 !important;
+}
+
+.VPDoc.has-aside .content-container {
+  max-width: 100% !important;
+}
+
+/* --- 右侧目录：自适应宽度 (默认 aside: 256px, aside-container: 224px) --- */
+.VPDoc .aside {
+  max-width: 220px !important;
+  width: fit-content !important;
+  min-width: 140px !important;
+  padding-left: 8px !important;
+  flex-shrink: 0 !important;
+}
+
+.VPDoc .aside-container {
+  width: fit-content !important;
+  max-width: 212px !important;
+  min-width: 132px !important;
+}
+
+.VPDoc .aside-curtain {
+  width: 0 !important;
+}
+
+/* 右侧目录项不换行，过长时省略 */
+.VPDoc .outline-link {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* --- 左侧边栏：自适应 --- */
 .VPSidebar {
   padding-left: 8px !important;
+  padding-right: 4px !important;
+  width: var(--vp-sidebar-width) !important;
 }
 
-/* 8. 右侧目录：减少内部右边距，文字贴近浏览器右缘 */
-.VPDoc .aside {
-  padding-right: 0 !important;
+/* 左侧菜单项不换行，过长时省略 */
+.VPSidebarItem .text {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
-.VPDoc .aside-content {
-  padding-right: 8px !important;
+/* 1440px+ 时 VitePress 会用 calc 重新算 sidebar 宽度和 padding，全部压死 */
+@media (min-width: 1440px) {
+  .VPSidebar {
+    padding-left: 8px !important;
+    width: var(--vp-sidebar-width) !important;
+  }
 }
 
 /* ============================================================================

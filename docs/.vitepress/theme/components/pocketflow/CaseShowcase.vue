@@ -247,23 +247,6 @@ reflect - "continue" >> plan`,
     points: ['MCP 协议标准化工具调用', '智能体自主选择和使用工具', '反思循环优化执行结果']
   },
   {
-    id: 'agentic-coding',
-    icon: '🤝',
-    name: '智能体编程',
-    category: 'advanced',
-    difficulty: 'hard',
-    diffLabel: '进阶',
-    type: '方法论',
-    anchor: '_11-智能体编程-agentic-coding',
-    desc: '人类设计 + AI 实现的高效协作范式 —— 8 步流程从需求到可靠系统的完整工程实践。',
-    flow: ['Requirements', 'Flow设计', 'Utilities', 'Data', 'Node', 'Implementation', 'Optimization', 'Reliability'],
-    code: `# 设计文档优先
-docs/design.md  # 先写设计
-utils/  # 实现工具
-nodes.py + flow.py + main.py  # 智能体实现`,
-    points: ['人类负责系统设计，AI 负责实现', '设计文档是数据契约', '小步迭代 + Fail Fast + 可靠性补齐']
-  },
-  {
     id: 'agent-skills',
     icon: '🎭',
     name: '智能体技能',
@@ -271,13 +254,30 @@ nodes.py + flow.py + main.py  # 智能体实现`,
     difficulty: 'medium',
     diffLabel: '中级',
     type: '智能体',
-    anchor: '_12-智能体技能-技能路由',
+    anchor: '_11-智能体技能-技能路由',
     desc: '将领域知识模块化为 Markdown 技能文件，智能体根据用户请求动态选择技能并注入 prompt。',
     flow: ['SelectSkill', 'ApplySkill'],
     code: `select_skill >> apply_skill
 # SelectSkill 从 skills/*.md 选择技能
 # ApplySkill 将技能指令注入 LLM prompt`,
     points: ['技能文件是纯 Markdown，非开发者也能维护', 'LLM 或规则路由动态选择技能', '新增能力 = 加一个 .md 文件，无需改代码']
+  },
+  {
+    id: 'agentic-coding',
+    icon: '🤝',
+    name: '智能体编程',
+    category: 'advanced',
+    difficulty: 'hard',
+    diffLabel: '进阶',
+    type: '方法论',
+    anchor: '_12-智能体编程-agentic-coding',
+    desc: '人类设计 + AI 实现的高效协作范式 —— 8 步流程从需求到可靠系统的完整工程实践。',
+    flow: ['Requirements', 'Flow设计', 'Utilities', 'Data', 'Node', 'Implementation', 'Optimization', 'Reliability'],
+    code: `# 设计文档优先
+docs/design.md  # 先写设计
+utils/  # 实现工具
+nodes.py + flow.py + main.py  # 智能体实现`,
+    points: ['人类负责系统设计，AI 负责实现', '设计文档是数据契约', '小步迭代 + Fail Fast + 可靠性补齐']
   }
 ]
 

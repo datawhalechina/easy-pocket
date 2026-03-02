@@ -115,8 +115,8 @@ const patternData = {
       { icon: 'C', name: 'NodeC', style: 'left: 430px; top: 70px;' }
     ],
     edges: [
-      { d: 'M 105 100 L 220 100', label: 'default', labelX: 162, labelY: 90 },
-      { d: 'M 305 100 L 420 100', label: 'default', labelX: 362, labelY: 90 }
+      { d: 'M 105 100 L 230 100', label: 'default', labelX: 167, labelY: 90 },
+      { d: 'M 305 100 L 430 100', label: 'default', labelX: 367, labelY: 90 }
     ],
     sequence: [0, 1, 2],
     code: `a, b, c = NodeA(), NodeB(), NodeC()
@@ -132,8 +132,8 @@ flow.run(shared)     # A → B → C`
       { icon: '✗', name: 'Reject', style: 'left: 280px; top: 120px;' }
     ],
     edges: [
-      { d: 'M 105 85 L 270 50', label: '"approve"', labelX: 185, labelY: 55 },
-      { d: 'M 105 115 L 270 145', label: '"reject"', labelX: 185, labelY: 145 }
+      { d: 'M 105 90 L 280 50', label: '"approve"', labelX: 190, labelY: 58 },
+      { d: 'M 105 110 L 280 140', label: '"reject"', labelX: 190, labelY: 140 }
     ],
     sequence: [0, 1],
     code: `check = Check()
@@ -151,9 +151,9 @@ flow = Flow(start=check)  # Check → Approve 或 Reject`
       { icon: '✅', name: 'Done', style: 'left: 430px; top: 70px;' }
     ],
     edges: [
-      { d: 'M 105 100 L 220 100', label: 'default', labelX: 162, labelY: 90 },
-      { d: 'M 305 100 L 420 100', label: '"done"', labelX: 362, labelY: 90 },
-      { d: 'M 280 75 C 280 20, 80 20, 80 75', label: '"retry"', labelX: 180, labelY: 25 }
+      { d: 'M 105 100 L 230 100', label: 'default', labelX: 167, labelY: 90 },
+      { d: 'M 305 100 L 430 100', label: '"done"', labelX: 367, labelY: 90 },
+      { d: 'M 280 75 C 280 20, 80 20, 80 75', label: '"retry"', labelX: 180, labelY: 20 }
     ],
     sequence: [0, 1, 0, 1, 2],
     code: `draft = Draft()
@@ -266,8 +266,10 @@ const resetGraph = () => {
 
 .graph-canvas {
   position: relative;
+  width: 600px;
+  max-width: 100%;
   height: 200px;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
 }
 
 .graph-edges {

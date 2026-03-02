@@ -50,7 +50,7 @@ pip install -r requirements.txt
 | `06_map_reduce.py` | Map-Reduce 批处理 | BatchNode | 自动运行 |
 | `07_parallel_processing.py` | 并行处理 | AsyncParallelBatchNode | 自动运行 |
 | `08_structured_output.py` | 结构化输出 | 循环 + 重试 + 校验 | 自动运行 |
-| `12_agent_skills.py` | 智能体技能 | 链式 + 条件路由 | 自动运行 |
+| `11_agent_skills.py` | 智能体技能 | 链式 + 条件路由 | 自动运行 |
 
 ### 进阶案例
 
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 | :--- | :--- | :--- | :--- |
 | `09_chain_of_thought.py` | 思维链推理 | 循环 + 自检 | 自动运行 |
 | `10_mcp_tool.py` | MCP 工具集成 | 智能体 + 工具 | 自动运行 |
-| `11_agentic_coding/` | 智能体编程 | 完整项目模板 | 自动运行 |
+| `12_agentic_coding/` | 智能体编程 | 完整项目模板 | 自动运行 |
 
 ## 运行示例
 
@@ -66,12 +66,12 @@ pip install -r requirements.txt
 # 运行单个示例
 python 01_chatbot.py
 
-# 案例 11 是多文件项目，需要进入目录运行
-cd 11_agentic_coding
+# 案例 12 是多文件项目，需要进入目录运行
+cd 12_agentic_coding
 python main.py
 
-# 运行案例 11 的单元测试
-cd 11_agentic_coding
+# 运行案例 12 的单元测试
+cd 12_agentic_coding
 python tests/test_nodes.py
 ```
 
@@ -86,9 +86,9 @@ python 03_rag.py
 # 智能体方向：搜索智能体 → 多智能体 → 智能体技能 → MCP → 智能体编程
 python 04_search_agent.py
 python 05_multi_agent.py
-python 12_agent_skills.py
+python 11_agent_skills.py
 python 10_mcp_tool.py
-cd 11_agentic_coding && python main.py
+cd 12_agentic_coding && python main.py
 
 # 性能方向：Map-Reduce → 并行处理
 python 06_map_reduce.py
@@ -105,7 +105,7 @@ python 07_parallel_processing.py
 
 ### 接入真实 LLM
 
-以案例 11 为例，修改 `11_agentic_coding/utils/call_llm.py`：
+以案例 12 为例，修改 `12_agentic_coding/utils/call_llm.py`：
 
 ```python
 # 取消注释 OpenAI 实现部分，注释掉模拟实现
@@ -134,15 +134,15 @@ examples/
 ├── 08_structured_output.py      # 结构化输出
 ├── 09_chain_of_thought.py       # 思维链推理
 ├── 10_mcp_tool.py               # MCP 工具集成
-├── 11_agentic_coding/           # 智能体编程（完整项目模板）
-│   ├── main.py                  # 主入口
-│   ├── nodes.py                 # 节点定义
-│   ├── flow.py                  # Flow 构建
-│   ├── utils/                   # 工具函数
-│   │   ├── __init__.py
-│   │   ├── call_llm.py          # LLM 调用
-│   │   └── search_web.py        # 搜索工具
-│   └── tests/                   # 单元测试
-│       └── test_nodes.py
-└── 12_agent_skills.py           # 智能体技能路由
+├── 11_agent_skills.py           # 智能体技能路由
+└── 12_agentic_coding/           # 智能体编程（完整项目模板）
+    ├── main.py                  # 主入口
+    ├── nodes.py                 # 节点定义
+    ├── flow.py                  # Flow 构建
+    ├── utils/                   # 工具函数
+    │   ├── __init__.py
+    │   ├── call_llm.py          # LLM 调用
+    │   └── search_web.py        # 搜索工具
+    └── tests/                   # 单元测试
+        └── test_nodes.py
 ```

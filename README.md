@@ -136,14 +136,14 @@ PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的�
 | 2 | [写作工作流](docs/zh-cn/pocketflow-cases/index.md) | 链式 | ⭐ |
 | 3 | [RAG 检索增强](docs/zh-cn/pocketflow-cases/index.md) | 链式 + BatchNode | ⭐ |
 | 4 | [搜索智能体](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 条件分支 | ⭐⭐ |
-| 5 | [多智能体 协作](docs/zh-cn/pocketflow-cases/index.md) | AsyncNode + 消息队列 | ⭐⭐ |
+| 5 | [多智能体协作](docs/zh-cn/pocketflow-cases/index.md) | AsyncNode + 消息队列 | ⭐⭐ |
 | 6 | [Map-Reduce 批处理](docs/zh-cn/pocketflow-cases/index.md) | BatchNode | ⭐ |
 | 7 | [并行处理 (8x 加速)](docs/zh-cn/pocketflow-cases/index.md) | AsyncParallelBatchNode | ⭐⭐ |
 | 8 | [结构化输出](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 重试 + 校验 | ⭐⭐ |
 | 9 | [思维链推理](docs/zh-cn/pocketflow-cases/index.md) | 循环 + 自检 | ⭐⭐⭐ |
 | 10 | [MCP 工具集成](docs/zh-cn/pocketflow-cases/index.md) | 智能体 + 工具 | ⭐⭐⭐ |
-| 11 | [智能体编程](docs/zh-cn/pocketflow-cases/index.md) | 完整项目模板 | ⭐⭐⭐ |
-| 12 | [智能体技能](docs/zh-cn/pocketflow-cases/index.md) | 链式 + 条件路由 | ⭐⭐ |
+| 11 | [智能体技能](docs/zh-cn/pocketflow-cases/index.md) | 链式 + 条件路由 | ⭐⭐ |
+| 12 | [智能体编程](docs/zh-cn/pocketflow-cases/index.md) | 完整项目模板 | ⭐⭐⭐ |
 
 ---
 
@@ -152,7 +152,7 @@ PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的�
 根据你的背景选择学习路径：
 
 - **零基础**：原理篇全篇 → 案例篇（聊天机器人 → 写作工作流 → RAG）
-- **想做 智能体**：原理篇 → 案例篇（搜索智能体 → 多智能体 → 智能体技能 → MCP → 智能体编程）
+- **想做智能体**：原理篇 → 案例篇（搜索智能体 → 多智能体 → 智能体技能 → MCP → 智能体编程）
 - **关注性能**：原理篇（BatchNode / AsyncNode）→ 案例篇（Map-Reduce → 并行处理）
 - **输出质量**：原理篇（循环/重试）→ 案例篇（结构化输出 → 思维链推理）
 

@@ -3,17 +3,18 @@ title: 'PocketFlow 原理入门 —— 100 行代码的极简 LLM 框架'
 description: '从零理解 PocketFlow 的核心原理：Node 三阶段模型、Flow 图编排、Shared 与 Params 通信、Batch 批处理与 Async 异步并发。'
 ---
 
-# PocketFlow 原理入门 (Interactive Intro to PocketFlow)
+# PocketFlow 原理入门（Interactive Intro to PocketFlow）
 
-> **学习指南**：本章节只需要基础的 Python 知识，通过交互式演示带你了解 PocketFlow —— 一个仅 100 行代码、零依赖的 LLM 应用框架。从"它能做什么"讲起，一直到"它是怎么做到的"。
+> **学习指南**：本章节只需要基础的 Python 知识，通过交互式演示带你了解 PocketFlow —— 一个仅 100 行代码、零依赖的 LLM 应用框架。从”它能做什么”讲起，一直到”它是怎么做到的”。
+>
+> **多语言版本**：[Python](https://github.com/The-Pocket/PocketFlow) · [TypeScript](https://github.com/The-Pocket/PocketFlow-Typescript) · [Java](https://github.com/The-Pocket/PocketFlow-Java) · [C++](https://github.com/The-Pocket/PocketFlow-CPP) · [Go](https://github.com/The-Pocket/PocketFlow-Go) · [Rust](https://github.com/The-Pocket/PocketFlow-Rust) · [PHP](https://github.com/The-Pocket/PocketFlow-PHP)
 
 <PocketFlowQuickStart />
 
----
 
 ## 0. 引言：为什么需要 LLM 框架？
 
-大语言模型（LLM）本身只是一个"文字接龙"引擎 —— 你给它一段文字，它预测下一个词。
+大语言模型（LLM）本身只是一个“文字接龙”引擎 —— 你给它一段文字，它预测下一个词。
 
 但要把 LLM 变成**真正有用的应用**，你需要解决三个核心问题：
 
@@ -47,19 +48,19 @@ description: '从零理解 PocketFlow 的核心原理：Node 三阶段模型、F
 ::: tip 类比理解
 可以把这些框架想象成不同的建筑方式：
 
-- **LangGraph / CrewAI / AutoGen** = **精装房** —— 框架替你预制了"智能体 客厅"、"RAG 厨房"、"Memory 卧室"，你在现有房间里摆家具
+- **LangGraph / CrewAI / AutoGen** = **精装房** —— 框架替你预制了“智能体 客厅”、“RAG 厨房”、“Memory 卧室”，你在现有房间里摆家具
 - **PydanticAI / Agno / SmolAgents** = **毛坯房** —— 给你墙体和水电，你自己做装修
-- **PocketFlow** = **一块地 + 物理定律** —— 只给你"节点"和"连线"这两条规则，你从地基开始搭
+- **PocketFlow** = **一块地 + 物理定律** —— 只给你“节点”和“连线”这两条规则，你从地基开始搭
 
-PocketFlow 的 100 行代码相当于"物理定律" —— **少到不能再少，但足以构建一切。**
+PocketFlow 的 100 行代码相当于“物理定律” —— **少到不能再少，但足以构建一切。**
 :::
 
 这意味着 PocketFlow 里**没有任何预制模式类** —— RAG、智能体、CoT、MapReduce 都是你用 Node + Flow 搭出来的不同图拓扑。
 
-> **"Every LLM application is a directed graph. Nothing more."**
+> **“Every LLM application is a directed graph. Nothing more.”**
 > —— PocketFlow 创作者 Zachary Huang
 
-理解了这一点，接下来学习 Node 和 Flow 时你会发现：它们不是"框架的功能"，而是"图的物理定律"。具体的图拓扑与自动机映射，见 [§2.4 形式化视角](#_2-4-形式化视角-pocketflow-即有限状态自动机)。
+理解了这一点，接下来学习 Node 和 Flow 时你会发现：它们不是“框架的功能”，而是“图的物理定律”。具体的图拓扑与自动机映射，见 [§2.4 形式化视角](#_2-4-形式化视角-pocketflow-即有限状态自动机)。
 ::::
 
 ### 0.2 PocketFlow 架构总览
@@ -96,7 +97,6 @@ PocketFlow 的 100 行源码由 **12 个类**组成，分为两大家族，通�
 > 12 个类 = BaseNode 基类 + 上表 10 个组合 + `_ConditionalTransition` 辅助类。详细继承关系见 [§5 深入源码](#_5-深入源码-100-行的全部秘密)。
 :::
 
----
 
 ## 1. 快速上手
 
@@ -198,13 +198,12 @@ flow.run({"name": "小明"})
 - 如需接入真实 LLM，只需替换 `exec()` 中的模拟逻辑即可
 :::
 
----
 
 ## 2. 核心抽象：只有两个概念
 
 PocketFlow 的全部设计可以用一句话概括：
 
-> **Node**（节点）负责"做事"，**Flow**（流程）负责"调度"。
+> **Node**（节点）负责“做事”，**Flow**（流程）负责“调度”。
 
 就这两个概念，没有更多了。
 
@@ -212,10 +211,9 @@ PocketFlow 的全部设计可以用一句话概括：
 
 每个 Node 都遵循**三阶段执行模型**：
 
-```
-prep(shared)  →  exec(prep_res)  →  post(shared, prep_res, exec_res)
-  准备数据          执行逻辑           后处理 & 决策
-```
+| `prep(shared)` | → | `exec(prep_res)` | → | `post(shared, prep_res, exec_res)` |
+|:---:|:---:|:---:|:---:|:---:|
+| 准备数据 | → | 执行逻辑 | → | 后处理 & 决策 |
 
 - **prep**：从共享存储 `shared` 中**读取**所需数据
 - **exec**：执行核心业务逻辑（如调用 LLM API）
@@ -295,37 +293,52 @@ check_node - "reject"  >> reject_node
 
 #### 应用模式 = 自动机拓扑
 
-不同 LLM 应用模式，实际上对应不同形态的自动机：
+不同 LLM 应用模式，实际上对应不同形态的自动机。下面是三个典型例子：
+
+**1. 聊天机器人** —— 单状态 + 自环，最简单的循环结构
 
 ```text
-聊天机器人 —— 带自环的单状态自动机
 ┌──── "continue" ────┐
-│                     │
-▼                     │
-●  ChatNode ──────────┘
+│                    │
+↓                    │
+●  ChatNode ─────────┘
      │ (None)
-     ▼
+     ↓
    [结束]
-
-搜索智能体 —— 有分支 + 环的自动机
-          "need_more"
-  ┌──── Think ────────▶ Search ──┐
-  │       │                      │
-  │       │ "enough"    "default"│
-  │       ▼                      │
-  │   Synthesize                 │
-  │       │ (None)               │
-  │       ▼                      │
-  │     [结束]                   │
-  └──────────────────────────────┘
-
-结构化输出 —— 带回退边的自动机
-  Generate ──▶ Validate ──▶ Check
-                              │ │
-                  "retry" ◀───┘ │ "done"
-                  (回到 Generate) ▼
-                              Output
 ```
+
+**2. 搜索智能体** —— 分支 + 环，LLM 决定转移方向
+
+```text
+            "need_more"
+  ┌─── Think ─────────→ Search ─┐
+  │      │                       │
+  │      │ "enough"              │ "default"
+  │      ↓                       │
+  │  Synthesize ←───────────────┘
+  │      │ (None)
+  │      ↓
+  └─→ [结束]
+```
+
+> Think 通过 `"need_more"` 跳转 Search；Search 完成后 `"default"` 回到 Think 继续判断；Think 认为信息足够时 `"enough"` 进入 Synthesize 输出结果。
+
+**3. 结构化输出** —— 回退边，校验失败回退重试
+
+```text
+  ┌────────── "retry" ─────────┐
+  │                            │
+  ↓                            │
+  Generate ──→ Validate ──→ Check
+                               │
+                               │ "done"
+                               ↓
+                             Output
+```
+
+> Check 校验不通过时 `"retry"` 回到 Generate 重新生成；校验通过时 `"done"` 进入 Output 输出结果。
+
+更多模式一览：
 
 | 应用模式 | 自动机形态 | 状态数 | 特征 |
 | :--- | :--- | :--- | :--- |
@@ -335,16 +348,15 @@ check_node - "reject"  >> reject_node
 | 结构化输出 | 回退边 | 3-4 | 校验失败回退重试 |
 | 多智能体 | 并发自动机组 | N×M | 多台自动机通过队列通信 |
 
-::: tip 与 LangGraph"状态机"的区别
-LangGraph 也自称"状态机"，但含义不同：
-- **LangGraph 的"状态"** = 运行时数据（TypedDict），框架管理状态的持久化、快照和回放
-- **PocketFlow 的"状态"** = 当前所在的 Node，数据由你自己在 `shared` 中管理
+::: tip 与 LangGraph“状态机”的区别
+LangGraph 也自称“状态机”，但含义不同：
+- **LangGraph 的“状态”** = 运行时数据（TypedDict），框架管理状态的持久化、快照和回放
+- **PocketFlow 的“状态”** = 当前所在的 Node，数据由你自己在 `shared` 中管理
 
 PocketFlow 更接近经典 FSA：**状态转移由 action 字符串驱动，状态数据在自动机之外管理**。这让框架保持在 100 行，同时你可以自由选择任何持久化方案。
 :::
 ::::
 
----
 
 ## 3. 通信机制：Shared Store 与 Params
 
@@ -368,12 +380,12 @@ question = shared["question"]
 为什么不让节点直接传参？因为 PocketFlow 追求**最小抽象**：
 - `shared` 是一个普通 Python 字典，没有任何封装
 - 所有节点都能读写，足够灵活
-- 你完全清楚数据从哪来、到哪去，没有"黑魔法"
+- 你完全清楚数据从哪来、到哪去，没有“黑魔法”
 :::
 
 ### 3.2 Params —— 局部参数传递
 
-除了 `shared` 这个"全局共享"机制，PocketFlow 还提供了一套**局部参数**机制 —— `params`。
+除了 `shared` 这个“全局共享”机制，PocketFlow 还提供了一套**局部参数**机制 —— `params`。
 
 ```python
 # 设置节点参数
@@ -401,11 +413,10 @@ Params 的值由**父 Flow 传入**：当 Flow 执行子节点时，会自动调
 | 典型场景 | 对话历史、检索结果 | BatchFlow 的迭代参数 |
 :::
 
----
 
 ## 4. 六大设计模式
 
-掌握了 Node 和 Flow，你就可以构建 LLM 应用中几乎所有的主流模式。它们不是框架提供的"功能类"，而是 Node + Flow 自然组合出的**图拓扑**：
+掌握了 Node 和 Flow，你就可以构建 LLM 应用中几乎所有的主流模式。它们不是框架提供的“功能类”，而是 Node + Flow 自然组合出的**图拓扑**：
 
 | 模式 | 图形态 | 关键技巧 | 对应案例 |
 | :--- | :--- | :--- | :--- |
@@ -452,7 +463,6 @@ class ParallelProcess(AsyncParallelBatchNode):
 PocketFlow 没有为每种模式创建专门的类 —— 它们都是 Node + Flow + 操作符重载的<strong>自然组合</strong>。这就是 100 行代码能覆盖这么多场景的原因。
 </el-alert>
 
----
 
 ## 5. 深入源码：100 行的全部秘密
 
@@ -476,7 +486,7 @@ BaseNode                                       ← 万物之基（params / succe
 ```
 
 ::: info ◆ 菱形继承（Diamond Inheritance）
-标记 ◆ 的类同时继承两个父类，形成菱形继承。例如 `AsyncBatchNode(AsyncNode, BatchNode)` —— 从 AsyncNode 获得 async 能力，从 BatchNode 获得批量循环，Python 的 MRO（方法解析顺序）确保 `_exec()` 等方法的调用顺序正确。这种"能力叠加"设计让 12 个类覆盖了所有同步/异步 × 单个/批量 × 顺序/并行的组合。
+标记 ◆ 的类同时继承两个父类，形成菱形继承。例如 `AsyncBatchNode(AsyncNode, BatchNode)` —— 从 AsyncNode 获得 async 能力，从 BatchNode 获得批量循环，Python 的方法解析顺序（Method Resolution Order, MRO）确保 `_exec()` 等方法的调用顺序正确。这种“能力叠加”设计让 12 个类覆盖了所有同步/异步 × 单个/批量 × 顺序/并行的组合。
 :::
 
 下面逐一解读关键类。
@@ -620,8 +630,8 @@ batch_flow.run(shared)
 ```
 
 ::: tip BatchNode vs BatchFlow
-- **BatchNode**：一个节点，批量执行 `exec()` → 适合"对列表每项做同一个操作"
-- **BatchFlow**：一条完整 Flow，用不同参数多次运行 → 适合"对多个任务运行同一条流水线"
+- **BatchNode**：一个节点，批量执行 `exec()` → 适合“对列表每项做同一个操作”
+- **BatchFlow**：一条完整 Flow，用不同参数多次运行 → 适合“对多个任务运行同一条流水线”
 :::
 
 ### 5.6 AsyncNode 与异步家族
@@ -651,7 +661,7 @@ class AsyncNode(Node):
 - 反过来，`AsyncFlow` **可以**包含普通同步 Node（它会自动判断用 `_run` 还是 `_run_async`）
 :::
 
-AsyncFlow 是如何做到"混合同步/异步节点"的？关键在 `_orch_async` 的一行 `isinstance` 检测：
+AsyncFlow 是如何做到“混合同步/异步节点”的？关键在 `_orch_async` 的一行 `isinstance` 检测：
 
 ```python
 # AsyncFlow._orch_async 核心逻辑（简化）
@@ -686,7 +696,6 @@ class AsyncParallelBatchNode(AsyncNode, BatchNode):
         )
 ```
 
----
 
 ## 6. 工具函数层：Node 里装什么？
 
@@ -724,9 +733,8 @@ class AnalyzeNode(Node):
 两者正交：同一个 LLM 调用工具可以用在链式工作流里，也可以用在 智能体 循环里。PocketFlow 不限制你用什么工具，你可以自由组合。
 :::
 
-更进一步，工具函数也可以被**模块化为技能文件**（Markdown），智能体 在运行时动态选择并注入 prompt —— 这就是 **智能体技能** 模式。详见 [应用案例第 12 节：智能体技能](../pocketflow-cases/#_12-智能体技能-技能路由)。
+更进一步，工具函数也可以被**模块化为技能文件**（Markdown），智能体 在运行时动态选择并注入 prompt —— 这就是 **智能体技能** 模式。详见 [应用案例第 11 节：智能体技能](../pocketflow-cases/#_11-智能体技能-技能路由)。
 
----
 
 ## 7. 开发者体验：Agentic Coding
 
@@ -742,12 +750,10 @@ PocketFlow 推崇一种高效的人机协作开发范式 —— **Agentic Coding
 - **可测试**：每个 Node 的 `exec()` 可以独立测试
 
 ::: info 完整方法论
-Agentic Coding 包含 8 个步骤：需求澄清 → Flow 设计 → Utilities 识别 → Data 契约 → Node 设计 → 实现 → 优化 → 可靠性。完整的流程讲解、设计文档模板和可运行示例代码，请参考 [应用案例第 11 节：智能体编程](../pocketflow-cases/#_11-智能体编程-agentic-coding)。
+Agentic Coding 包含 8 个步骤：需求澄清 → Flow 设计 → Utilities 识别 → Data 契约 → Node 设计 → 实现 → 优化 → 可靠性。完整的流程讲解、设计文档模板和可运行示例代码，请参考 [应用案例第 12 节：智能体编程](../pocketflow-cases/#_12-智能体编程-agentic-coding)。
 :::
 
----
-
-## 8. 名词速查表 (Glossary)
+## 8. 名词速查表（Glossary）
 
 | 名词 | 全称 | 解释 |
 | :--- | :--- | :--- |
@@ -765,10 +771,20 @@ Agentic Coding 包含 8 个步骤：需求澄清 → Flow 设计 → Utilities �
 | **post** | Post-processing | **后处理阶段**。将结果写回 shared，返回 action。 |
 | **exec_fallback** | Execution Fallback | **降级回调**。所有重试耗尽后调用，可覆写以返回兜底结果。 |
 
----
+## 总结
+
+<el-card shadow="hover" style="border-radius: 16px; border: 2px dashed var(--vp-c-brand); margin: 20px 0;">
+  <div style="text-align: center;">
+    <div style="font-size: 1.25rem; font-weight: 600; color: var(--vp-c-text-1);">
+      100 行代码，覆盖主流场景
+    </div>
+    <div style="color: var(--vp-c-text-3); margin-top: 0.5rem;">
+      Node 做事，Flow 调度，shared 通信 —— 三个概念，构建一切。
+    </div>
+  </div>
+</el-card>
 
 ### 下一步
 
 - 前往 [PocketFlow 应用案例](../pocketflow-cases/) 学习实战案例
 - 访问 [PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow) 查看完整 cookbook
-- PocketFlow 也有其他语言版本：[TypeScript](https://github.com/The-Pocket/PocketFlow-Typescript) · [Java](https://github.com/The-Pocket/PocketFlow-Java) · [C++](https://github.com/The-Pocket/PocketFlow-CPP) · [Go](https://github.com/The-Pocket/PocketFlow-Go) · [Rust](https://github.com/The-Pocket/PocketFlow-Rust) · [PHP](https://github.com/The-Pocket/PocketFlow-PHP)

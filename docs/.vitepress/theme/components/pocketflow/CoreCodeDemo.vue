@@ -60,14 +60,12 @@
 
     <div class="hierarchy">
       <div class="hierarchy-title">继承关系</div>
-      <div class="hierarchy-tree">
-        <span :class="{ highlight: activeClass === 'basenode' }">BaseNode</span>
-        <span class="branch">├─ <span :class="{ highlight: activeClass === 'node' }">Node</span></span>
-        <span class="branch sub">│  ├─ <span :class="{ highlight: activeClass === 'batch' }">BatchNode</span></span>
-        <span class="branch sub">│  └─ <span :class="{ highlight: activeClass === 'async' }">AsyncNode</span></span>
-        <span class="branch">└─ <span :class="{ highlight: activeClass === 'flow' }">Flow</span></span>
-        <span class="branch sub">   └─ BatchFlow / AsyncFlow</span>
-      </div>
+      <pre class="hierarchy-tree"><span :class="{ highlight: activeClass === 'basenode' }">BaseNode</span>
+├─ <span :class="{ highlight: activeClass === 'node' }">Node</span>
+│  ├─ <span :class="{ highlight: activeClass === 'batch' }">BatchNode</span>
+│  └─ <span :class="{ highlight: activeClass === 'async' }">AsyncNode</span>
+└─ <span :class="{ highlight: activeClass === 'flow' }">Flow</span>
+   └─ BatchFlow / AsyncFlow</pre>
     </div>
   </div>
 </template>
@@ -472,21 +470,14 @@ const activeClassData = computed(() => classDetails[activeClass.value])
   font-size: 0.82rem;
   line-height: 1.7;
   color: var(--vp-c-text-3);
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  white-space: pre;
 }
 
 .hierarchy-tree .highlight {
   color: var(--vp-c-brand);
   font-weight: 700;
-}
-
-.branch {
-  padding-left: 1rem;
-}
-
-.branch.sub {
-  padding-left: 2rem;
 }
 
 @media (max-width: 768px) {
