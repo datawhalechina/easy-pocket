@@ -41,32 +41,13 @@ export default defineConfig({
           {
             text: '应用案例',
             link: '/zh-cn/pocketflow-cases/'
+          },
+          {
+            text: '附录',
+            link: '/zh-cn/appendix/'
           }
         ],
-        sidebar: {
-          '/zh-cn/pocketflow-intro/': [
-            {
-              text: 'PocketFlow 原理篇',
-              items: [
-                {
-                  text: '什么是 PocketFlow',
-                  link: '/zh-cn/pocketflow-intro/'
-                }
-              ]
-            }
-          ],
-          '/zh-cn/pocketflow-cases/': [
-            {
-              text: 'PocketFlow 应用案例',
-              items: [
-                {
-                  text: '应用案例全景',
-                  link: '/zh-cn/pocketflow-cases/'
-                }
-              ]
-            }
-          ]
-        },
+        sidebar: {},
         footer: {
           message: 'Easy-Pocket —— 从零掌握 PocketFlow',
           copyright:

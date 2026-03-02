@@ -56,8 +56,13 @@ features:
   </a>
   <a href="./pocketflow-cases/" class="stage-card">
     <div class="stage-icon">案例篇</div>
-    <p>9 个实战案例：聊天机器人、RAG、写作工作流、搜索智能体、多智能体协作、批处理、并行执行等。</p>
+    <p>12 个实战案例：聊天机器人、RAG、写作工作流、搜索智能体、多智能体协作、批处理、并行执行等。</p>
     <span>查看案例 →</span>
+  </a>
+  <a href="./appendix/" class="stage-card">
+    <div class="stage-icon">附录</div>
+    <p>计算机基础、开发工具、前后端、数据、架构、运维、AI、工程素养 —— 九大领域知识参考。</p>
+    <span>查看附录 →</span>
   </a>
 </div>
 
@@ -139,6 +144,7 @@ features:
 
 .stage-card:nth-child(1) { --card-color: #3b82f6; }
 .stage-card:nth-child(2) { --card-color: #8b5cf6; }
+.stage-card:nth-child(3) { --card-color: #10b981; }
 
 .stage-card {
   background-color: var(--vp-c-bg-soft);
