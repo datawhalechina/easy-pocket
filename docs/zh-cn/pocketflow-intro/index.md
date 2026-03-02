@@ -36,14 +36,14 @@ description: '从零理解 PocketFlow 的核心原理：Node 三阶段模型、F
 
 | 框架 | 核心心智模型 | 给你的是什么 |
 | :--- | :--- | :--- |
-| **Agno** | 声明式记忆代理 | 智能体 构造器内置 Memory + Knowledge + Tools |
-| **AutoGen** | Actor 消息传递 | 智能体 是 Actor，通过异步消息协作 |
-| **CrewAI** | 角色扮演团队 | 智能体（角色/目标/背景故事）+ Manager 分配 Task |
-| **LangGraph** | 有状态状态机 | 强类型 State + 条件边函数 + 持久化检查点 |
-| **OpenAI Agents SDK** | 轻量 智能体 + Handoff | 智能体 + Handoff + Guardrails + Tracing |
-| **PydanticAI** | 类型安全函数 | 智能体 = 带 Pydantic 验证的函数调用 |
-| **SmolAgents** | 代码即动作 | LLM 直接生成 Python 代码而非 JSON tool call |
-| **PocketFlow** | **最小有向图运行时** | **只有 Node + Flow 两个原语，其他一切自己搭** |
+| **[Agno](https://github.com/agno-agi/agno)** | 声明式记忆代理 | 智能体 构造器内置 Memory + Knowledge + Tools |
+| **[AutoGen](https://github.com/microsoft/autogen)** | Actor 消息传递 | 智能体 是 Actor，通过异步消息协作 |
+| **[CrewAI](https://github.com/crewAIInc/crewAI)** | 角色扮演团队 | 智能体（角色/目标/背景故事）+ Manager 分配 Task |
+| **[LangGraph](https://github.com/langchain-ai/langgraph)** | 有状态状态机 | 强类型 State + 条件边函数 + 持久化检查点 |
+| **[OpenAI Agents SDK](https://github.com/openai/openai-agents-python)** | 轻量 智能体 + Handoff | 智能体 + Handoff + Guardrails + Tracing |
+| **[PydanticAI](https://github.com/pydantic/pydantic-ai)** | 类型安全函数 | 智能体 = 带 Pydantic 验证的函数调用 |
+| **[SmolAgents](https://github.com/huggingface/smolagents)** | 代码即动作 | LLM 直接生成 Python 代码而非 JSON tool call |
+| **[PocketFlow](https://github.com/The-Pocket/PocketFlow)** | **最小有向图运行时** | **只有 Node + Flow 两个原语，其他一切自己搭** |
 
 ::: tip 类比理解
 可以把这些框架想象成不同的建筑方式：
