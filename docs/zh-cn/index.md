@@ -22,15 +22,30 @@ features:
     details: 人类设计架构，AI 写实现代码。PocketFlow 的极简设计让 AI 也能顺畅地理解和生成代码。
 ---
 
-<div align="center" style="margin-top: 40px; margin-bottom: 40px;">
-  <h2 style="border: none; font-size: 2rem; font-weight: 700; margin-bottom: 20px;">什么是 PocketFlow？</h2>
-  <p style="font-size: 1.2rem; color: var(--vp-c-text-2); max-width: 800px; margin: 0 auto; line-height: 1.6;">
-    PocketFlow 是一个仅 100 行代码的 LLM 应用框架。<br>
-    它用 <strong>Node</strong>（节点）和 <strong>Flow</strong>（流程）两个极简抽象，<br>
-    让你可以构建聊天机器人、RAG、智能体、工作流等所有主流 LLM 应用。<br>
-    零依赖、零供应商锁定、零学习门槛。<br>
-    <strong>Node 做事，Flow 调度，shared 通信 —— 三个概念，构建一切。</strong>
+<div class="intro-section">
+  <h2 class="intro-title">什么是 PocketFlow？</h2>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-number">100</div>
+      <div class="stat-label">行核心代码</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-number">0</div>
+      <div class="stat-label">外部依赖</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-number">12</div>
+      <div class="stat-label">实战案例</div>
+    </div>
+  </div>
+  <p class="intro-desc">
+    用 <strong>Node</strong> 和 <strong>Flow</strong> 两个极简抽象，构建聊天机器人、RAG、智能体、工作流等主流 LLM 应用。
   </p>
+  <blockquote class="intro-tagline">
+    Node 做事，Flow 调度，shared 通信 —— 三个概念，构建一切。
+  </blockquote>
 </div>
 
 <div class="stage-container">
@@ -47,6 +62,72 @@ features:
 </div>
 
 <style>
+.intro-section {
+  text-align: center;
+  margin: 48px auto 40px;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.intro-title {
+  border: none;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--vp-c-brand);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--vp-c-text-3);
+  margin-top: 4px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--vp-c-divider);
+}
+
+.intro-desc {
+  font-size: 1.1rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.intro-tagline {
+  border-left: 3px solid var(--vp-c-brand);
+  padding: 8px 16px;
+  margin: 0 auto;
+  display: inline-block;
+  text-align: left;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  font-style: normal;
+  background: var(--vp-c-bg-soft);
+  border-radius: 0 8px 8px 0;
+}
+
 .stage-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
