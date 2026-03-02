@@ -99,14 +99,14 @@ PocketFlow 是一个**纯编排框架**（Orchestration Framework）—— 它�
 
 | 框架 | 核心思路 | 代码量 | 依赖 | 厂商锁定 |
 | :--- | :--- | :--- | :--- | :--- |
-| **PocketFlow** | 最小有向图运行时：Node + Flow | **100 行** | **0** | **无** |
-| Agno | 声明式 智能体，内置 Memory / Knowledge | 数千行 | 少 | 低 |
-| AutoGen | Actor 模型，智能体 间异步消息传递 | 数万行 | 中 | 低-中 |
-| CrewAI | 角色扮演团队，Manager 分配 Task | 数万行 | 中 | 低 |
-| LangGraph | 有状态状态机 + 持久化检查点 | 数万行 | 多（LangChain 生态） | 中 |
-| OpenAI Agents SDK | 轻量 智能体 + Handoff + Guardrails | 数千行 | 少 | 中（OpenAI 优先） |
-| PydanticAI | 类型安全的函数调用 + Pydantic 验证 | 数千行 | 少 | 很低 |
-| SmolAgents | LLM 生成 Python 代码而非 JSON tool call | ~1000 行 | 少 | 很低 |
+| **[PocketFlow](https://github.com/The-Pocket/PocketFlow)** | 最小有向图运行时：Node + Flow | **100 行** | **0** | **无** |
+| [Agno](https://github.com/agno-agi/agno) | 声明式 智能体，内置 Memory / Knowledge | 数千行 | 少 | 低 |
+| [AutoGen](https://github.com/microsoft/autogen) | Actor 模型，智能体 间异步消息传递 | 数万行 | 中 | 低-中 |
+| [CrewAI](https://github.com/crewAIInc/crewAI) | 角色扮演团队，Manager 分配 Task | 数万行 | 中 | 低 |
+| [LangGraph](https://github.com/langchain-ai/langgraph) | 有状态状态机 + 持久化检查点 | 数万行 | 多（LangChain 生态） | 中 |
+| [OpenAI Agents SDK](https://github.com/openai/openai-agents-python) | 轻量 智能体 + Handoff + Guardrails | 数千行 | 少 | 中（OpenAI 优先） |
+| [PydanticAI](https://github.com/pydantic/pydantic-ai) | 类型安全的函数调用 + Pydantic 验证 | 数千行 | 少 | 很低 |
+| [SmolAgents](https://github.com/huggingface/smolagents) | LLM 生成 Python 代码而非 JSON tool call | ~1000 行 | 少 | 很低 |
 
 PocketFlow 没有 `AgentExecutor`、`RetrievalChain`、`CrewManager` 这样的专用类 —— 所有模式都是同一套 Node + Flow 的不同图拓扑（见上方 [FSA 映射](#pocketflow-是什么)）。
 
