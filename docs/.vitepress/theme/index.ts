@@ -5,15 +5,18 @@ import 'viewerjs/dist/viewer.min.css';
 import imageViewer from 'vitepress-plugin-image-viewer';
 import vImageViewer from 'vitepress-plugin-image-viewer/lib/vImageViewer.vue';
 import { useRoute } from 'vitepress';
+import Layout from './Layout.vue'
+import HomePortal from './components/HomePortal.vue'
+
 export default {
     extends: DefaultTheme,
+    Layout,
     enhanceApp({ app }) {
-        // 注册全局组件（可选）
         app.component('vImageViewer', vImageViewer);
+        app.component('HomePortal', HomePortal);
     },
     setup() {
         const route = useRoute();
-        // 启用插件
         imageViewer(route);
     },
 } satisfies Theme

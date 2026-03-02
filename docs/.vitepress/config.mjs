@@ -4,6 +4,12 @@ const base = process.env.BASE || '/easy-pocket/'
 
 export default defineConfig({
   base: base,
+  transformPageData(pageData) {
+    // 将页面导航（outline）移到左侧，非首页生效
+    if (pageData.frontmatter.layout !== 'home') {
+      pageData.frontmatter.aside = 'left'
+    }
+  },
   locales: {
     'zh-cn': {
       label: '简体中文',
@@ -33,7 +39,6 @@ export default defineConfig({
           label: '页面导航'
         },
         nav: [
-          { text: '首页', link: '/zh-cn/' },
           {
             text: 'PocketFlow 原理',
             link: '/zh-cn/pocketflow-intro/'
