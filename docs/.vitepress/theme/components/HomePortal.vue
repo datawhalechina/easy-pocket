@@ -166,7 +166,6 @@ onMounted(() => {
 
       <!-- ════════ 什么是 PocketFlow？ ════════ -->
       <section class="what-section reveal">
-        <div class="what-label">ABOUT</div>
         <h2 class="what-heading">什么是 PocketFlow？</h2>
 
         <div class="stats-bar">
