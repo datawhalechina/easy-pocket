@@ -4,12 +4,7 @@ const base = process.env.BASE || '/easy-pocket/'
 
 export default defineConfig({
   base: base,
-  transformPageData(pageData) {
-    // 将页面导航（outline）移到左侧，非首页生效
-    if (pageData.frontmatter.layout !== 'home') {
-      pageData.frontmatter.aside = 'left'
-    }
-  },
+  // outline（页面导航）保持右侧默认位置，左侧放 sidebar 章节导航
   locales: {
     'zh-cn': {
       label: '简体中文',
@@ -39,20 +34,41 @@ export default defineConfig({
           label: '页面导航'
         },
         nav: [
-          {
-            text: 'PocketFlow 原理',
-            link: '/zh-cn/pocketflow-intro/'
-          },
-          {
-            text: '应用案例',
-            link: '/zh-cn/pocketflow-cases/'
-          },
-          {
-            text: '附录',
-            link: '/zh-cn/appendix/'
-          }
+          { text: 'GitHub', link: 'https://github.com/zhimin-z/easy-pocket' },
         ],
-        sidebar: {},
+        sidebar: {
+          '/zh-cn/': [
+            {
+              text: '原理篇',
+              items: [
+                { text: '引言：为什么需要 LLM 框架', link: '/zh-cn/pocketflow-intro/' },
+                { text: '快速上手', link: '/zh-cn/pocketflow-intro/quickstart' },
+                { text: '核心抽象：Node 与 Flow', link: '/zh-cn/pocketflow-intro/core-abstractions' },
+                { text: '通信机制与设计模式', link: '/zh-cn/pocketflow-intro/communication-and-patterns' },
+                { text: '深入源码', link: '/zh-cn/pocketflow-intro/source-code' },
+                { text: '工具函数与开发范式', link: '/zh-cn/pocketflow-intro/tools-and-dev' },
+              ]
+            },
+            {
+              text: '案例篇',
+              items: [
+                { text: '案例地图', link: '/zh-cn/pocketflow-cases/' },
+                { text: '入门：聊天机器人 / 写作 / RAG', link: '/zh-cn/pocketflow-cases/beginner' },
+                { text: '智能体：搜索 / 多智能体', link: '/zh-cn/pocketflow-cases/agents' },
+                { text: '批处理与并行', link: '/zh-cn/pocketflow-cases/batch-and-parallel' },
+                { text: '输出质量：结构化 / 思维链', link: '/zh-cn/pocketflow-cases/output-quality' },
+                { text: '高级智能体：MCP / 技能', link: '/zh-cn/pocketflow-cases/advanced-agents' },
+                { text: '智能体编程', link: '/zh-cn/pocketflow-cases/agentic-coding' },
+              ]
+            },
+            {
+              text: '附录',
+              items: [
+                { text: '软件工程知识参考', link: '/zh-cn/appendix/' },
+              ]
+            }
+          ]
+        },
         footer: {
           message: 'Easy-Pocket —— 从零掌握 PocketFlow',
           copyright:

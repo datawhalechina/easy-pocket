@@ -5,7 +5,7 @@ import { defineConfig } from 'vitepress'
 // 如果环境变量 EDGEONE 等于 '1'，说明在 EdgeOne 环境，使用根路径 '/'
 // 否则默认是 GitHub Pages 环境，使用仓库子路径 '/easy-vecdb/'
 const isEdgeOne = process.env.EDGEONE === '1'
-const baseConfig = isEdgeOne ? '/' : '/repo-template/'
+const baseConfig = isEdgeOne ? '/' : '/easy-pocket/'
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -40,26 +40,46 @@ export default defineConfig({
         }
       }
     },
-    sidebar: [
-      {
-        items: [
-          { text: '第1章：第1章的标题', link: '/chapter1/' },
-          { text: '第2章：第2章的标题', 
-            items: [
-              { text: '第2.1节：第2.1节的标题', link: '/chapter2/chapter2_1' },
-              { text: '第2.2节：第2.2节的标题', link: '/chapter2/chapter2_2' }
-            ]
-           }
-        ]
-      }
-    ],
+    sidebar: {
+      '/zh-cn/': [
+        {
+          text: '原理篇',
+          items: [
+            { text: '引言：为什么需要 LLM 框架', link: '/zh-cn/pocketflow-intro/' },
+            { text: '快速上手', link: '/zh-cn/pocketflow-intro/quickstart' },
+            { text: '核心抽象：Node 与 Flow', link: '/zh-cn/pocketflow-intro/core-abstractions' },
+            { text: '通信机制与设计模式', link: '/zh-cn/pocketflow-intro/communication-and-patterns' },
+            { text: '深入源码', link: '/zh-cn/pocketflow-intro/source-code' },
+            { text: '工具函数与开发范式', link: '/zh-cn/pocketflow-intro/tools-and-dev' },
+          ]
+        },
+        {
+          text: '案例篇',
+          items: [
+            { text: '案例地图', link: '/zh-cn/pocketflow-cases/' },
+            { text: '入门：聊天机器人 / 写作 / RAG', link: '/zh-cn/pocketflow-cases/beginner' },
+            { text: '智能体：搜索 / 多智能体', link: '/zh-cn/pocketflow-cases/agents' },
+            { text: '批处理与并行', link: '/zh-cn/pocketflow-cases/batch-and-parallel' },
+            { text: '输出质量：结构化 / 思维链', link: '/zh-cn/pocketflow-cases/output-quality' },
+            { text: '高级智能体：MCP / 技能', link: '/zh-cn/pocketflow-cases/advanced-agents' },
+            { text: '智能体编程', link: '/zh-cn/pocketflow-cases/agentic-coding' },
+          ]
+        },
+        {
+          text: '附录',
+          items: [
+            { text: '软件工程知识参考', link: '/zh-cn/appendix/' },
+          ]
+        }
+      ]
+    },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/datawhalechina/repo-template' }
+      { icon: 'github', link: 'https://github.com/zhimin-z/easy-pocket' }
     ],
 
     editLink: {
-      pattern: 'https://github.com/datawhalechina/repo-template/blob/main/docs/:path'
+      pattern: 'https://github.com/zhimin-z/easy-pocket/blob/main/docs/:path'
     },
 
     footer: {
