@@ -34,7 +34,7 @@ export default defineConfig({
           label: '页面导航'
         },
         nav: [
-          { text: 'GitHub', link: 'https://github.com/zhimin-z/easy-pocket' },
+          { text: 'GitHub', link: 'https://github.com/datawhalechina/easy-pocket' },
         ],
         sidebar: {
           '/zh-cn/': [

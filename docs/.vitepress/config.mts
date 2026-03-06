@@ -19,7 +19,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     logo: '/datawhale-logo.png',
     nav: [
-      { text: 'PDF版本下载', link: 'https://github.com/datawhalechina/repo-template/releases' },
+      { text: 'PDF版本下载', link: 'https://github.com/datawhalechina/easy-pocket/releases' },
     ],
     search: {
       provider: 'local',
@@ -75,11 +75,11 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/zhimin-z/easy-pocket' }
+      { icon: 'github', link: 'https://github.com/datawhalechina/easy-pocket' }
     ],
 
     editLink: {
-      pattern: 'https://github.com/zhimin-z/easy-pocket/blob/main/docs/:path'
+      pattern: 'https://github.com/datawhalechina/easy-pocket/blob/main/docs/:path'
     },
 
     footer: {
