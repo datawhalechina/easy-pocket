@@ -368,7 +368,7 @@ def test_decide_action_returns_string():
 | `09_chain_of_thought.py` | [9. 思维链推理](./output-quality#_9-思维链推理-chain-of-thought) | 循环 + 自检 |
 | `10_mcp_tool.py` | [10. MCP 工具集成](./advanced-agents#_10-mcp-工具集成) | 智能体 + 工具 |
 | `11_agent_skills.py` | [11. 智能体技能](./advanced-agents#_11-智能体技能-技能路由) | 链式 + 条件路由 |
-| `12_agentic_coding/` | 12. 智能体编程 | 完整项目模板 |
+| `12_agentic_coding/` | [12. 智能体编程](./agentic-coding#_12-智能体编程) | 完整项目模板 |
 
 ### 下一步
 
