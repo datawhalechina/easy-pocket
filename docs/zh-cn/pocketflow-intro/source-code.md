@@ -175,6 +175,10 @@ batch_flow.run(shared)
 
 ### 5.6 AsyncNode 与异步家族
 
+<div align="center"><img src="/easy-pocket/async.png" width="380"/></div>
+
+*异步模式：等待 I/O 操作完成后继续执行*
+
 ::: tip 为什么需要 async？
 本教程的案例使用同步模拟函数来降低门槛，但**真实业务几乎都是异步的**。LLM API 调用（OpenAI、Claude）、Web 搜索、数据库查询都是网络 I/O —— 每次请求要等几百毫秒到几秒。同步代码在等待期间阻塞整个线程；async/await 让 Python 在等待 I/O 时去处理其他任务。
 

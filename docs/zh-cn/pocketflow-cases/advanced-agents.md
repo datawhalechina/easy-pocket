@@ -119,23 +119,9 @@ flow.run({"task": "查询北京今天的天气并生成播报文案"})
 
 ### 11.2 架构设计
 
-```text
-  用户请求
-     │
-     ↓
-┌────────────┐   ┌───────────┐
-│Select Skill│──→│Apply Skill│
-│   选择技能  │   │  执行任务 │
-└────────────┘   └───────────┘
-     │                │
-     │ 读取 skills/    │ 技能指令 + 用户请求
-     │ 目录下的 .md    │ 拼入 LLM prompt
-     ↓                ↓
- skills/           LLM 输出
- ├── executive_brief.md
- ├── checklist_writer.md
- └── code_reviewer.md
-```
+<div align="center"><img src="/easy-pocket/agent-skill.png" width="420"/></div>
+
+*技能路由：选择技能 → 加载指令 → 执行任务*
 
 **两个节点**，职责清晰：
 1. **SelectSkill**：列出所有可用技能，根据用户意图选择最匹配的一个

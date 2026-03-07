@@ -12,18 +12,11 @@ description: '搜索智能体（循环+条件分支）和多智能体协作（As
 
 ### 4.1 架构
 
-搜索智能体的核心是 Think → Act → Observe 循环 —— LLM 判断信息是否充足，不够则继续搜索：
+<div align="center"><img src="/easy-pocket/agent.png" width="420"/></div>
 
-```
-Think → Search
-  ↑        |
-  |   "need_more"
-  └────────┘
-       |
-  "enough"
-       ↓
-  Synthesize
-```
+*智能体：循环 + 分支 + 发布/订阅模式*
+
+搜索智能体的核心是 Think → Act → Observe 循环 —— LLM 判断信息是否充足，不够则继续搜索。
 
 ### 4.2 核心代码
 
@@ -115,13 +108,11 @@ Taboo 猜词游戏：一个 智能体 描述词语（不能说出关键词），
 
 ### 5.2 架构
 
-两个智能体各自运行独立的 AsyncFlow，通过异步消息队列交换信息，由 `asyncio.gather()` 并发驱动：
+<div align="center"><img src="/easy-pocket/multi-agent.png" width="420"/></div>
 
-```
-Hinter智能体 ←──── asyncio.Queue ────→ Guesser智能体
-   ↻ "continue"                          ↻ "continue"
-         └───── asyncio.gather() ──────────┘
-```
+*多智能体协作：多个智能体通过发布/订阅模式通信*
+
+两个智能体各自运行独立的 AsyncFlow，通过异步消息队列交换信息，由 `asyncio.gather()` 并发驱动。
 
 ### 5.3 核心代码
 
@@ -211,3 +202,11 @@ asyncio.run(main())
 - **自循环**：`agent - "continue" >> agent` 实现 智能体 的持续运行循环
 - **AsyncFlow**：AsyncNode **必须**包裹在 AsyncFlow 中，不能用普通 Flow
 :::
+
+### 延伸思考：监督者模式（Supervisor）
+
+<div align="center"><img src="/easy-pocket/supervisor.png" width="420"/></div>
+
+*监督者模式：增加审批节点监督子智能体输出*
+
+在多智能体协作的基础上，还有一种常见架构 —— **监督者模式**。它在多个子智能体之外增加一个"监督节点"，负责审批或拒绝子智能体的输出。如果输出不合格，监督节点将任务打回给子智能体重做；如果通过审批，则流程继续推进。这种模式适用于对输出质量要求较高的场景，例如代码审查、多轮校对等。你可以尝试在本案例的基础上，增加一个 `SupervisorNode` 来实现这一架构。

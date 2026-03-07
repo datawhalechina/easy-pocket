@@ -12,15 +12,11 @@ description: 'Map-Reduce 批处理（BatchNode）和并行处理 8x 加速（Asy
 
 ### 6.1 架构
 
-Map-Reduce 是最常见的批处理模式 —— 把一批数据"拆开"分别处理，再"合并"结果：
+<div align="center"><img src="/easy-pocket/map-reduce.png" width="420"/></div>
 
-```
-          ┌─ exec(item1) ─┐
-          ├─ exec(item2) ─┤
-prep ─────├─ exec(item3) ─┤───── post
- (列表)   ├─     ...     ─┤    (结果列表)
-          └─ exec(itemN) ─┘
-```
+*Map-Reduce：映射分块 → 批处理 → 规约总结*
+
+Map-Reduce（映射-规约）是最常见的批处理模式 —— 把一批数据"映射"（拆开分别处理），再"规约"（合并结果）。
 
 ### 6.2 核心思路
 
@@ -91,16 +87,11 @@ PocketFlow 提供三种批处理模式：
 
 ### 7.2 架构
 
-`AsyncParallelBatchNode` 的执行模型：`prep_async` 返回列表后，所有 `exec_async` 通过 `asyncio.gather()` **同时发出**，最后 `post_async` 收到有序的结果列表：
+<div align="center"><img src="/easy-pocket/parallel.png" width="380"/></div>
 
-```
-           ┌─ exec_async(item1) ─┐
-           ├─ exec_async(item2) ─┤
-prep_async ├─ exec_async(item3) ─┤ post_async
-  (列表)   ├─       ...         ─┤  (结果列表)
-           └─ exec_async(item8) ─┘
-              asyncio.gather()
-```
+*并行处理：多个任务通过 asyncio.gather() 并发执行*
+
+`AsyncParallelBatchNode` 的执行模型：`prep_async` 返回列表后，所有 `exec_async` 通过 `asyncio.gather()` **同时发出**，最后 `post_async` 收到有序的结果列表。
 
 ### 7.3 核心代码
 

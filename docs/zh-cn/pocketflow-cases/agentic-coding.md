@@ -10,6 +10,10 @@ description: '人类设计架构 + AI 实现代码的完整工程方法论，包
 
 智能体编程是一种高效协作范式：**人类负责系统设计，AI 负责实现**。PocketFlow 的核心抽象（Node / Flow / Shared Store）让这种协作更自然。
 
+<div align="center"><img src="/easy-pocket/agentic-coding.png" width="420"/></div>
+
+*智能体编程：人类设计架构，AI 实现代码*
+
 ::: warning 重要提醒
 如果你正在用 AI 构建 LLM 系统，请务必牢记三件事：
 1）从**小而简单**的方案开始；2）**先写高层设计文档**（例如 `docs/design.md`）再写代码；3）频繁向人类确认与复盘。
@@ -74,9 +78,6 @@ description: '人类设计架构 + AI 实现代码的完整工程方法论，包
    - 写入输出：发送通知、生成报告
    - 调用外部工具：搜索、API、数据库、LLM
    - **注意**：LLM 内部任务（总结、分析）不是 Utility
-
-   <div align="center"><img src="https://github.com/the-pocket/.github/raw/main/assets/utility.png?raw=true" width="420"/></div>
-
    - 为每个 Utility 写一个小测试并记录输入输出
    - 示例记录：
      - `name`: `get_embedding` (`utils/get_embedding.py`)

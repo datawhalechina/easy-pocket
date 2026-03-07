@@ -23,6 +23,10 @@ PocketFlow 的全部设计可以用一句话概括：
 - **exec**：执行核心业务逻辑（如调用 LLM API）
 - **post**：将结果**写回** `shared`，并返回一个 `action` 字符串
 
+<div align="center"><img src="/easy-pocket/node.png" width="280"/></div>
+
+*Node：单步推理的最小执行单元*
+
 <NodeLifecycleDemo />
 
 ::: tip 为什么要分三个阶段？
@@ -53,6 +57,10 @@ while curr:
     curr = curr.successors[action]    # 跳转到下一个
 ```
 
+<div align="center"><img src="/easy-pocket/flow.png" width="420"/></div>
+
+*Flow：串联多个 Node，实现多步推理*
+
 <FlowGraphDemo />
 
 ### 2.3 连接节点的两种方式
@@ -69,6 +77,10 @@ check_node - "approve" >> approve_node
 check_node - "reject"  >> reject_node
 # 等价于：check_node.next(approve_node, "approve")
 ```
+
+<div align="center"><img src="/easy-pocket/branch.png" width="420"/></div>
+
+*条件分支：根据 action 字符串走不同路径*
 
 ::: info 这里发生了什么？
 - `>>` 重载了 `__rshift__` 方法，调用 `self.next(other, "default")`
@@ -101,46 +113,15 @@ check_node - "reject"  >> reject_node
 
 **1. 聊天机器人** —— 单状态 + 自环，最简单的循环结构
 
-```text
-┌──── "continue" ────┐
-│                    │
-↓                    │
-●  ChatNode ─────────┘
-     │ (None)
-     ↓
-   [结束]
-```
+> ChatNode 的 `post()` 返回 `"continue"` 时跳回自身，形成对话循环；返回 `None` 时无后继节点，Flow 结束。
 
 **2. 搜索智能体** —— 分支 + 环，LLM 决定转移方向
-
-```text
-            "need_more"
-  ┌─── Think ─────────→ Search ─┐
-  │      │                       │
-  │      │ "enough"              │ "default"
-  │      ↓                       │
-  │  Synthesize ←───────────────┘
-  │      │ (None)
-  │      ↓
-  └─→ [结束]
-```
 
 > Think 通过 `"need_more"` 跳转 Search；Search 完成后 `"default"` 回到 Think 继续判断；Think 认为信息足够时 `"enough"` 进入 Synthesize 输出结果。
 
 **3. 结构化输出** —— 回退边，校验失败回退重试
 
-```text
-  ┌────────── "retry" ─────────┐
-  │                            │
-  ↓                            │
-  Generate ──→ Validate ──→ Check
-                               │
-                               │ "done"
-                               ↓
-                             Output
-```
-
-> Check 校验不通过时 `"retry"` 回到 Generate 重新生成；校验通过时 `"done"` 进入 Output 输出结果。
+> Generate 生成 → Validate 校验 → Check 判断：校验不通过时 `"retry"` 回到 Generate 重新生成；校验通过时 `"done"` 进入 Output 输出结果。
 
 更多模式一览：
 

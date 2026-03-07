@@ -7,3 +7,4 @@ PocketFlow
 docs/.vitepress/cache
 docs/.vitepress/dist
 test*
+*.bkp
