@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="750" height="500" alt="Easy-Pocket 核心概念宣传图_高清紧凑版" src="https://github.com/user-attachments/assets/4ed889cb-79ec-42ca-86d5-200901270654" />
+<img width="1536" height="1024" alt="553306479-4ed889cb-79ec-42ca-86d5-200901270654" src="https://github.com/user-attachments/assets/2ee7d643-2835-43f9-a9cb-97f7587288d3" />
 
 ```text
            ███████╗ █████╗ ███████╗██╗   ██╗    ██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗
@@ -23,10 +23,10 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/zhimin-z/easy-pocket/stargazers" target="_blank">
-        <img src="https://img.shields.io/github/stars/zhimin-z/easy-pocket?color=660874&style=for-the-badge&logo=star&logoColor=white&labelColor=1a1a2e" alt="Stars"></a>
-    <a href="https://github.com/zhimin-z/easy-pocket/network/members" target="_blank">
-        <img src="https://img.shields.io/github/forks/zhimin-z/easy-pocket?color=660874&style=for-the-badge&logo=git-fork&logoColor=white&labelColor=1a1a2e" alt="Forks"></a>
+    <a href="https://github.com/datawhalechina/easy-pocket/stargazers" target="_blank">
+        <img src="https://img.shields.io/github/stars/datawhalechina/easy-pocket?color=660874&style=for-the-badge&logo=star&logoColor=white&labelColor=1a1a2e" alt="Stars"></a>
+    <a href="https://github.com/datawhalechina/easy-pocket/network/members" target="_blank">
+        <img src="https://img.shields.io/github/forks/datawhalechina/easy-pocket?color=660874&style=for-the-badge&logo=git-fork&logoColor=white&labelColor=1a1a2e" alt="Forks"></a>
     <a href="LICENSE" target="_blank">
         <img src="https://img.shields.io/badge/License-CC_BY_NC_SA_4.0-4ecdc4?style=for-the-badge&logo=creative-commons&logoColor=white&labelColor=1a1a2e" alt="License"></a>
 </p>
@@ -173,8 +173,8 @@ pip install pocketflow
 
 | 教程 | 示例目录 | 内容 |
 | :--- | :--- | :--- |
-| 原理入门 | [`docs/zh-cn/pocketflow-intro/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples) | 10 个脚本：Node 生命周期、Flow 图执行、条件分支、批处理、异步并发等 |
-| 应用案例 | [`docs/zh-cn/pocketflow-cases/examples/`](https://github.com/zhimin-z/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) | 12 个案例：ChatBot、写作工作流、RAG、智能体、多智能体、Map-Reduce、结构化输出、MCP、智能体技能 等 |
+| 原理入门 | [`docs/zh-cn/pocketflow-intro/examples/`](https://github.com/datawhalechina/easy-pocket/tree/main/docs/zh-cn/pocketflow-intro/examples) | 10 个脚本：Node 生命周期、Flow 图执行、条件分支、批处理、异步并发等 |
+| 应用案例 | [`docs/zh-cn/pocketflow-cases/examples/`](https://github.com/datawhalechina/easy-pocket/tree/main/docs/zh-cn/pocketflow-cases/examples) | 12 个案例：ChatBot、写作工作流、RAG、智能体、多智能体、Map-Reduce、结构化输出、MCP、智能体技能 等 |
 
 > 所有示例使用模拟 LLM 实现，聚焦框架核心概念。如需接入真实 API，参见各目录下的 README 说明。
 
@@ -222,10 +222,17 @@ easy-pocket/
 └── README.md
 ```
 
+## 编委会
+
+| 职责 | 名单 |
+| :---: | :---: |
+| **主编** | [@赵志民](https://github.com/zhimin-z) |
+| **编委** | 欢迎 [提 Pull Request](https://github.com/datawhalechina/easy-pocket/pulls) 参与贡献 |
+
 ## 参与贡献
 
-- 发现问题或有改进建议？欢迎 [提 Issue](https://github.com/zhimin-z/easy-pocket/issues)
-- 想参与内容贡献？欢迎 [提 Pull Request](https://github.com/zhimin-z/easy-pocket/pulls)
+- 发现问题或有改进建议？欢迎 [提 Issue](https://github.com/datawhalechina/easy-pocket/issues)
+- 想参与内容贡献？欢迎 [提 Pull Request](https://github.com/datawhalechina/easy-pocket/pulls)
 - 内容贡献请遵循现有的写作风格和文件组织方式
 
 ## 致谢
