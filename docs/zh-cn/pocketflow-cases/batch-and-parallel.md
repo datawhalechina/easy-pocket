@@ -12,7 +12,7 @@ description: 'Map-Reduce 批处理（BatchNode）和并行处理 8x 加速（Asy
 
 ### 6.1 架构
 
-<div align="center"><img src="/easy-pocket/map-reduce.png" width="420"/></div>
+<div align="center"><img src="/map-reduce.png" width="420"/></div>
 
 *Map-Reduce：映射分块 → 批处理 → 规约总结*
 
@@ -87,7 +87,7 @@ PocketFlow 提供三种批处理模式：
 
 ### 7.2 架构
 
-<div align="center"><img src="/easy-pocket/parallel.png" width="380"/></div>
+<div align="center"><img src="/parallel.png" width="380"/></div>
 
 *并行处理：多个任务通过 asyncio.gather() 并发执行*
 

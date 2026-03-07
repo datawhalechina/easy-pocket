@@ -23,7 +23,7 @@ PocketFlow 的全部设计可以用一句话概括：
 - **exec**：执行核心业务逻辑（如调用 LLM API）
 - **post**：将结果**写回** `shared`，并返回一个 `action` 字符串
 
-<div align="center"><img src="/easy-pocket/node.png" width="280"/></div>
+<div align="center"><img src="/node.png" width="280"/></div>
 
 *Node：单步推理的最小执行单元*
 
@@ -57,7 +57,7 @@ while curr:
     curr = curr.successors[action]    # 跳转到下一个
 ```
 
-<div align="center"><img src="/easy-pocket/flow.png" width="420"/></div>
+<div align="center"><img src="/flow.png" width="420"/></div>
 
 *Flow：串联多个 Node，实现多步推理*
 
@@ -78,7 +78,7 @@ check_node - "reject"  >> reject_node
 # 等价于：check_node.next(approve_node, "approve")
 ```
 
-<div align="center"><img src="/easy-pocket/branch.png" width="420"/></div>
+<div align="center"><img src="/branch.png" width="420"/></div>
 
 *条件分支：根据 action 字符串走不同路径*
 

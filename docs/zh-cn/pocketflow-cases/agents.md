@@ -12,7 +12,7 @@ description: '搜索智能体（循环+条件分支）和多智能体协作（As
 
 ### 4.1 架构
 
-<div align="center"><img src="/easy-pocket/agent.png" width="420"/></div>
+<div align="center"><img src="/agent.png" width="420"/></div>
 
 *智能体：循环 + 分支 + 发布/订阅模式*
 
@@ -108,7 +108,7 @@ Taboo 猜词游戏：一个 智能体 描述词语（不能说出关键词），
 
 ### 5.2 架构
 
-<div align="center"><img src="/easy-pocket/multi-agent.png" width="420"/></div>
+<div align="center"><img src="/multi-agent.png" width="420"/></div>
 
 *多智能体协作：多个智能体通过发布/订阅模式通信*
 
@@ -205,7 +205,7 @@ asyncio.run(main())
 
 ### 延伸思考：监督者模式（Supervisor）
 
-<div align="center"><img src="/easy-pocket/supervisor.png" width="420"/></div>
+<div align="center"><img src="/supervisor.png" width="420"/></div>
 
 *监督者模式：增加审批节点监督子智能体输出*
 

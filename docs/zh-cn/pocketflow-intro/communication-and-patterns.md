@@ -9,7 +9,7 @@ PocketFlow 提供**两种**节点间通信方式，各有分工。
 
 ### 3.1 Shared Store —— 全局共享字典
 
-<div align="center"><img src="/easy-pocket/shared.png" width="420"/></div>
+<div align="center"><img src="/shared.png" width="420"/></div>
 
 *Shared Store：所有节点通过共享字典读写数据*
 
@@ -78,7 +78,7 @@ Params 的值由**父 Flow 传入**：当 Flow 执行子节点时，会自动调
 
 每种模式的代码骨架：
 
-<div align="center"><img src="/easy-pocket/workflow.png" width="380"/></div>
+<div align="center"><img src="/workflow.png" width="380"/></div>
 
 *链式调用：节点按顺序依次执行*
 
@@ -88,7 +88,7 @@ a >> b >> c
 flow = Flow(start=a)
 ```
 
-<div align="center"><img src="/easy-pocket/branch.png" width="380"/></div>
+<div align="center"><img src="/branch.png" width="380"/></div>
 
 *条件分支：根据 action 走不同路径*
 
@@ -99,7 +99,7 @@ check - "no"  >> handle_no
 flow = Flow(start=check)
 ```
 
-<div align="center"><img src="/easy-pocket/looping.png" width="380"/></div>
+<div align="center"><img src="/looping.png" width="380"/></div>
 
 *循环/重试：不满足条件则持续推理*
 
@@ -110,7 +110,7 @@ verify - "retry" >> step        # 不满意则重做
 verify - "done"  >> output      # 满意则输出
 ```
 
-<div align="center"><img src="/easy-pocket/nesting.png" width="420"/></div>
+<div align="center"><img src="/nesting.png" width="420"/></div>
 
 *嵌套子流程：Flow 作为可复用的步骤*
 
@@ -120,7 +120,7 @@ sub_flow = Flow(start=sub_a)
 main_a >> sub_flow >> main_b    # Flow 当节点用
 ```
 
-<div align="center"><img src="/easy-pocket/batch.png" width="380"/></div>
+<div align="center"><img src="/batch.png" width="380"/></div>
 
 *批量处理：对列表中每个元素重复执行*
 
@@ -131,7 +131,7 @@ class ProcessAll(BatchNode):
     def exec(self, item): return process(item)       # 逐一执行
 ```
 
-<div align="center"><img src="/easy-pocket/parallel.png" width="380"/></div>
+<div align="center"><img src="/parallel.png" width="380"/></div>
 
 *并行执行：多个任务并发处理*
 

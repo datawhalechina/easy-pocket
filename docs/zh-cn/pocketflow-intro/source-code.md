@@ -175,7 +175,7 @@ batch_flow.run(shared)
 
 ### 5.6 AsyncNode 与异步家族
 
-<div align="center"><img src="/easy-pocket/async.png" width="380"/></div>
+<div align="center"><img src="/async.png" width="380"/></div>
 
 *异步模式：等待 I/O 操作完成后继续执行*
 

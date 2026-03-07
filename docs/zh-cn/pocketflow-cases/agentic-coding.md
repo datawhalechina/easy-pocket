@@ -10,7 +10,7 @@ description: '人类设计架构 + AI 实现代码的完整工程方法论，包
 
 智能体编程是一种高效协作范式：**人类负责系统设计，AI 负责实现**。PocketFlow 的核心抽象（Node / Flow / Shared Store）让这种协作更自然。
 
-<div align="center"><img src="/easy-pocket/agentic-coding.png" width="420"/></div>
+<div align="center"><img src="/agentic-coding.png" width="420"/></div>
 
 *智能体编程：人类设计架构，AI 实现代码*
 
