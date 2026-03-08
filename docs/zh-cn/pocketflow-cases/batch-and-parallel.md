@@ -12,7 +12,7 @@ description: 'Map-Reduce 批处理（BatchNode）和并行处理 8x 加速（Asy
 
 ### 6.1 架构
 
-<div align="center"><img src="/map-reduce.png" width="420"/></div>
+<div align="center"><img src="/map-reduce.png" width="380"/></div>
 
 *Map-Reduce：映射分块 → 批处理 → 规约总结*
 

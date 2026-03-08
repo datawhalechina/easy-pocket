@@ -93,7 +93,7 @@ flow.run({})
 
 ### 延伸思考：长期记忆
 
-<div align="center"><img src="/chat-memory.png" width="420"/></div>
+<div align="center"><img src="/chat-memory.png" width="380"/></div>
 
 *对话历史 + 向量数据库：实现长期记忆*
 
@@ -107,7 +107,7 @@ flow.run({})
 
 ### 2.1 架构
 
-<div align="center"><img src="/workflow.png" width="420"/></div>
+<div align="center"><img src="/workflow.png" width="380"/></div>
 
 *写作工作流：按顺序执行各阶段*
 
@@ -180,7 +180,7 @@ flow.run({"topic": "PocketFlow 入门指南"})
 
 ### 3.1 架构
 
-<div align="center"><img src="/rag.png" width="420"/></div>
+<div align="center"><img src="/rag.png" width="380"/></div>
 
 *RAG 架构：离线存储文档 + 在线检索回答*
 

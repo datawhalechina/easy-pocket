@@ -9,7 +9,7 @@ PocketFlow 提供**两种**节点间通信方式，各有分工。
 
 ### 3.1 Shared Store —— 全局共享字典
 
-<div align="center"><img src="/shared.png" width="420"/></div>
+<div align="center"><img src="/shared.png" width="380"/></div>
 
 *Shared Store：所有节点通过共享字典读写数据*
 
@@ -110,7 +110,7 @@ verify - "retry" >> step        # 不满意则重做
 verify - "done"  >> output      # 满意则输出
 ```
 
-<div align="center"><img src="/nesting.png" width="420"/></div>
+<div align="center"><img src="/nesting.png" width="380"/></div>
 
 *嵌套子流程：Flow 作为可复用的步骤*
 
