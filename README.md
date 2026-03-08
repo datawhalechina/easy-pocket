@@ -238,7 +238,7 @@ easy-pocket/
 ## 致谢
 
 - [PocketFlow](https://github.com/The-Pocket/PocketFlow) — 100 行极简 LLM 框架
-- <img src="docs/public/datawhale-logo.png" width="24" style="vertical-align: middle;" /> [Datawhale Easy-Vibe](https://github.com/datawhalechina/easy-vibe) — 附录知识参考来源 & 门户页设计参考
+- [Easy-Vibe](https://github.com/datawhalechina/easy-vibe) — 附录知识参考来源 & 门户页设计参考
 
 ## LICENSE
 
