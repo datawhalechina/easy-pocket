@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.5.2 Chrome/142.0.7444.265 Electron/39.6.1 Safari/537.36" version="29.5.2" pages="24">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1" pages="24">
   <diagram id="cO4IfQfnExe3zvcl_xwU" name="node">
     <mxGraphModel dx="1098" dy="815" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -723,29 +723,29 @@
     </mxGraphModel>
   </diagram>
   <diagram id="8wmx5H7OS8FOclw4h-p6" name="agentic-coding">
-    <mxGraphModel dx="1098" dy="815" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="305" dy="226" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="Hbz9khg6PKxmJAY6odnL-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="AI系统" vertex="1">
           <mxGeometry height="30" width="60" x="310" y="500" as="geometry" />
         </mxCell>
-        <mxCell id="5Vdt6W24Vvu3IBRHWl6I-2" edge="1" parent="1" source="Hbz9khg6PKxmJAY6odnL-2" style="html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;endArrow=classic;endFill=1;startArrow=classic;startFill=1;" target="Hbz9khg6PKxmJAY6odnL-1">
+        <mxCell id="5Vdt6W24Vvu3IBRHWl6I-2" edge="1" parent="1" source="Hbz9khg6PKxmJAY6odnL-2" style="html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;endFill=1;startArrow=classic;startFill=1;" target="Hbz9khg6PKxmJAY6odnL-1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Hbz9khg6PKxmJAY6odnL-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="大模型" vertex="1">
-          <mxGeometry height="30" width="60" x="210" y="480" as="geometry" />
+          <mxGeometry height="30" width="60" x="220" y="500" as="geometry" />
         </mxCell>
-        <mxCell id="5Vdt6W24Vvu3IBRHWl6I-3" edge="1" parent="1" source="5Vdt6W24Vvu3IBRHWl6I-1" style="html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="Hbz9khg6PKxmJAY6odnL-1">
+        <mxCell id="5Vdt6W24Vvu3IBRHWl6I-3" edge="1" parent="1" source="5Vdt6W24Vvu3IBRHWl6I-1" style="html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="Hbz9khg6PKxmJAY6odnL-1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="300" y="530" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="5Vdt6W24Vvu3IBRHWl6I-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="搜索引擎" vertex="1">
-          <mxGeometry height="30" width="60" x="210" y="520" as="geometry" />
+          <mxGeometry height="30" width="60" x="400" y="500" as="geometry" />
         </mxCell>
         <mxCell id="RtSQwjixlZFfZbZACUIi-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;b&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;外在工具&lt;/font&gt;&lt;/b&gt;" vertex="1">
-          <mxGeometry height="30" width="60" x="150" y="500" as="geometry" />
+          <mxGeometry height="50" width="50" x="170" y="490" as="geometry" />
         </mxCell>
         <mxCell id="RtSQwjixlZFfZbZACUIi-5" edge="1" parent="1" source="RtSQwjixlZFfZbZACUIi-2" style="edgeStyle=elbowEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="Hbz9khg6PKxmJAY6odnL-1">
           <mxGeometry relative="1" as="geometry">
