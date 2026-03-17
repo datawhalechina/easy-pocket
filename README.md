@@ -229,11 +229,34 @@ easy-pocket/
 | **主编** | [@赵志民](https://github.com/zhimin-z) |
 | **编委** | 欢迎 [提 Pull Request](https://github.com/datawhalechina/easy-pocket/pulls) 参与贡献 |
 
+## 贡献者名单
+
+| 姓名 | 职责 | 简介 |
+| :--- | :--- | :--- |
+| [@赵志民](https://github.com/zhimin-z) | 主编 | - |
+
+*欢迎更多贡献者加入*
+
 ## 参与贡献
 
 - 发现问题或有改进建议？欢迎 [提 Issue](https://github.com/datawhalechina/easy-pocket/issues)
 - 想参与内容贡献？欢迎 [提 Pull Request](https://github.com/datawhalechina/easy-pocket/pulls)
 - 内容贡献请遵循现有的写作风格和文件组织方式
+
+## 💬 交流群
+
+<!-- TODO: 填写交流群信息和二维码 -->
+<div align="center">
+<p>欢迎加入 Easy-Pocket 交流群，与其他开发者一起探讨学习：</p>
+<img src="docs/public/wechat.jpg" width="300" alt="交流群二维码">
+</div>
+
+## 📧 关注我们
+
+<div align="center">
+<p>扫描下方二维码关注公众号：Datawhale</p>
+<img src="https://raw.githubusercontent.com/datawhalechina/pumpkin-book/master/res/qrcode.jpeg" width="180" height="180">
+</div>
 
 ## 致谢
 
@@ -255,3 +278,7 @@ easy-pocket/
   知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议
 </a>
 进行许可。
+
+<div align="center">
+  <h3>⭐ 如果这个项目对你有帮助，请给我们一个 Star ❤️</h3>
+</div>
