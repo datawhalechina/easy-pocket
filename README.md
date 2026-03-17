@@ -245,10 +245,9 @@ easy-pocket/
 
 ## 💬 交流群
 
-<!-- TODO: 填写交流群信息和二维码 -->
 <div align="center">
 <p>欢迎加入 Easy-Pocket 交流群，与其他开发者一起探讨学习：</p>
-<img src="docs/public/wechat.jpg" width="300" alt="交流群二维码">
+<img src="https://github.com/user-attachments/assets/5ae37f87-22d5-4994-85b2-819194dc52ea" width="300" alt="交流群二维码">
 </div>
 
 ## 📧 关注我们
