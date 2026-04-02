@@ -256,7 +256,7 @@ easy-pocket/
 
 <div align="center">
 <p>欢迎加入 Easy-Pocket 交流群，与其他开发者一起探讨学习：</p>
-<img src="https://github.com/user-attachments/assets/5adee37f87-22d5-4994-85b2-819194dc52ea" width="300" alt="交流群二维码">
+<img width="300" alt="交流群二维码" src="https://github.com/user-attachments/assets/5ebebd9c-76f5-4293-a2c4-cc34fdf4306d" />
 </div>
 
 ## 📧 关注我们
