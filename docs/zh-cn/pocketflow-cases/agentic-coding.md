@@ -20,7 +20,6 @@ description: '人类设计架构 + AI 实现代码的完整工程方法论，包
 :::
 
 > **官方指南**：[Agentic Coding: Humans Design, Agents Code](https://the-pocket.github.io/PocketFlow/guide.html#agentic-coding-humans-design-agents-code)
->
 > **Showcase（自动科研智能体）**：[AI4Scientist/nano-scientist](https://github.com/AI4Scientist/nano-scientist) —— 一个值得参考的 Auto Researcher Agent 组合示例。
 
 ### 12.1 分工原则（谁负责什么）
