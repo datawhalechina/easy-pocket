@@ -66,6 +66,9 @@ pip install -r requirements.txt
 # 运行单个示例
 python 01_chatbot.py
 
+# 验证多智能体示例和教程代码的退出流程（无需 API 密钥）
+python -m unittest discover -s tests -v
+
 # 案例 12 是多文件项目，需要进入目录运行
 cd 12_agentic_coding
 python main.py
