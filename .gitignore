@@ -7,4 +7,6 @@ PocketFlow
 docs/.vitepress/cache
 docs/.vitepress/dist
 test*
+!docs/zh-cn/pocketflow-cases/examples/tests/
+!docs/zh-cn/pocketflow-cases/examples/tests/test_multi_agent.py
 *.bkp

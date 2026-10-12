@@ -118,6 +118,8 @@ Taboo 猜词游戏：一个 智能体 描述词语（不能说出关键词），
 
 两个智能体各自继承 `AsyncNode`，使用 `async/await` 三阶段。注意 `prep_async` 中通过 `await queue.get()` 等待对方消息，`post_async` 中通过 `await queue.put()` 发送消息：
 
+结束时也需要发送消息：仅设置 `game_over` 不会唤醒阻塞在 `queue.get()` 的提示者。这里用 `None` 作为结束信号；猜对或达到轮次上限时，猜测者发送该信号，提示者收到后跳过 LLM 调用并结束自己的 Flow，让 `gather()` 正常返回。
+
 ```python
 import asyncio
 from pocketflow import AsyncNode, AsyncFlow
@@ -126,6 +128,8 @@ class Hinter智能体(AsyncNode):
     """提示者：描述目标词，不能使用禁忌词"""
     async def prep_async(self, shared):
         msg = await shared["hinter_queue"].get()  # 等待消息
+        if msg is None:  # 收到结束信号
+            return None
         return {
             "msg": msg,
             "word": shared["word"],
@@ -133,6 +137,8 @@ class Hinter智能体(AsyncNode):
         }
 
     async def exec_async(self, data):
+        if data is None:
+            return None  # 结束时不再调用 LLM
         if data["msg"] == "start":
             prompt = f"请描述'{data['word']}'，不能使用：{data['taboo_words']}"
         else:
@@ -140,9 +146,9 @@ class Hinter智能体(AsyncNode):
         return await async_call_llm(prompt)
 
     async def post_async(self, shared, prep_res, exec_res):
-        await shared["guesser_queue"].put(exec_res)  # 发送提示给猜测者
-        if shared.get("game_over"):
+        if prep_res is None:
             return "end"
+        await shared["guesser_queue"].put(exec_res)  # 发送提示给猜测者
         return "continue"
 
 class Guesser智能体(AsyncNode):
@@ -158,11 +164,13 @@ class Guesser智能体(AsyncNode):
     async def post_async(self, shared, prep_res, exec_res):
         if exec_res.strip() == shared["word"]:
             shared["game_over"] = True
+            await shared["hinter_queue"].put(None)  # 唤醒提示者，让它结束
             print(f"猜对了！答案是「{shared['word']}」")
             return "end"
         shared["round"] = shared.get("round", 0) + 1
         if shared["round"] >= 5:
             shared["game_over"] = True
+            await shared["hinter_queue"].put(None)  # 达到轮次上限也发送结束信号
             print(f"超过 5 轮，游戏结束。答案是「{shared['word']}」")
             return "end"
         await shared["hinter_queue"].put(exec_res)  # 告诉提示者猜错了
@@ -198,6 +206,7 @@ asyncio.run(main())
 ::: tip 学习要点
 - **AsyncNode**：使用 `prep_async` / `exec_async` / `post_async` 异步三阶段
 - **消息队列**：`asyncio.Queue` 实现 智能体 间的异步通信
+- **结束协议**：通过队列发送 `None` 唤醒等待中的伙伴，双方结束后 `gather()` 才会返回
 - **并发执行**：`asyncio.gather()` 让两个 智能体 同时运行，通过队列协调
 - **自循环**：`agent - "continue" >> agent` 实现 智能体 的持续运行循环
 - **AsyncFlow**：AsyncNode **必须**包裹在 AsyncFlow 中，不能用普通 Flow

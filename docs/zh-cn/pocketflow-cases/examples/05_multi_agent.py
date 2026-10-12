@@ -48,6 +48,8 @@ class HinterAgent(AsyncNode):
 
     async def prep_async(self, shared):
         msg = await shared["hinter_queue"].get()  # 等待来自 guesser 的消息
+        if msg is None:  # 结束信号：唤醒等待中的提示者
+            return None
         return {
             "msg": msg,
             "word": shared["word"],
@@ -56,6 +58,8 @@ class HinterAgent(AsyncNode):
         }
 
     async def exec_async(self, data):
+        if data is None:
+            return None  # 结束时不再调用 LLM
         description = await mock_hinter_llm(
             data["word"], data["taboo_words"], data["msg"], data["round"]
         )
@@ -63,9 +67,9 @@ class HinterAgent(AsyncNode):
         return description
 
     async def post_async(self, shared, prep_res, exec_res):
-        await shared["guesser_queue"].put(exec_res)  # 发送提示给猜测者
-        if shared.get("game_over"):
+        if prep_res is None:
             return "end"
+        await shared["guesser_queue"].put(exec_res)  # 发送提示给猜测者
         return "continue"
 
 
@@ -87,12 +91,14 @@ class GuesserAgent(AsyncNode):
     async def post_async(self, shared, prep_res, exec_res):
         if exec_res == shared["word"]:
             shared["game_over"] = True
+            await shared["hinter_queue"].put(None)  # 通知提示者结束
             print(f"\n  猜对了！答案是「{shared['word']}」")
             return "end"
 
         shared["round"] = shared.get("round", 0) + 1
         if shared["round"] >= 5:
             shared["game_over"] = True
+            await shared["hinter_queue"].put(None)  # 达到轮次上限也必须唤醒对方
             print(f"\n  超过 5 轮，游戏结束。答案是「{shared['word']}」")
             return "end"
 
@@ -133,7 +139,7 @@ async def main():
         guesser_flow.run_async(shared),
     )
 
-    rounds = shared.get("round", 0) + 1
+    rounds = min(shared.get("round", 0) + 1, 5)
     result = "猜对了" if shared.get("game_over") and shared.get("round", 0) < 5 else "未猜出"
     print(f"\n[游戏结束] 共 {rounds} 轮，结果：{result}")
 
